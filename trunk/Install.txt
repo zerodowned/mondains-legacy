@@ -1,25 +1,21 @@
 Svn
-Data	138
-Server	169
-Scripts	167
+Data	297
+Server	297
+Scripts	297
 
 1. Core
 	- Add a reference Projects/AddReference/.Net/System.Drawing (Express c#)
-	- The Ultima namespace: It's a dll, wich you can get [URL="http://www.runuo.com/forums/ultima-sdk/77089-ultima-sdk-converted-2-0-a.html"]here[/URL] and it is used for alignment of gump images (so they're centered). Put this dll in your main folder (with Server.exe). Add a reference Projects/AddReference/Browse/ (Express c#) and browse for this dll.
-	- Merge Item.cs and Poison.cs
+	- The Ultima namespace: It's a dll, wich you can get [URL="http://www.runuo.com/forums/ultima-sdk/90206-ultima-sdk-2-1-a.html"]here[/URL] and it is used for alignment of gump images (so they're centered). Put this dll in your main folder (with Server.exe). Add a reference Projects/AddReference/Browse/ (Express c#) and browse for this dll.
+	- Merge Item.cs, Mobile.cs and Poison.cs
 
 2. Scripts
 	- Put Content of data in data directory
 	- Copy Mondain's Legacy folder somewhere in Scripts folder
-	- Increase Serialization version in PlayerMobile.cs by 1 (approx. 2681 line)
-	- Increase Serialization version in BaseWeapon.cs by 1 (approx. 2681 line)
-	- Increase Serialization version in BaseArmor.cs by 1 (approx. 784 line)
-	- Increase Serialization version in BaseRanged.cs by 1 (approx. 111 line)
-	- Increase Serialization version in BaseJewel.cs by 1 (approx. 260 line)
- 	- Change private to public in MagicReflect.cs (approx. 44)
- 	- Change private to public in ReactiveArmor.cs (approx. 43)
- 	- Change private to public in Protection.cs (approx. 46)
+ 	- Change private to public in Scripts\Spells\Fifth\MagicReflect.cs (approx. 44)
+ 	- Change private to public in Scripts\Spells\First\ReactiveArmor.cs (approx. 43)
+ 	- Change private to public in Scripts\Spells\Second\Protection.cs (approx. 46)
 	- In BaseAI.cs add 'AI_Necromage' to AIType enum
+	- Merge everything else in Distro folder with appropriate files in Scripts
 
 	- after you install, start server and imediately shut it down with save. Now go 
 	to Scripts\Items\Containers\Container.cs and uncomment block in Deserialize 
@@ -541,6 +537,21 @@ Version 1.16, 14.10.2007
 		+ ..\Distro\SkillCheck.cs
 		+ ..\Distro\Titles.cs
 
-Changelog from now on can be seen through SVN.
+Version 1.18, 2.6.2008
+	- Fixed: character statue bug (dissapears when you demolish house)
+	- Fixed: a lot of stuff
+
+	- Removed:
+		+ ..\Distro\BaseHouse.cs
+
+	- Changed:
+		+ ..\Distro\ParrotPerchAddon.cs	
+		+ ..\Mondain's Legacy\Items\Character Satue Maker\CharacterStatue.cs
+		+ ..\Mondain's Legacy\Items\Character Satue Maker\CharacterStatueTarget.cs
+		+ ..\Mondain's Legacy\Items\Character Satue Maker\CharacterStatuePlinth.cs
+		+ a lot fo stuff
+
+
+Changelog from now on can be seen through SVN here: http://code.google.com/p/mondains-legacy/source/list
 		
 	

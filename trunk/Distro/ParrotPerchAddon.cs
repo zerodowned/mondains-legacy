@@ -44,7 +44,15 @@ namespace Server.Items
 			if ( m_Parrot != null )
 				m_Parrot.Map = Map;
 		}
-
+		
+		public override void OnAfterDelete()
+		{
+			base.OnAfterDelete();
+			
+			if ( m_Parrot != null )
+				m_Parrot.Internalize();
+		}
+		
 		public ParrotPerchAddon( Serial serial ) : base( serial )
 		{
 		}
@@ -117,6 +125,25 @@ namespace Server.Items
 					list.Add( 1072627, weeks.ToString() ); // ~1_AGE~ weeks old
 			}
 		}
+		
+		private bool m_Safety;
+		
+		public override void DeleteDeed()
+		{
+			m_Safety = true;
+			
+			base.DeleteDeed();
+		}
+		
+		public override void OnAfterDelete()
+		{				
+			base.OnAfterDelete();
+			
+			if ( !m_Safety && m_Parrot != null )
+				m_Parrot.Delete();
+				
+			m_Safety = false;
+		}	
 
 		public override void Serialize( GenericWriter writer )
 		{

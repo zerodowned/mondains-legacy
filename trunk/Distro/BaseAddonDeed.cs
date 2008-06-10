@@ -47,6 +47,13 @@ namespace Server.Items
 			else
 				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 		}
+		
+		#region Mondain's Legacy
+		public virtual void DeleteDeed()
+		{
+			Delete();
+		}
+		#endregion
 
 		private class InternalTarget : Target
 		{
@@ -95,9 +102,10 @@ namespace Server.Items
 						#region Mondain's Legacy
 						if ( addon != null && addon.RetainDeedHue )
 							addon.Hue = m_Deed.Hue;
+							
+						m_Deed.DeleteDeed();
 						#endregion
 						
-						m_Deed.Delete();
 						house.Addons.Add( addon );
 					}
 					else

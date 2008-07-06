@@ -520,7 +520,10 @@ namespace Server.Items
 			{
 				bonus += m_AosArmorAttributes.DurabilityBonus;
 
-				#region Mondain's Legacy					
+				#region Mondain's Legacy	
+				if ( IsSetItem && m_SetEquipped )
+					bonus += m_SetArmorAttributes.DurabilityBonus;
+								
 				if ( m_Resource == CraftResource.Heartwood )
 					return bonus;
 				#endregion
@@ -639,7 +642,10 @@ namespace Server.Items
 
 			int v = m_AosArmorAttributes.LowerStatReq;
 
-			#region Mondain's Legacy			
+			#region Mondain's Legacy	
+			if ( IsSetItem && m_SetEquipped )
+				v += m_SetArmorAttributes.LowerStatReq;	
+					
 			if ( m_Resource == CraftResource.Heartwood )
 				return v;
 			#endregion
@@ -1456,7 +1462,8 @@ namespace Server.Items
 
 			if ( 25 > Utility.Random( 100 ) ) // 25% chance to lower durability
 			{
-				if ( Core.AOS && m_AosArmorAttributes.SelfRepair > Utility.Random( 10 ) )
+				// Mondain's Legacy Mod
+				if ( Core.AOS && m_AosArmorAttributes.SelfRepair + ( IsSetItem && m_SetEquipped ? m_SetArmorAttributes.SelfRepair : 0 ) > Utility.Random( 10 ) )
 				{
 					HitPoints += 2;
 				}

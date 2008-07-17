@@ -138,6 +138,12 @@ namespace Server.Engines.Quests
 				
 				return false;
 			}
+			else if ( m.FollowersMax - m.Followers > ControlSlots )
+			{
+				Say( "You have too many followers to escort." );
+				
+				return false;
+			}
 			else if ( m is PlayerMobile && (((PlayerMobile)m).LastEscortTime + m_EscortDelay) >= DateTime.Now )
 			{
 				int minutes = (int)Math.Ceiling( ((((PlayerMobile)m).LastEscortTime + m_EscortDelay) - DateTime.Now).TotalMinutes );

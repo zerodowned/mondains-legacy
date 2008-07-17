@@ -15,9 +15,10 @@ namespace Server.Items
 		[Constructable]
 		public MelisandesFermentedWine() : base()
 		{
+			Stackable = false;
 			Weight = 1.0;
 			ItemID = 0x99B;
-			Hue = m_Hues[ Utility.Random( m_Hues.Length ) ];
+			Hue = Utility.RandomList( m_Hues );
 		}
 
 		public MelisandesFermentedWine( Serial serial ) : base( serial )

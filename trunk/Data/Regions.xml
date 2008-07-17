@@ -1328,34 +1328,34 @@
 			<go x="3627" y="2606" z="0" />
 			<smartNoHousing active="true" />	
 			<!--Mondain's Legacy-->		
-			<region type="ApprenticeRegion" name="Old Haven Training">
-				<rect x="3589" y="2443" width="115" height="100" />	
-			</region>
-			<region type="ApprenticeRegion" name="Haven Mountains">
-				<rect x="3426" y="2732" width="110" height="50" />	
-			</region>		
 			<region type="ApprenticeRegion" name="Enhanced Tracking Skill">
 				<rect x="3314" y="2345" width="500" height="750" />
-			</region>
-			<region type="GuardedRegion" name="Haven Moongate">
-				<rect x="3755" y="2763" width="17" height="13" />	
-			</region>		
-			<region type="TownRegion" name="New Haven">
-				<rune name="New Haven City" />
-				<rect x="3423" y="2480" width="111" height="143" />
-				<go x="3503" y="2574" z="14" />
-				<music name="Ocllo" />
-				<region type="ApprenticeRegion" name="Springs And Things Workshop">
-					<rect x="3455" y="2523" width="9" height="10" />	
+				<region type="ApprenticeRegion" name="Old Haven Training">
+					<rect x="3589" y="2443" width="115" height="100" />	
 				</region>
-				<region type="ApprenticeRegion" name="Haven Dojo">
-					<rect x="3415" y="2513" width="11" height="11" />	
-				</region>
-				<region type="ApprenticeRegion" name="Gorge's Shop">
-					<rect x="3465" y="2535" width="7" height="8" />	
-				</region>
-				<region type="ApprenticeRegion" name="Haven Library">
-					<rect x="3464" y="2488" width="16" height="11" />	
+				<region type="ApprenticeRegion" name="Haven Mountains">
+					<rect x="3426" y="2732" width="110" height="50" />	
+				</region>		
+				<region type="GuardedRegion" name="Haven Moongate">
+					<rect x="3755" y="2763" width="17" height="13" />	
+				</region>		
+				<region type="TownRegion" name="New Haven">
+					<rune name="New Haven City" />
+					<rect x="3423" y="2480" width="111" height="143" />
+					<go x="3503" y="2574" z="14" />
+					<music name="Ocllo" />
+					<region type="ApprenticeRegion" name="Springs And Things Workshop">
+						<rect x="3455" y="2523" width="9" height="10" />	
+					</region>
+					<region type="ApprenticeRegion" name="Haven Dojo">
+						<rect x="3415" y="2513" width="11" height="11" />	
+					</region>
+					<region type="ApprenticeRegion" name="Gorge's Shop">
+						<rect x="3465" y="2535" width="7" height="8" />	
+					</region>
+					<region type="ApprenticeRegion" name="Haven Library">
+						<rect x="3464" y="2488" width="16" height="11" />	
+					</region>
 				</region>
 			</region>
 			<!--End-->

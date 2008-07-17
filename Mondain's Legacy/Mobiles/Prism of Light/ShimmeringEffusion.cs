@@ -80,10 +80,10 @@ namespace Server.Mobiles
 			{
 				switch ( Utility.Random( 4 ) )
 				{
-					case 0: AddToBackpack( new MalekisHonor() ); break;
-					case 1: AddToBackpack( new Feathernock() ); break;
-					case 2: AddToBackpack( new Swiftflight() ); break;
-					case 3: AddToBackpack( new HunterGloves() ); break;
+					case 0: c.DropItem( new MalekisHonor() ); break;
+					case 1: c.DropItem( new Feathernock() ); break;
+					case 2: c.DropItem( new Swiftflight() ); break;
+					case 3: c.DropItem( new HunterGloves() ); break;
 				}
 			}		
 			

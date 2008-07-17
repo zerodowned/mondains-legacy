@@ -11,6 +11,10 @@ using Server.Engines.Quests;
 
 namespace Server
 {
+	public interface ITokunoDyable
+	{
+	}
+
 	public static class MondainsLegacy
 	{	
 		public static void Initialize()
@@ -271,7 +275,8 @@ namespace Server
 			typeof( BirdsofBritanniaTalisman ),	typeof( TheLifeOfTravelingMinstrelTalisman ), 	typeof( MaceAndShieldGlasses ),		typeof( GlassesOfTheArts ),
 			typeof( FoldedSteelGlasses ), 		typeof( TradesGlasses ), 						typeof( LyricalGlasses ), 			typeof( AnthropomorphistGlasses ),
 			typeof( LightOfWayGlasses ),		typeof( NecromanticGlasses ),					typeof( WizardsCrystalGlasses ),	typeof( MaritimeGlasses ),
-			typeof( TreasuresAndTrinketsGlasses ), typeof( PoisonedGlasses ),				
+			typeof( TreasuresAndTrinketsGlasses ), typeof( PoisonedGlasses ),					typeof( GypsyHeaddress ), 			typeof( NystulsWizardsHat ),
+			typeof( JesterHatOfChuckles )				
 		};
 		
 		public static Type[] PigmentList{ get{ return m_PigmentList; } }

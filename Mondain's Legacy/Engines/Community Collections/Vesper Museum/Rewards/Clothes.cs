@@ -20,12 +20,6 @@ namespace Server.Items
 		public BaronLenshiresCloak( Serial serial ) : base( serial )
 		{
 		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
-		}
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -58,12 +52,6 @@ namespace Server.Items
 
 		public OdricsRobe( Serial serial ) : base( serial )
 		{
-		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -98,12 +86,6 @@ namespace Server.Items
 		public Adranath( Serial serial ) : base( serial )
 		{
 		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
-		}
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -137,12 +119,6 @@ namespace Server.Items
 		public MalabellesDress( Serial serial ) : base( serial )
 		{
 		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
-		}
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -159,7 +135,7 @@ namespace Server.Items
 		}
 	}
 	
-	public class GypsyHeaddress : Bandana
+	public class GypsyHeaddress : SkullCap
 	{
 		public override int LabelNumber{ get{ return 1073254; } } // Gypsy Headdress - Museum of Vesper Replica
 		
@@ -184,12 +160,6 @@ namespace Server.Items
 
 		public GypsyHeaddress( Serial serial ) : base( serial )
 		{
-		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -234,12 +204,6 @@ namespace Server.Items
 		public NystulsWizardsHat( Serial serial ) : base( serial )
 		{
 		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
-		}
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -282,12 +246,6 @@ namespace Server.Items
 
 		public JesterHatOfChuckles( Serial serial ) : base( serial )
 		{
-		}
-		
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
 		}
 
 		public override void Serialize( GenericWriter writer )

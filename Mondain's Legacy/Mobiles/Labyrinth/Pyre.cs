@@ -7,7 +7,7 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a rend corpse" )]	
+	[CorpseName( "a pyre corpse" )]	
 	public class Pyre : BaseCreature
 	{
 		[Constructable]

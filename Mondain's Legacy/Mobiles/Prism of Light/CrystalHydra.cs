@@ -13,13 +13,13 @@ namespace Server.Mobiles
 			Name = "a crystal hydra";
 			Body = 0x109;
 			Hue = 0x47E;
-			BaseSoundID = 362;
+			BaseSoundID = 0x16A;
 
-			SetStr( 804, 827 );
-			SetDex( 103, 119 );
-			SetInt( 101, 109 );
+			SetStr( 800, 830 );
+			SetDex( 100, 120 );
+			SetInt( 100, 120 );
 
-			SetHits( 1486, 1500 );
+			SetHits( 1450, 1500 );
 
 			SetDamage( 21, 26 );
 
@@ -29,16 +29,21 @@ namespace Server.Mobiles
 			SetDamageType( ResistanceType.Poison, 5 );
 			SetDamageType( ResistanceType.Energy, 5 );
 
-			SetResistance( ResistanceType.Physical, 67, 74 );
-			SetResistance( ResistanceType.Fire, 20, 29 );
-			SetResistance( ResistanceType.Cold, 87, 98 );
-			SetResistance( ResistanceType.Poison, 36, 45 );
+			SetResistance( ResistanceType.Physical, 65, 75 );
+			SetResistance( ResistanceType.Fire, 20, 30 );
+			SetResistance( ResistanceType.Cold, 80, 100 );
+			SetResistance( ResistanceType.Poison, 35, 45 );
 			SetResistance( ResistanceType.Energy, 80, 100 );
 
-			SetSkill( SkillName.Wrestling, 100.6, 115.1 );
-			SetSkill( SkillName.Tactics, 101.7, 108.1 );
-			SetSkill( SkillName.MagicResist, 89.9, 99.5 );
-			SetSkill( SkillName.Anatomy, 75.2, 79.1 );
+			SetSkill( SkillName.Wrestling, 100.0, 120.0 );
+			SetSkill( SkillName.Tactics, 100.0, 110.0 );
+			SetSkill( SkillName.MagicResist, 80.0, 100.0 );
+			SetSkill( SkillName.Anatomy, 70.0, 80.0 );
+			
+			Fame = 17000;
+			Karma = -17000;
+			
+			PackArcaneScroll( 0, 1 );
 		}
 		
 		public CrystalHydra( Serial serial ) : base( serial )
@@ -47,26 +52,51 @@ namespace Server.Mobiles
 		
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
+			AddLoot( LootPack.Parrot );
 		}		
 		
 		public override void OnDeath( Container c )
 		{
 			base.OnDeath( c );		
 			
-			if ( Utility.RandomDouble() < 0.4 )
-				c.DropItem( new ShatteredCrystals() );				
-			
-			if ( Utility.RandomDouble() < 0.1 )				
-				c.DropItem( new ParrotItem() );
+			if ( Utility.RandomDouble() < 0.25 )
+				c.DropItem( new ShatteredCrystals() );
+				
+			c.DropItem( new CrystallineFragments() );
 		}
 		
 		#region Breath
+		public override double BreathDamageScalar{ get{ return 0.13; } }
+		public override int BreathRange{ get{ return 5; } }
 		public override int BreathFireDamage{ get{ return 0; } }
 		public override int BreathColdDamage{ get{ return 100; } }		
 		public override int BreathEffectHue{ get{ return 0x47E; } }
-		public override int BreathEffectSound{ get{ return 0x56D; } }
+		public override int BreathEffectSound{ get{ return 0x56D; } }		
+		public override double BreathMinDelay{ get{ return 5.0; } }
+		public override double BreathMaxDelay{ get{ return 7.0; } }
 		public override bool HasBreath{ get{ return true; } } 
+		
+		public override void BreathStart( Mobile target )
+		{			
+			BreathStallMovement();
+			BreathPlayAngerSound();
+			BreathPlayAngerAnimation();
+						
+			this.Direction = this.GetDirectionTo( target );
+			
+			int count = 0;
+			
+			foreach ( Mobile m in GetMobilesInRange( BreathRange ) )
+			{
+				if ( count++ > 3 )
+					break;
+					
+				if ( m != null && m != target && m.Alive && !m.IsDeadBondedPet && CanBeHarmful( m ) && m.Map == this.Map && !IsDeadBondedPet && m.InRange( this, BreathRange ) && InLOS( m ) && !BardPacified )
+					Timer.DelayCall( TimeSpan.FromSeconds( BreathEffectDelay ), new TimerStateCallback( BreathEffect_Callback ), m );
+			}
+			Timer.DelayCall( TimeSpan.FromSeconds( BreathEffectDelay ), new TimerStateCallback( BreathEffect_Callback ), target );
+		}
 		#endregion
 		
 		public override int Hides{ get{ return 40; } }

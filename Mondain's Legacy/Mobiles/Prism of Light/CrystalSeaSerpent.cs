@@ -15,11 +15,11 @@ namespace Server.Mobiles
 			Hue = 0x47E;
 			BaseSoundID = 0x1BF;
 
-			SetStr( 259, 411 );
-			SetDex( 103, 141 );
-			SetInt( 96, 151 );
+			SetStr( 250, 450 );
+			SetDex( 100, 150 );
+			SetInt( 90, 190 );
 
-			SetHits( 231, 323 );
+			SetHits( 230, 330 );
 
 			SetDamage( 10, 18 );
 
@@ -27,22 +27,27 @@ namespace Server.Mobiles
 			SetDamageType( ResistanceType.Cold, 45 );
 			SetDamageType( ResistanceType.Energy, 45 );
 
-			SetResistance( ResistanceType.Physical, 51, 64 );
-			SetResistance( ResistanceType.Cold, 72, 90 );
+			SetResistance( ResistanceType.Physical, 50, 70 );
+			SetResistance( ResistanceType.Cold, 70, 90 );
 			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 65, 80 );
+			SetResistance( ResistanceType.Energy, 60, 80 );
 
-			SetSkill( SkillName.MagicResist, 61.5, 74.8 );
-			SetSkill( SkillName.Tactics, 60.8, 69.8 );
-			SetSkill( SkillName.Wrestling, 60.6, 70.0 );
+			SetSkill( SkillName.MagicResist, 60.0, 75.0 );
+			SetSkill( SkillName.Tactics, 60.0, 70.0 );
+			SetSkill( SkillName.Wrestling, 60.0, 70.0 );
 			
 			CanSwim = true;
 			CantWalk = true;
+
+			Fame = 8000;
+			Karma = -8000;
+			
+			PackArcaneScroll( 0, 1 );
 		}
 		
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosAverage );
+			AddLoot( LootPack.Average );
 		}		
 		
 		public override void OnDeath( Container c )
@@ -52,18 +57,18 @@ namespace Server.Mobiles
 			if ( Utility.RandomDouble() < 0.05 )
 				c.DropItem( new CrushedCrystals() );
 				
-			if ( Utility.RandomDouble() < 0.3 )
+			if ( Utility.RandomDouble() < 0.1 )
 				c.DropItem( new IcyHeart() );
 				
-			if ( Utility.RandomDouble() < 0.3 )
+			if ( Utility.RandomDouble() < 0.1 )
 				c.DropItem( new LuckyDagger() );
 		}
 		
 		#region Breath
+		public override double BreathDamageScalar{ get{ return 0.4; } }
 		public override int BreathFireDamage{ get{ return 0; } }
 		public override int BreathColdDamage{ get{ return 100; } }		
 		public override int BreathEffectHue{ get{ return 0x47E; } }
-		public override int BreathEffectSound{ get{ return 0x56D; } }
 		public override bool HasBreath{ get{ return true; } } 
 		#endregion
 

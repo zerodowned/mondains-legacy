@@ -34,7 +34,7 @@ namespace Server.Mobiles
 			Name = "a satyr";
 			Body =  0x10F;
 
-			SetStr( 178, 94 );
+			SetStr( 178, 194 );
 			SetDex( 254, 268 );
 			SetInt( 151, 169 );
 

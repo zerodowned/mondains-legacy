@@ -8,6 +8,7 @@ namespace Server.Mobiles
 	public class Protector : BaseCreature 
 	{ 
 		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool PropertyTitle{ get{ return false; } }
 		
 		[Constructable] 
 		public Protector() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) 
@@ -19,28 +20,29 @@ namespace Server.Mobiles
 			Name = "a protector";
 			Title = "the mystic llamaherder";
 					
-			SetStr( 101, 117 );
-			SetDex( 98, 118 );
-			SetInt( 55, 69 );
+			SetStr( 700, 800 );
+			SetDex( 100, 150 );
+			SetInt( 50, 75 );
 			
-			SetHits( 374, 438 );
-			SetStam( 98, 118 );
-			SetMana( 55, 69 );
-
+			SetHits( 350, 450 );
+			
 			SetDamage( 6, 12 );
 
 			SetDamageType( ResistanceType.Physical, 100 );
 
-			SetResistance( ResistanceType.Physical, 30, 33 );
-			SetResistance( ResistanceType.Fire, 21, 29 );
+			SetResistance( ResistanceType.Physical, 30, 40 );
+			SetResistance( ResistanceType.Fire, 20, 30 );
 			SetResistance( ResistanceType.Cold, 35, 40 );
 			SetResistance( ResistanceType.Poison, 30, 40 );
 			SetResistance( ResistanceType.Energy, 30, 40 );
 
-			SetSkill( SkillName.Wrestling, 70.7, 93.2 );	
-			SetSkill( SkillName.Tactics, 82.0, 94.3 );
-			SetSkill( SkillName.MagicResist, 50.3, 64.6 );
-			SetSkill( SkillName.Anatomy, 74.8, 94.3 );
+			SetSkill( SkillName.Wrestling, 70.0, 100.0 );	
+			SetSkill( SkillName.Tactics, 80.0, 100.0 );
+			SetSkill( SkillName.MagicResist, 50.0, 70.0 );
+			SetSkill( SkillName.Anatomy, 70.0, 100.0 );
+			
+			Fame = 10000;
+			Karma = -10000;
 			
 			// outfit
 			AddItem( new ThighBoots() );
@@ -57,6 +59,12 @@ namespace Server.Mobiles
 
 		public Protector( Serial serial ) : base( serial )
 		{
+		}
+		
+		public override void GenerateLoot()
+		{
+			AddLoot( LootPack.FilthyRich );
+			AddLoot( LootPack.Rich );
 		}
 		
 		public override void OnDeath( Container c )

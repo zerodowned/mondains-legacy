@@ -490,6 +490,18 @@ namespace Server
 			{
 				new LootPackEntry( false, PotionItems,		100.00, 1 )
 			} );
+			
+		#region Mondain's Legacy
+		public static readonly LootPackItem[] ParrotItem = new LootPackItem[]
+			{
+				new LootPackItem( typeof( ParrotItem ), 1 )
+			};
+			
+		public static readonly LootPack Parrot = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry( false, ParrotItem,			10.00, 1 )
+			} );
+		#endregion
 	}
 
 	public class LootPackEntry

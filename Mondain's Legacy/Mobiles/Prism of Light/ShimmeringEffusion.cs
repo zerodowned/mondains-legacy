@@ -13,9 +13,9 @@ namespace Server.Mobiles
 			Name = "a shimmering effusion";
 			Body = 0x105;			
 
-			SetStr( 509, 538 );
-			SetDex( 354, 381 );
-			SetInt( 1513, 1578 );
+			SetStr( 500, 550 );
+			SetDex( 350, 400 );
+			SetInt( 1500, 1600 );
 
 			SetHits( 20000 );
 
@@ -27,26 +27,31 @@ namespace Server.Mobiles
 			SetDamageType( ResistanceType.Poison, 20 );
 			SetDamageType( ResistanceType.Energy, 20 );
 			
-			SetResistance( ResistanceType.Physical, 75, 76 );
-			SetResistance( ResistanceType.Fire, 60, 65 );
-			SetResistance( ResistanceType.Cold, 60, 70 );
-			SetResistance( ResistanceType.Poison, 76, 80 );
-			SetResistance( ResistanceType.Energy, 75, 78 );
+			SetResistance( ResistanceType.Physical, 60, 80 );
+			SetResistance( ResistanceType.Fire, 60, 80 );
+			SetResistance( ResistanceType.Cold, 60, 80 );
+			SetResistance( ResistanceType.Poison, 60, 80 );
+			SetResistance( ResistanceType.Energy, 60, 80 );
 
-			SetSkill( SkillName.Wrestling, 100.2, 101.4 );
-			SetSkill( SkillName.Tactics, 105.5, 102.1 );
+			SetSkill( SkillName.Wrestling, 100.0, 105.0 );
+			SetSkill( SkillName.Tactics, 100.0, 105.0 );
 			SetSkill( SkillName.MagicResist, 150 );
 			SetSkill( SkillName.Magery, 150.0 );
 			SetSkill( SkillName.EvalInt, 150.0 );
 			SetSkill( SkillName.Meditation, 120.0 );
+
+			Fame = 30000;
+			Karma = -30000;
 			
 			PackResources( 8 );
 			PackTalismans( 5 );
+			PackArcaneScroll( 1, 6 );
 		}
 		
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosSuperBoss, 8 );
+			AddLoot( LootPack.SuperBoss, 8 );
+			AddLoot( LootPack.Parrot, 2 );
 		}		
 		
 		public override void OnDeath( Container c )
@@ -60,8 +65,8 @@ namespace Server.Mobiles
 			{
 				switch ( Utility.Random( 4 ) )
 				{
-					case 0: c.DropItem( new ShimmeringEffusionStatuette() );	break;
-					case 1: c.DropItem( new CorporealBrumeStatuette() );	break;
+					case 0: c.DropItem( new ShimmeringEffusionStatuette() ); break;
+					case 1: c.DropItem( new CorporealBrumeStatuette() ); break;
 					case 2: c.DropItem( new MantraEffervescenceStatuette() ); break;
 					case 3: c.DropItem( new FetidEssenceStatuette() ); break;
 				}
@@ -76,7 +81,7 @@ namespace Server.Mobiles
 			if ( Utility.RandomDouble() < 0.025 )
 				c.DropItem( new CrimsonCincture() );
 				
-			if ( 0.5 > Utility.RandomDouble() )
+			if ( Utility.RandomDouble() < 0.05 )
 			{
 				switch ( Utility.Random( 4 ) )
 				{
@@ -86,9 +91,6 @@ namespace Server.Mobiles
 					case 3: c.DropItem( new HunterGloves() ); break;
 				}
 			}		
-			
-			if ( Utility.RandomDouble() < 0.6 )				
-				c.DropItem( new ParrotItem() );
 		}
 			
 		public override bool AutoDispel{ get{ return true; } }
@@ -118,7 +120,7 @@ namespace Server.Mobiles
 			
 			for ( int i = 0; i < amount; i ++ )
 			{				
-				switch ( Utility.Random( 2 ) )
+				switch ( Utility.Random( 3 ) )
 				{
 					case 0: SpawnHelper( new MantraEffervescence(), 2 ); break;
 					case 1: SpawnHelper( new CorporealBrume(), 2 ); break;

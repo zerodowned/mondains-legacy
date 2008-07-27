@@ -15,9 +15,9 @@ namespace Server.Mobiles
 			Hue = 0x480;
 			BaseSoundID = 0x1D7;
 
-			SetStr( 498 );
-			SetDex( 211 );
-			SetInt( 849 );
+			SetStr( 450, 500 );
+			SetDex( 200, 250 );
+			SetInt( 800, 850 );
 
 			SetHits( 1500 );
 
@@ -27,23 +27,30 @@ namespace Server.Mobiles
 			SetDamageType( ResistanceType.Energy, 50 );
 			SetDamageType( ResistanceType.Cold, 50 );
 
-			SetResistance( ResistanceType.Physical, 36, 40 );
-			SetResistance( ResistanceType.Fire, 22, 29 );
-			SetResistance( ResistanceType.Cold, 60, 78 );
+			SetResistance( ResistanceType.Physical, 35, 40 );
+			SetResistance( ResistanceType.Fire, 20, 30 );
+			SetResistance( ResistanceType.Cold, 60, 80 );
 			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 69, 78 );
+			SetResistance( ResistanceType.Energy, 70, 80 );
 
-			SetSkill( SkillName.Wrestling, 90.7, 96.0 );
+			SetSkill( SkillName.Wrestling, 90.0, 100.0 );
 			SetSkill( SkillName.Tactics, 100.0 );
 			SetSkill( SkillName.MagicResist, 250.0 );
-			SetSkill( SkillName.Magery, 51.0, 57.3 );
-			SetSkill( SkillName.EvalInt, 52.8, 59.5 );
-			SetSkill( SkillName.Meditation, 80.1, 80.8 );
+			SetSkill( SkillName.Magery, 50.0, 60.0 );
+			SetSkill( SkillName.EvalInt, 50.0, 60.0 );
+			SetSkill( SkillName.Meditation, 80.0 );
+			
+			Fame = 25000;
+			Karma = -25000;
+			
+			PackArcaneScroll( 0, 2 );
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
+			AddLoot( LootPack.FilthyRich );
+			AddLoot( LootPack.Parrot );
 		}
 		
 		public override void OnDeath( Container c )

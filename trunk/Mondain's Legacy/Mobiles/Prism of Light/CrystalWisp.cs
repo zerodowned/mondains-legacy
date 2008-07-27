@@ -10,13 +10,14 @@ namespace Server.Mobiles
 		public CrystalWisp() : base() 
 		{ 			
 			Name = "a crystal wisp";
-			Hue = 0x482;
 			
-			PackReg( 1 );
+			PackArcaneScroll( 0, 1 );
 		}
 
 		public override void GenerateLoot()
 		{
+			AddLoot( LootPack.FilthyRich );
+			AddLoot( LootPack.Rich );
 		}
 
 		public CrystalWisp( Serial serial ) : base( serial )

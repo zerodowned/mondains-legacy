@@ -4161,7 +4161,30 @@ namespace Server.Mobiles
 			return rights;
 		}
 
-		#region Mondain's Legacy		
+		#region Mondain's Legacy	
+		public void PackArcaneScroll( int max )
+		{
+			PackArcaneScroll( 0, max );
+		}
+		
+		public void PackArcaneScroll( int min, int max )
+		{
+			double div = -1.0 / ( max - min + 1 );
+			int amount = 0;
+			
+			for ( int i = max - min; i >= 0; i-- )
+			{
+				if ( Utility.RandomDouble() < ( Math.Exp( div * i ) - Math.Exp( div * ( i + 1 ) ) ) )
+				{
+					amount = i;
+					break;
+				}
+			}
+
+			for ( int i = 0; i < min + amount; i++ )
+				PackItem( Loot.Construct( Loot.ArcanistScrollTypes ) );
+		}
+		
 		public override void OnItemLifted( Mobile from, Item item )
 		{
 			base.OnItemLifted( from, item );

@@ -727,18 +727,6 @@ namespace Server.Gumps
 		#region Mondain's Legacy		
 		private static HairOrBeard[] m_FemaleElfHairStyles = new HairOrBeard[]
 			{
-				new HairOrBeard( 0x2FBF,	1074385 ),	// Mid Long
-				new HairOrBeard( 0x2FC0,	1074386 ),	// Long Feather
-				new HairOrBeard( 0x2FC1,	1074387 ),	// Short
-				new HairOrBeard( 0x2FC2,	1074388 ),	// Mullet				
-				new HairOrBeard( 0x2FCE,	1074391 ),	// Topknot
-				new HairOrBeard( 0x2FCF,	1074392 ),	// Long Braid
-				new HairOrBeard( 0x2FCD,	1074390 ),	// Long
-				new HairOrBeard( 0x2FD1,	1074394 )	// Spiked
-			};
-			
-		private static HairOrBeard[] m_MaleElfHairStyles = new HairOrBeard[]
-			{
 				new HairOrBeard( 0x2FCC,	1074389 ),	// Flower
 				new HairOrBeard( 0x2FC0,	1074386 ),	// Long Feather
 				new HairOrBeard( 0x2FC1,	1074387 ),	// Short
@@ -746,6 +734,18 @@ namespace Server.Gumps
 				new HairOrBeard( 0x2FCE,	1074391 ),	// Topknot
 				new HairOrBeard( 0x2FCF,	1074392 ),	// Long Braid
 				new HairOrBeard( 0x2FD0,	1074393 ),	// Buns
+				new HairOrBeard( 0x2FD1,	1074394 )	// Spiked
+			};
+			
+		private static HairOrBeard[] m_MaleElfHairStyles = new HairOrBeard[]
+			{
+				new HairOrBeard( 0x2FBF,	1074385 ),	// Mid Long
+				new HairOrBeard( 0x2FC0,	1074386 ),	// Long Feather
+				new HairOrBeard( 0x2FC1,	1074387 ),	// Short
+				new HairOrBeard( 0x2FC2,	1074388 ),	// Mullet				
+				new HairOrBeard( 0x2FCE,	1074391 ),	// Topknot
+				new HairOrBeard( 0x2FCF,	1074392 ),	// Long Braid
+				new HairOrBeard( 0x2FCD,	1074390 ),	// Long
 				new HairOrBeard( 0x2FD1,	1074394 )	// Spiked
 			};
 		#endregion
@@ -926,6 +926,9 @@ namespace Server.Gumps
 					m_Vendor.Female = !m_Vendor.Female;
 					m_Vendor.BodyValue = m_Vendor.Race.AliveBody( m_Vendor.Female );
 					
+					if ( m_Vendor.Female )
+						m_Vendor.FacialHairItemID = 0;
+					
 					from.SendGump( new NewPlayerVendorCustomizeGump( m_Vendor ) );
 
 					break;
@@ -1009,6 +1012,8 @@ namespace Server.Gumps
 						else
 							hairStyle = m_HairStyles[index];
 							
+						m_Vendor.HairItemID = 0;	
+						m_Vendor.ProcessDelta();
 						m_Vendor.HairItemID = hairStyle.ItemID;	
 
 						from.SendGump( new NewPlayerVendorCustomizeGump( m_Vendor ) );
@@ -1024,12 +1029,14 @@ namespace Server.Gumps
 							return;
 
 						HairOrBeard beardStyle = m_BeardStyles[index];
-						
-						m_Vendor.FacialHairItemID = beardStyle.ItemID;	
+
+						m_Vendor.FacialHairItemID = 0;	
+						m_Vendor.ProcessDelta();
+						m_Vendor.FacialHairItemID = beardStyle.ItemID;
 
 						from.SendGump( new NewPlayerVendorCustomizeGump( m_Vendor ) );
 					}
-					
+
 					break;
 				}
 			}

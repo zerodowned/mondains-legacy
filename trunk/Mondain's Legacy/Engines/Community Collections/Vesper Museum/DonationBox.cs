@@ -77,7 +77,7 @@ namespace Server.Items
 			Rewards.Add( new CollectionItem( typeof( MinaxsArmor ), 0x1C02, 1073257, 0x281, 550000.0 ) );		
 			
 			hues = new int[] { 0x281, 0x173, 0x581, 0x300 };	
-			Rewards.Add( new CollectionHuedItem( typeof( GypsyHeaddress ), 0x1540, 1073254, 0x453, 550000.0, hues ) );	
+			Rewards.Add( new CollectionHuedItem( typeof( GypsyHeaddress ), 0x1544, 1073254, 0x453, 550000.0, hues ) );	
 			Rewards.Add( new CollectionHuedItem( typeof( NystulsWizardsHat ), 0x1718, 1073255, 0x453, 550000.0, hues ) );	
 			Rewards.Add( new CollectionHuedItem( typeof( JesterHatOfChuckles ), 0x171C, 1073256, 0x453, 550000.0, hues ) );		
 			Rewards.Add( new CollectionItem( typeof( KeeoneansChainMail ), 0x13BF, 1073264, 0x84E, 550000.0 ) );			

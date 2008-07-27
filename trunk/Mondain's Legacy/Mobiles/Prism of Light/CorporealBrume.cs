@@ -14,33 +14,38 @@ namespace Server.Mobiles
 			Body = 0x104;
 			BaseSoundID = 0x56B;
 
-			SetStr( 439, 442 );
-			SetDex( 110, 140 );
-			SetInt( 51, 58 );
+			SetStr( 400, 450 );
+			SetDex( 100, 150 );
+			SetInt( 50, 60 );
 
-			SetHits( 1185, 1235 );
+			SetHits( 1150, 1250 );
 
-			SetDamage( 14, 17 );
+			SetDamage( 21, 25 );
 
 			SetDamageType( ResistanceType.Physical, 100 );
 
 			SetResistance( ResistanceType.Physical, 100 );
-			SetResistance( ResistanceType.Fire, 43, 47 );
-			SetResistance( ResistanceType.Cold, 43, 46 );
-			SetResistance( ResistanceType.Poison, 50, 58 );
-			SetResistance( ResistanceType.Energy, 35, 39 );
+			SetResistance( ResistanceType.Fire, 40, 50 );
+			SetResistance( ResistanceType.Cold, 40, 50 );
+			SetResistance( ResistanceType.Poison, 50, 60 );
+			SetResistance( ResistanceType.Energy, 30, 40 );
 
-			SetSkill( SkillName.Wrestling, 110.3, 112.0 );
-			SetSkill( SkillName.Tactics, 113.3, 114.3 );
-			SetSkill( SkillName.MagicResist, 83.7, 93.3 );
-			SetSkill( SkillName.Anatomy, 102.4, 108.3 );
+			SetSkill( SkillName.Wrestling, 110.0, 115.0 );
+			SetSkill( SkillName.Tactics, 110.0, 115.0 );
+			SetSkill( SkillName.MagicResist, 80.0, 95.0 );
+			SetSkill( SkillName.Anatomy, 100.0, 110.0 );
+			
+			Fame = 12000;
+			Karma = -12000;
 		}
 		
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosFilthyRich, 3 );
+			AddLoot( LootPack.FilthyRich );
+			AddLoot( LootPack.Rich );
 		}
 		
+		#region Area Damage
 		public override void AreaDamageEffect( Mobile m )
 		{
 			m.FixedParticles( 0x374A, 10, 15, 5038, 1181, 2, EffectLayer.Head );
@@ -52,8 +57,8 @@ namespace Server.Mobiles
 		public override double AreaDamageScalar{ get{ return 0.5; } }		
 		public override int AreaFireDamage{ get{ return 0; } }
 		public override int AreaColdDamage{ get{ return 100; } }
-		public override bool Unprovokable{ get{ return true; } }
-
+		#endregion
+		
 		public CorporealBrume( Serial serial ) : base( serial )
 		{
 		}

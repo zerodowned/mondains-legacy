@@ -8370,14 +8370,6 @@ namespace Server
 		public virtual void OnRequestedAnimation( Mobile from )
 		{			
 		}
-		
-		/// <summary>
-		/// Overridable. Can players see name of this incoming Mobile.
-		/// </summary>
-		public virtual bool ShowIncomingName( Mobile from )
-		{			
-			return true;
-		}		
 		#endregion
 
 		/// <summary>

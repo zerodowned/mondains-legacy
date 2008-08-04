@@ -8,7 +8,8 @@ namespace Server.Items
 	public class RewardBox : WoodenBox
 	{
 		public virtual int ItemAmount{ get{ return 6; } }
-	
+		
+		[Constructable]	
 		public RewardBox() : base()
 		{
 			Hue = Reward.StrongboxHue();

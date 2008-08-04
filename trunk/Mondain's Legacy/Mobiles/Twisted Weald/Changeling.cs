@@ -19,7 +19,7 @@ namespace Server.Mobiles
 		{
 			Name = "a changeling";
 			Body = 264;
-                  BaseSoundID = 0x470;
+            BaseSoundID = 0x470;
 
 			SetStr( 36, 105 );
 			SetDex( 212, 262 );
@@ -94,7 +94,7 @@ namespace Server.Mobiles
   				
 			foreach ( Item item in Combatant.Items )
 			{
-				if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount )
+				if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
 					if ( FindItemOnLayer( item.Layer ) == null )
 						AddItem( new ClonedItem( item ) );
 			}
@@ -302,13 +302,13 @@ namespace Server.Mobiles
 	
 			public override DeathMoveResult OnParentDeath( Mobile parent )
 			{
-			        return DeathMoveResult.RemainEquiped;
+				return DeathMoveResult.RemainEquiped;
 			}
 			
 			public override DeathMoveResult OnInventoryDeath( Mobile parent )
 			{
-			        Delete();
-			        return base.OnInventoryDeath( parent );
+				Delete();
+				return base.OnInventoryDeath( parent );
 			}
 	
 			public ClonedItem( Serial serial ) : base( serial )

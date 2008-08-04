@@ -20,7 +20,7 @@
 			<rect x="3554" y="2132" width="18" height="18" />
 		</region>
 		<!--Mondain's Legacy-->
-		<region type="MondainTownRegion" priority="50" name="Heartwood">
+		<region type="TownRegion" priority="50" name="Heartwood">
 			<rect x="6911" y="255" width="257" height="257" />
 			<go x="6984" y="337" z="0" />
 			<entrance x="535" y="995" />
@@ -943,7 +943,7 @@
 			<rect x="3554" y="2132" width="18" height="18" />
 		</region>
 		<!--Mondain's Legacy-->
-		<region type="MondainTownRegion" priority="50" name="Heartwood">
+		<region type="TownRegion" priority="50" name="Heartwood">
 			<rect x="6911" y="255" width="257" height="257" />
 			<go x="6984" y="337" z="0" />
 			<entrance x="535" y="995" />

@@ -1410,7 +1410,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 16 ); // version
+			writer.Write( (int) 17 ); // version
 
 			writer.Write( (int)m_CurrentAI );
 			writer.Write( (int)m_DefaultAI );
@@ -1520,6 +1520,10 @@ namespace Server.Mobiles
 			// Version 14
 			writer.Write( (bool)m_RemoveIfUntamed );
 			writer.Write( (int)m_RemoveStep );
+			
+			#region Mondain's Legacy version 17
+			writer.Write( (bool) m_Allured );
+			#endregion
 		}
 
 		private static double[] m_StandardActiveSpeeds = new double[]
@@ -1725,7 +1729,12 @@ namespace Server.Mobiles
 			{
 				m_RemoveIfUntamed = reader.ReadBool();
 				m_RemoveStep = reader.ReadInt();
-			}
+			}			
+			
+			#region Mondain's Legacy version 15
+			if ( version >= 17 )
+				m_Allured = reader.ReadBool();
+			#endregion
 
 			if( version <= 14 && m_Paragon && Hue == 0x31 )
 			{
@@ -2362,6 +2371,16 @@ namespace Server.Mobiles
 			set
 			{
 				m_ControlOrder = value;
+				
+				#region Mondain's Legacy
+				if ( m_Allured )
+				{
+					if ( m_ControlOrder == OrderType.Release )
+						Say( 502003 ); // Sorry, but no.
+					else if ( m_ControlOrder != OrderType.None )
+						Say( 1079120 ); // Very well.
+				}
+				#endregion
 
 				if ( m_AI != null )
 					m_AI.OnCurrentOrderChanged();
@@ -4162,6 +4181,21 @@ namespace Server.Mobiles
 		}
 
 		#region Mondain's Legacy	
+		private bool m_Allured;
+				
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Allured
+		{
+			get{ return m_Allured; }
+			set{ m_Allured = value;	}
+		}
+		
+		public virtual void OnRelease( Mobile from )
+		{
+			if ( m_Allured )
+				Timer.DelayCall( TimeSpan.FromSeconds( 2 ), new TimerCallback( Delete ) );
+		}
+		
 		public void PackArcaneScroll( int max )
 		{
 			PackArcaneScroll( 0, max );
@@ -4538,6 +4572,10 @@ namespace Server.Mobiles
 					pack.Items[i].Delete();
 				}
 			}
+			
+			#region Mondain's Legacy
+			creature.SetHits( (int) Math.Floor( creature.HitsMax * ( 1 + ArcaneEmpowermentSpell.GetSpellBonus( caster, false ) / 100.0 ) ) );
+			#endregion
 
 			new UnsummonTimer( caster, creature, duration ).Start();
 			creature.m_SummonEnd = DateTime.Now + duration;

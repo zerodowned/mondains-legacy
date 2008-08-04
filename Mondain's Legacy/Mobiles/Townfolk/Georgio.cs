@@ -16,6 +16,7 @@ namespace Server.Mobiles
 			Title = "the brigand";
 			Female = false;
 			Hue = 0x8412;
+			Body = 400;
 			
 			while ( Items.Count > 1 )
 				if ( !( Items[ 0 ] is Backpack ) )
@@ -37,10 +38,10 @@ namespace Server.Mobiles
 		{
 		}
 		
-		public override void OnDamage( int amount, Mobile from, bool willKill )
+		public override void Damage( int amount, Mobile from, bool informMount )	
 		{
-			if ( from is PlayerMobile )
-				base.OnDamage( amount, from, willKill );
+			if ( from.Player )
+				base.OnDamage( amount, from, informMount );				
 		}
 		
 		public override void Serialize( GenericWriter writer )

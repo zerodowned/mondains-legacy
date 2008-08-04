@@ -177,10 +177,9 @@ namespace Server.Mobiles
 			from.Send( new UpdateStatueAnimation( this, 1, m_Animation, m_Frames ) );
 		}
 		
-		public override bool ShowIncomingName( Mobile from )
+		public override void OnAosSingleClick( Mobile from )
 		{
-			return false;
-		}
+		}	
 
 		public override void Serialize( GenericWriter writer )
 		{

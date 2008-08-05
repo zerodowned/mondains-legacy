@@ -78,6 +78,10 @@ namespace Server.Items
 
 		private bool m_Cursed; // Is this weapon cursed via Curse Weapon necromancer spell? Temporary; not serialized.
 		private bool m_Consecrated; // Is this weapon blessed via Consecrate Weapon paladin ability? Temporary; not serialized.
+		
+		#region Mondain's Legacy
+		private bool m_Immolating; // Is this weapon blessed via Immolating Weapon arcanists spell? Temporary; not serialized.
+		#endregion
 
 		private AosAttributes m_AosAttributes;
 		private AosWeaponAttributes m_AosWeaponAttributes;
@@ -187,6 +191,15 @@ namespace Server.Items
 			get{ return m_Consecrated; }
 			set{ m_Consecrated = value; }
 		}
+		
+		#region Mondain's Legacy
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Immolating
+		{
+			get{ return m_Immolating; }
+			set{ m_Immolating = value; }
+		}
+		#endregion
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Identified
@@ -1511,13 +1524,26 @@ namespace Server.Items
 					attacker.SendLocalizedMessage( 1061140 ); // Your attack was parried!
 				}
 			}
+			
+			#region Mondain's Legacy
+			if ( m_Immolating )
+			{
+				int d = ImmolatingWeaponSpell.GetDamage( this );
+				d = AOS.Damage( defender, attacker, d, 0, 100, 0, 0, 0 );
+				
+				AttuneWeaponSpell.TryAbsorb( defender, ref d );
+				
+				if ( d > 0 )
+					defender.Damage( d );				
+			}			
+			#endregion
 
 			AddBlood( attacker, defender, damage );
 
 			// Mondain's Legacy mod
 			int phys, fire, cold, pois, nrgy, chaos, direct;
 
-			GetDamageTypes( attacker, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );
+			GetDamageTypes( attacker, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );			
 
 			if ( m_Consecrated )
 			{

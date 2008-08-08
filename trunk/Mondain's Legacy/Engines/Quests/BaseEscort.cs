@@ -138,7 +138,7 @@ namespace Server.Engines.Quests
 				
 				return false;
 			}
-			else if ( m.FollowersMax - m.Followers > ControlSlots )
+			else if ( ControlSlots + m.Followers > m.FollowersMax )
 			{
 				Say( "You have too many followers to escort." );
 				

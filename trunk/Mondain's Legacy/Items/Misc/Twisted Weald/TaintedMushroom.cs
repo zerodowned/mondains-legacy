@@ -5,9 +5,15 @@ namespace Server.Items
 	public class TaintedMushroom : Item
 	{		
 		public override int LabelNumber{ get{ return 1075088; } } // Dread Horn Tainted Mushroom
+		public override bool ForceShowProperties{ get{ return true; } }
+		
+		private static int[] m_ItemIDs = new int[]
+		{
+			0x222E, 0x222F, 0x2230, 0x2231
+		};
 	
 		[Constructable]
-		public TaintedMushroom() : base( Utility.RandomList( 0x222E, 0x222F, 0x2230, 0x2231 ) )
+		public TaintedMushroom() : base( Utility.RandomList( m_ItemIDs ) )
 		{
 			Weight = 5;		
 		}

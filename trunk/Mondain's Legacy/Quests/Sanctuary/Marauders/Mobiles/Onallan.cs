@@ -70,11 +70,11 @@ namespace Server.Engines.Quests
 		{
 			InitStats( 100, 100, 25 );
 			
+			Race = Race.Elf;
 			Female = false;
 			CantWalk = true;
-			Race = Race.Elf;
-			
-			Hue = 0x2FD0;
+						
+			Hue = Race.RandomSkinHue();
 			HairItemID = 0x2FD0;
 			HairHue = 0x322;
 		}

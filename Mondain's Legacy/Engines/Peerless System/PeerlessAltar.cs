@@ -478,7 +478,7 @@ namespace Server.Items
 				{
 					BaseCreature pet = m_Pets[ fighter ][ i ] as BaseCreature;
 					
-					if ( pet != null && ( pet.Alive || pet.IsBonded ) )
+					if ( pet != null && ( pet.Alive || pet.IsBonded ) && pet.Map != Map.Internal )
 					{							
 						if ( pet is BaseMount )
 						{

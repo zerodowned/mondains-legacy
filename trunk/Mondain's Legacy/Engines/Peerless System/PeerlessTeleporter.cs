@@ -36,9 +36,12 @@ namespace Server.Items
 				m.CloseGump( typeof( ConfirmExitGump ) );
 				m.SendGump( new ConfirmExitGump( m_Altar ) );
 			}
-			else if ( m_Altar != null )			
+			else if ( m_Altar != null )
+			{
 				m_Altar.Exit( m );
-				
+				return false;
+			}
+			
 			return true;
 		}
 		

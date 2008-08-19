@@ -124,7 +124,7 @@ namespace Server.Items
 			Blessed = RandomTalisman.GetRandomBlessed();	
 			
 			SkillBonuses.SetValues( 0, SkillName.SpiritSpeak, 3.0 );
-			SkillBonuses.SetValues( 0, SkillName.EvalInt, 5.0 );
+			SkillBonuses.SetValues( 1, SkillName.EvalInt, 5.0 );
 			
 			Removal = TalismanRemoval.Ward;
 			MaxChargeTime = 1200;
@@ -162,7 +162,7 @@ namespace Server.Items
 			Summoner = new TalismanAttribute( typeof( SummonedOrcBrute ), 0, 1072414 );
 			
 			SkillBonuses.SetValues( 0, SkillName.MagicResist, 5.0 );
-			SkillBonuses.SetValues( 0, SkillName.Anatomy, 7.0 );
+			SkillBonuses.SetValues( 1, SkillName.Anatomy, 7.0 );
 			
 			MaxChargeTime = 1800;
 		}
@@ -198,7 +198,7 @@ namespace Server.Items
 			Slayer = TalismanSlayerName.Bird;
 			
 			SkillBonuses.SetValues( 0, SkillName.AnimalTaming, 5.0 );
-			SkillBonuses.SetValues( 0, SkillName.AnimalLore, 5.0 );
+			SkillBonuses.SetValues( 1, SkillName.AnimalLore, 5.0 );
 			
 			MaxChargeTime = 1800;
 		}
@@ -239,7 +239,7 @@ namespace Server.Items
 			Protection = RandomTalisman.GetRandomProtection();
 			
 			SkillBonuses.SetValues( 0, SkillName.Provocation, 5.0 );
-			SkillBonuses.SetValues( 0, SkillName.Musicianship, 5.0 );
+			SkillBonuses.SetValues( 1, SkillName.Musicianship, 5.0 );
 			
 			Removal = TalismanRemoval.Curse;
 			MaxChargeTime = 1200;		

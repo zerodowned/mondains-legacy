@@ -33,7 +33,7 @@ namespace Server.Engines.Quests
 		
 		public GuiltyQuest() : base()
 		{					
-			AddObjective( new SlayObjective( typeof( Georgio ), "georgio", 1 ) );
+			AddObjective( new SlayObjective( typeof( Gregorio ), "gregorio", 1 ) );
 						
 			AddReward( new BaseReward( typeof( AmuletOfRighteousness ), 1075313 ) ); // Amulet of Righteousness
 		}

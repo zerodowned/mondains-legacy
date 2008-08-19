@@ -29,7 +29,7 @@ namespace Server.Engines.Quests
 	
 		public LastWordsQuest() : base()
 		{			
-			AddObjective( new DeliverObjective( null, "lord denthe's journal", 1, typeof( Verity ), "Verity (Britain)" ) );
+			AddObjective( new DeliverObjective( typeof( DenthesJournal ), "lord denthe's journal", 1, typeof( Verity ), "Verity (Britain)" ) );
 			
 			AddReward( new BaseReward( typeof( LargeTreasureBag ), 1072706 ) );
 		}

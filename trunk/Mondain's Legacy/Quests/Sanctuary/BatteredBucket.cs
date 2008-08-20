@@ -56,6 +56,7 @@ namespace Server.Engines.Quests
 			};} 
 		}
 		
+		public override int LabelNumber{ get{ return 1073129; } }// A battered bucket
 		public override int Lifespan{ get{ return 600; } }
 	
 		[Constructable]

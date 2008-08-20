@@ -37,7 +37,7 @@ namespace Server.Engines.Quests
 		"The Dragon's Tail". Upon a successful strike in combat, there is a chance this mnighty weapon will replenish your 
 		stamina equal to the damage of your attack. I hope " The Dragon's Tail" serves you well. You have earned it. Fare 
 		for now. */
-		public override object Complete{ get{ return 10778014; } }
+		public override object Complete{ get{ return 1078014; } }
 		
 		public TheWayOfTheSamuraiQuest() : base()
 		{  		

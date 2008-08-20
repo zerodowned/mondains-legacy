@@ -9,6 +9,7 @@ namespace Server.Items
 {
 	public class MoonglowDonationBox : BaseCollectionItem
 	{
+		public override int LabelNumber{ get{ return 1073436; } } // Donation Box
 		public override Collection CollectionID{ get{ return Collection.MoonglowZoo; } }
 		public override int MaxTier{ get{ return 10; } }
 		public override bool HandlesOnSpeech{ get{ return true; } }

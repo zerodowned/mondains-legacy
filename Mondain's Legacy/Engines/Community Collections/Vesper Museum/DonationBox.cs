@@ -9,6 +9,7 @@ namespace Server.Items
 {
 	public class VesperDonationBox : BaseCollectionItem
 	{
+		public override int LabelNumber{ get{ return 1073407; } } // Please Contribute to the public Museum of Vesper.
 		public override Collection CollectionID{ get{ return Collection.VesperMuseum; } }
 		public override int MaxTier{ get{ return 12; } }
 		

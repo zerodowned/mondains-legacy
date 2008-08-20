@@ -110,7 +110,7 @@ namespace Server.Engines.Quests
 	
 		public FromTheGaultierCollectionQuest() : base()
 		{			
-			AddObjective( new ObtainObjective( typeof( FemaleStuddedChest ), "studded bustiers", 10, 0x1C06 ) );
+			AddObjective( new ObtainObjective( typeof( FemaleStuddedChest ), "studded bustiers", 10, 0x1C03 ) );
 			
 			AddReward( new BaseReward( typeof( TailorsCraftsmanSatchel ), 1074282 ) );
 		}

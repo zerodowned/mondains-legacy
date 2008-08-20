@@ -104,7 +104,6 @@ namespace Server.Engines.Quests
 	public class UnfadingMemoriesThreeQuest : BaseQuest
 	{		
 		public override QuestChain ChainID{ get{ return QuestChain.UnfadingMemories; } }
-		public override Type NextQuest{ get{ return typeof( ReginasThanksQuest ); } }
 		public override bool DoneOnce{ get{ return true; } }
 		
 		/* Unfading Memories */

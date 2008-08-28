@@ -109,6 +109,10 @@ namespace Server.Items
 		public virtual SkillName DefSkill{ get{ return SkillName.Swords; } }
 		public virtual WeaponType DefType{ get{ return WeaponType.Slashing; } }
 		public virtual WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Slash1H; } }
+		
+		#region Mondain's Legacy
+		public virtual float MlSpeed{ get{ return 0.0f; } }
+		#endregion
 
 		public virtual int AosStrengthReq{ get{ return 0; } }
 		public virtual int AosDexterityReq{ get{ return 0; } }
@@ -887,7 +891,46 @@ namespace Server.Items
 
 			double delayInSeconds;
 
-			if ( Core.SE )
+			if ( Core.ML )
+			{
+				float ticks = MlSpeed * 4;
+				int stamTicks = Math.Min( m.Stam / 30, 1 );
+								
+				// Swing speed bonus
+				int bonus = AosAttributes.GetValue( m, AosAttribute.WeaponSpeed );
+
+				if ( Spells.Chivalry.DivineFurySpell.UnderEffect( m ) )
+					bonus += 10;
+
+				// Bonus granted by successful use of Honorable Execution.
+				bonus += HonorableExecution.GetSwingBonus( m );
+
+				if( DualWield.Registry.Contains( m ) )
+					bonus += ((DualWield.DualWieldTimer)DualWield.Registry[m]).BonusSwingSpeed;
+
+				if( Feint.Registry.Contains( m ) )
+					bonus -= ((Feint.FeintTimer)Feint.Registry[m]).SwingSpeedReduction;
+
+				TransformContext context = TransformationSpellHelper.GetContext( m );
+
+				if( context != null && context.Spell is ReaperFormSpell )
+					bonus += ((ReaperFormSpell)context.Spell).SwingSpeedBonus;
+
+				int discordanceEffect = 0;
+
+				// Discordance gives a malus of -0/-28% to swing speed.
+				if ( SkillHandlers.Discordance.GetEffect( m, ref discordanceEffect ) )
+					bonus -= discordanceEffect;
+
+				if( EssenceOfWindSpell.IsDebuffed( m ) )
+					bonus -= EssenceOfWindSpell.GetSSIMalus( m );
+
+				if ( bonus > 60 )
+					bonus = 60;
+					
+				delayInSeconds = Math.Max( ( ( ticks - stamTicks ) * ( 100.0 / ( 100 + bonus ) ) ) / 4, 1.25 );								
+			}
+			else if ( Core.SE )
 			{
 				/*
 				 * This is likely true for Core.AOS as well... both guides report the same
@@ -3459,7 +3502,13 @@ namespace Server.Items
 				list.Add( 1060407, nrgy.ToString() ); // energy damage ~1_val~%
 
 			list.Add( 1061168, "{0}\t{1}", MinDamage.ToString(), MaxDamage.ToString() ); // weapon damage ~1_val~ - ~2_val~
-			list.Add( 1061167, Speed.ToString() ); // weapon speed ~1_val~
+			
+			#region Mondain's Legacy
+			if ( Core.ML )
+				list.Add( 1061167, "{0}s", MlSpeed.ToString() ); // weapon speed ~1_val~
+			else
+				list.Add( 1061167, "{0}s", Speed.ToString() ); // weapon speed ~1_val~
+			#endregion
 
 			if ( MaxRange > 1 )
 				list.Add( 1061169, MaxRange.ToString() ); // range ~1_val~

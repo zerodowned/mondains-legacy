@@ -7,6 +7,7 @@ namespace Server.Items
 	public class ParrotPerchAddon : BaseAddon
 	{
 		public override BaseAddonDeed Deed{ get{ return new ParrotPerchAddonDeed( m_Parrot ); } }
+		public override bool RetainDeedHue{ get{ return true; } }
 		
 		private PetParrot m_Parrot;
 		

@@ -331,8 +331,15 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 			
-			writer.Write( 0 ); // Version
+			writer.Write( 1 ); // Version
 			
+			// version 1
+			if ( m_Timer != null )
+				writer.Write( m_Timer.Next );
+			else
+				writer.Write( DateTime.Now + TimeSpan.FromHours( 24 ) );
+			
+			// version 0			
 			writer.Write( (int) m_LiveCreatures );			
 			writer.Write( (int) m_VacationLeft );
 			
@@ -353,25 +360,38 @@ namespace Server.Items
 			
 			int version = reader.ReadInt();
 			
-			m_LiveCreatures = reader.ReadInt();
-			m_VacationLeft = reader.ReadInt();
-			
-			m_Food = new AquariumState();
-			m_Water = new AquariumState();
-			
-			m_Food.Deserialize( reader );
-			m_Water.Deserialize( reader );
-			
-			m_Events = new List<int>();
-			
-			int count = reader.ReadInt();		
-			
-			for ( int i = 0; i < count; i ++ )
-				m_Events.Add( reader.ReadInt() );
-			
-			m_RewardAvailable = reader.ReadBool();
-			
-			m_Timer = Timer.DelayCall( TimeSpan.FromHours( 12 ), TimeSpan.FromHours( 24 ), new TimerCallback( Evaluate ) );
+			switch ( version )
+			{
+				case 1: 				
+					DateTime next = reader.ReadDateTime();
+					
+					if ( next < DateTime.Now )
+						next = DateTime.Now;												
+				
+					m_Timer = Timer.DelayCall( next - DateTime.Now, TimeSpan.FromHours( 24 ), new TimerCallback( Evaluate ) );				
+						
+					goto case 0;					
+				case 0:			
+					m_LiveCreatures = reader.ReadInt();
+					m_VacationLeft = reader.ReadInt();
+					
+					m_Food = new AquariumState();
+					m_Water = new AquariumState();
+					
+					m_Food.Deserialize( reader );
+					m_Water.Deserialize( reader );
+					
+					m_Events = new List<int>();
+					
+					int count = reader.ReadInt();		
+					
+					for ( int i = 0; i < count; i ++ )
+						m_Events.Add( reader.ReadInt() );
+					
+					m_RewardAvailable = reader.ReadBool();
+					
+					break;					
+			}
 		}
 		
 		#region Members

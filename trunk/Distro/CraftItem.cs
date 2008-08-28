@@ -356,7 +356,7 @@ namespace Server.Engines.Craft
 		private static Type[] m_ColoredItemTable = new Type[]
 			{
 				#region Mondain's Legacy
-				typeof( BaseContainer ),
+				typeof( BaseContainer ), typeof( ParrotPerchAddonDeed ),
 				#endregion
 				
 				typeof( BaseWeapon ), typeof( BaseArmor ), typeof( BaseClothing ),

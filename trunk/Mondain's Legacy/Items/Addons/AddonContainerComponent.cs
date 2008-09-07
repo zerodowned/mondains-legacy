@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Server;
+using Server.ContextMenus;
 
 namespace Server.Items
 {
@@ -62,6 +64,12 @@ namespace Server.Items
 				m_Addon.Location = new Point3D( X - m_Offset.X, Y - m_Offset.Y, Z - m_Offset.Z );
 		}
 
+		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
+		{
+			if ( m_Addon != null )
+				m_Addon.GetContextMenuEntries( from, list );
+		}
+
 		public override void OnMapChange()
 		{
 			if ( m_Addon != null )
@@ -110,5 +118,48 @@ namespace Server.Items
 				from.SendLocalizedMessage( 500446 ); // That is too far away.
 		}
 		#endregion
+	}
+
+	public class LocalizedContainerComponent : AddonContainerComponent
+	{
+		private int m_LabelNumber;
+
+		public override int LabelNumber
+		{
+			get
+			{
+				if ( m_LabelNumber > 0 )
+					return m_LabelNumber;
+	
+				return base.LabelNumber;
+			}
+		}
+
+		public LocalizedContainerComponent( int itemID, int labelNumber ) : base( itemID )
+		{
+			m_LabelNumber = labelNumber;
+		}
+
+		public LocalizedContainerComponent( Serial serial ) : base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.Write( (int) 0 ); // version
+
+			writer.Write( m_LabelNumber );
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadInt();
+			
+			m_LabelNumber = reader.ReadInt();
+		}			
 	}
 }

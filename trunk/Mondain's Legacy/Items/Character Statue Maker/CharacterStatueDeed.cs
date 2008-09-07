@@ -86,9 +86,14 @@ namespace Server.Items
 			}
 				
 			if ( IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1076194 ); // Select a place where you would like to put your statue.
-				from.Target = new CharacterStatueTarget( this, StatueType );
+			{				
+				if ( !from.IsBodyMod )
+				{
+					from.SendLocalizedMessage( 1076194 ); // Select a place where you would like to put your statue.
+					from.Target = new CharacterStatueTarget( this, StatueType );			
+				}
+				else
+					from.SendLocalizedMessage( 1073648 ); // You may only proceed while in your original state...
 			}
 			else
 				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.

@@ -10,6 +10,7 @@ namespace Server.Mobiles
 		public CrystalWisp() : base() 
 		{ 			
 			Name = "a crystal wisp";
+			Hue = 0x482;
 			
 			PackArcaneScroll( 0, 1 );
 		}

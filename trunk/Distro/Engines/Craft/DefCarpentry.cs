@@ -15,7 +15,7 @@ namespace Server.Engines.Craft
 		OrnateElvenChair 		= 105,
 		ArcaneBookshelfSouth	= 106,
 		ArcaneBookshelfEast		= 107,
-		OrnateElvenChest		= 108,
+		OrnateElvenChestSouth	= 108,
 		ElvenDresserSouth		= 109,
 		ElvenDresserEast		= 110,
 		FancyElvenArmoire		= 111,		
@@ -27,6 +27,7 @@ namespace Server.Engines.Craft
 		TallElvenBedEast 		= 117,
 		StoneAnvilSouth			= 118,
 		StoneAnvilEast			= 119,
+		OrnateElvenChestEast	= 120,
 		
 		// arties
 		PhantomStaff 			= 150,
@@ -169,25 +170,31 @@ namespace Server.Engines.Craft
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( ArcanistStatueSouthDeed ), 1044294, 1072885, 0.0, 35.0, typeof( Log ), 1044041, 250, 1044351 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( ArcanistStatueEastDeed ), 1044294, 1072886, 0.0, 35.0, typeof( Log ), 1044041, 250, 1044351 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( WarriorStatueSouthDeed ), 1044294, 1072887, 0.0, 35.0, typeof( Log ), 1044041, 250, 1044351 );
 					AddRecipe( index, (int) CarpRecipes.WarriorStatueSouth );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( WarriorStatueEastDeed ), 1044294, 1072888, 0.0, 35.0, typeof( Log ), 1044041, 250, 1044351 );
 					AddRecipe( index, (int) CarpRecipes.WarriorStatueEast );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( SquirrelStatueSouthDeed ), 1044294, 1072884, 0.0, 35.0, typeof( Log ), 1044041, 250, 1044351 );
 					AddRecipe( index, (int) CarpRecipes.SquirrelStatueSouth );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( SquirrelStatueEastDeed ), 1044294, 1073398, 0.0, 35.0, typeof( Log ), 1044041, 250, 1044351 );
 					AddRecipe( index, (int) CarpRecipes.SquirrelStatueEast );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( GiantReplicaAcorn ), 1044294, 1072889, 80.0, 105.0, typeof( Log ), 1044041, 35, 1044351 );
@@ -195,12 +202,14 @@ namespace Server.Engines.Craft
 					
 					index = AddCraft( typeof( MountedDreadHorn ), 1044294, 1032632, 90.0, 115.0, typeof( Log ), 1044041, 50, 1044351 );
 					AddRes( index, typeof( PristineDreadHorn ), 1032634, 1, 1053098 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( AcidProofRope ), 1044294, 1074886, 80, 130.0, typeof( GreaterStrengthPotion ), 1073466, 2, 1044253 );
 					AddRes( index, typeof( ProtectionScroll ), 1044395, 1, 1053098 );
 					AddRes( index, typeof( Switch ), 1032127, 1, 1053098 );
 					AddRecipe( index, (int) CarpRecipes.AcidProofRope );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 				}
 				#endregion
@@ -235,15 +244,19 @@ namespace Server.Engines.Craft
 				if ( Core.ML )
 				{
 					index = AddCraft( typeof( OrnateElvenTableSouthDeed ), 1044291, 1072869, 85.0, 110.0, typeof( Log ), 1044041, 60, 1044351 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( OrnateElvenTableEastDeed ), 1044291, 1073384, 85.0, 110.0, typeof( Log ), 1044041, 60, 1044351 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( FancyElvenTableSouthDeed ), 1044291, 1073385, 80.0, 105.0, typeof( Log ), 1044041, 50, 1044351 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( FancyElvenTableEastDeed ), 1044291, 1073386, 80.0, 105.0, typeof( Log ), 1044041, 50, 1044351 );
+					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
 					
 					index = AddCraft( typeof( ElvenPodium ), 1044291, 1073399, 80.0, 105.0, typeof( Log ), 1044041, 20, 1044351 );
@@ -308,55 +321,67 @@ namespace Server.Engines.Craft
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
-			#region Mondain's Legacy
-			if ( Core.ML )
-			{
-				index = AddCraft( typeof( ArcaneBookshelfSouthDeed ), 1044291, 1072871, 94.7, 119.7, typeof( Log ), 1044041, 80, 1044351 );
-				AddRecipe( index, (int) CarpRecipes.ArcaneBookshelfSouth );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( ArcaneBookshelfEastDeed ), 1044291, 1073371, 94.7, 119.7, typeof( Log ), 1044041, 80, 1044351 );
-				AddRecipe( index, (int) CarpRecipes.ArcaneBookshelfEast );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( OrnateElvenChest ), 1044291, 1031753, 94.7, 119.7, typeof( Log ), 1044041, 40, 1044351 );
-				AddRecipe( index, (int) CarpRecipes.OrnateElvenChest );
-				SetNeededExpansion( index, Expansion.ML );
-				
-				index = AddCraft( typeof( ElvenWashBasinSouthDeed ), 1044291, 1072865, 70.0, 95.0, typeof( Log ), 1044041, 40, 1044351 );
-				SetNeededExpansion( index, Expansion.ML );
-				
-				index = AddCraft( typeof( ElvenWashBasinEastDeed ), 1044291, 1073387, 70.0, 95.0, typeof( Log ), 1044041, 40, 1044351 );
-				SetNeededExpansion( index, Expansion.ML );
-				
-				index = AddCraft( typeof( ElvenDresserSouthDeed ), 1044291, 1072864, 75.0, 100.0, typeof( Log ), 1044041, 45, 1044351 );
-				AddRecipe( index, (int) CarpRecipes.ElvenDresserSouth );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( ElvenDresserEastDeed ), 1044291, 1073388, 75.0, 100.0, typeof( Log ), 1044041, 45, 1044351 );
-				AddRecipe( index, (int) CarpRecipes.ElvenDresserEast );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( FancyElvenArmoire ), 1044291, 1072866, 80.0, 105.0, typeof( Log ), 1044041, 60, 1044351 );
-				AddRecipe( index, (int) CarpRecipes.FancyElvenArmoire );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( SimpleElvenArmoire ), 1044291, 1073401, 80.0, 105.0, typeof( Log ), 1044041, 60, 1044351 );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( RarewoodChest ), 1044291, 1073402, 80.0, 105.0, typeof( Log ), 1044041, 30, 1044351 );
-				SetNeededExpansion( index, Expansion.ML );	
-				
-				index = AddCraft( typeof( DecorativeBox ), 1044291, 1073403, 80.0, 105.0, typeof( Log ), 1044041, 25, 1044351 );
-				SetNeededExpansion( index, Expansion.ML );	
-			}
-			#endregion
-
 			index = AddCraft( typeof( Keg ), 1044292, 1023711, 57.8, 82.8, typeof( BarrelStaves ), 1044288, 3, 1044253 );
 			AddRes( index, typeof( BarrelHoops ), 1044289, 1, 1044253 );
 			AddRes( index, typeof( BarrelLid ), 1044251, 1, 1044253 );
 
-			
+			#region Mondain's Legacy
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( ArcaneBookshelfSouthDeed ), 1044292, 1072871, 94.7, 119.7, typeof( Log ), 1044041, 80, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.ArcaneBookshelfSouth );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( ArcaneBookshelfEastDeed ), 1044292, 1073371, 94.7, 119.7, typeof( Log ), 1044041, 80, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.ArcaneBookshelfEast );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( OrnateElvenChestSouthDeed ), 1044292, 1072862, 94.7, 119.7, typeof( Log ), 1044041, 40, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.OrnateElvenChestSouth );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				
+				index = AddCraft( typeof( OrnateElvenChestEastDeed ), 1044292, 1073383, 94.7, 119.7, typeof( Log ), 1044041, 40, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.OrnateElvenChestEast );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				
+				index = AddCraft( typeof( ElvenWashBasinSouthDeed ), 1044292, 1072865, 70.0, 95.0, typeof( Log ), 1044041, 40, 1044351 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				
+				index = AddCraft( typeof( ElvenWashBasinEastDeed ), 1044292, 1073387, 70.0, 95.0, typeof( Log ), 1044041, 40, 1044351 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				
+				index = AddCraft( typeof( ElvenDresserSouthDeed ), 1044292, 1072864, 75.0, 100.0, typeof( Log ), 1044041, 45, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.ElvenDresserSouth );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( ElvenDresserEastDeed ), 1044292, 1073388, 75.0, 100.0, typeof( Log ), 1044041, 45, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.ElvenDresserEast );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( FancyElvenArmoire ), 1044292, 1072866, 80.0, 105.0, typeof( Log ), 1044041, 60, 1044351 );
+				AddRecipe( index, (int) CarpRecipes.FancyElvenArmoire );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( SimpleElvenArmoire ), 1044292, 1073401, 80.0, 105.0, typeof( Log ), 1044041, 60, 1044351 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( RarewoodChest ), 1044292, 1073402, 80.0, 105.0, typeof( Log ), 1044041, 30, 1044351 );
+				SetNeededExpansion( index, Expansion.ML );	
+				
+				index = AddCraft( typeof( DecorativeBox ), 1044292, 1073403, 80.0, 105.0, typeof( Log ), 1044041, 25, 1044351 );
+				SetNeededExpansion( index, Expansion.ML );	
+			}
+			#endregion			
 
 			// Weapons
 			AddCraft( typeof( ShepherdsCrook ), 1044566, 1023713, 78.9, 103.9, typeof( Log ), 1044041, 7, 1044351 );
@@ -551,44 +576,54 @@ namespace Server.Engines.Craft
 			if ( Core.ML )
 			{
 				index = AddCraft( typeof( ParrotPerchAddonDeed ), 1044290, 1072617, 50.0, 85.0, typeof( Log ), 1044041, 100, 1044351 );	
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 			
 				index = AddCraft( typeof( ArcaneCircleDeed ), 1044290, 1072703, 94.7, 119.7, typeof( Log ), 1044041, 100, 1044351 );
 				AddRes( index, typeof( BlueDiamond ), 1026255, 2, 1053098 );
 				AddRes( index, typeof( PerfectEmerald ), 1026251, 2, 1053098 );
 				AddRes( index, typeof( FireRuby ), 1026254, 2, 1053098 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( TallElvenBedSouthDeed ), 1044290, 1072858, 94.7, 119.7, typeof( Log ), 1044041, 200, 1044351 );
 				AddSkill( index, SkillName.Tailoring, 75.0, 80.0 );			
 				AddRes( index, typeof( Cloth ), 1044286, 100, 1044287 );
 				AddRecipe( index, (int) CarpRecipes.TallElvenBedSouth );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( TallElvenBedEastDeed ), 1044290, 1072859, 94.7, 119.7, typeof( Log ), 1044041, 200, 1044351 );
 				AddSkill( index, SkillName.Tailoring, 75.0, 80.0 );
 				AddRes( index, typeof( Cloth ), 1044286, 100, 1044287 );
 				AddRecipe( index, (int) CarpRecipes.TallElvenBedEast );	
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( ElvenBedSouthDeed ), 1044290, 1072860, 94.7, 119.7, typeof( Log ), 1044041, 100, 1044351 );
 				AddRes( index, typeof( Cloth ), 1044286, 100, 1044287 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( ElvenBedEastDeed ), 1044290, 1072861, 94.7, 119.7, typeof( Log ), 1044041, 100, 1044351 );
 				AddRes( index, typeof( Cloth ), 1044286, 100, 1044287 );	
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
-				index = AddCraft( typeof( ElvenLoveseatSouthDeed ), 1044290, 1072867, 80.0, 105.0, typeof( Log ), 1044041, 50, 1044351 );
+				index = AddCraft( typeof( ElvenLoveseatSouthDeed ), 1044290, 1072867, 80.0, 105.0, typeof( Log ), 1044041, 50, 1044351 );	
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
-				index = AddCraft( typeof( ElvenLoveseatEastDeed ), 1044290, 1073372, 80.0, 105.0, typeof( Log ), 1044041, 50, 1044351 );
+				index = AddCraft( typeof( ElvenLoveseatEastDeed ), 1044290, 1073372, 80.0, 105.0, typeof( Log ), 1044041, 50, 1044351 );	
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( AlchemistTableSouthDeed ), 1044290, 1074902, 85.0, 110.0, typeof( Log ), 1044041, 70, 1044351 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( AlchemistTableEastDeed ), 1044290, 1074903, 85.0, 110.0, typeof( Log ), 1044041, 70, 1044351 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 			}
 			#endregion
@@ -630,17 +665,21 @@ namespace Server.Engines.Craft
 				index = AddCraft( typeof( ElvenSpinningwheelEastDeed ), 1044298, 1073393, 75.0, 100.0, typeof( Log ), 1044041, 60, 1044351 );
 				AddSkill( index, SkillName.Tailoring, 65.0, 85.0 );
 				AddRes( index, typeof( Cloth ), 1044286, 40, 1044287 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( ElvenSpinningwheelSouthDeed ), 1044298, 1072878, 75.0, 100.0, typeof( Log ), 1044041, 60, 1044351 );
 				AddSkill( index, SkillName.Tailoring, 65.0, 85.0 );
-				AddRes( index, typeof( Cloth ), 1044286, 40, 1044287 );	
+				AddRes( index, typeof( Cloth ), 1044286, 40, 1044287 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( ElvenStoveSouthDeed ), 1044298, 1073394, 85.0, 110.0, typeof( Log ), 1044041, 80, 1044351 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( ElvenStoveEastDeed ), 1044298, 1073395, 85.0, 110.0, typeof( Log ), 1044041, 80, 1044351 );
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 			}
 			#endregion
@@ -679,6 +718,7 @@ namespace Server.Engines.Craft
 			if ( Core.ML )
 			{
 				index = AddCraft( typeof( ElvenForgeDeed ), 1044296, 1072875, 94.7, 119.7, typeof( Log ), 1044041, 200, 1044351 );	
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 			}
 			#endregion

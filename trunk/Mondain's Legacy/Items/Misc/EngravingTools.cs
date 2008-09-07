@@ -287,8 +287,7 @@ namespace Server.Items
 			typeof( FinishedWoodenChest ), typeof( TallCabinet ), typeof( ShortCabinet ), 
 			typeof( RedArmoire ), typeof( CherryArmoire ), typeof( MapleArmoire ), 
 			typeof( ElegantArmoire ), typeof( Keg ), typeof( SimpleElvenArmoire ),
-			typeof( DecorativeBox ), typeof( FancyElvenArmoire ), typeof( OrnateElvenChest ),
-			typeof( RarewoodChest ), 					
+			typeof( DecorativeBox ), typeof( FancyElvenArmoire ), typeof( RarewoodChest ), 					
 		}; } }
 		
 		[Constructable]

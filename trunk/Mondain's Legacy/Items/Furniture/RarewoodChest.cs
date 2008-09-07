@@ -8,7 +8,7 @@ namespace Server.Items
 	{ 		
 		public override int DefaultGumpID{ get{ return 0x10C; } }
 		public override int DefaultDropSound{ get{ return 0x42; } }
-		public override int LabelNumber{ get{ return 1072863; } } // elven chest
+		public override int LabelNumber{ get{ return 1073402; } } // rarewood chest
 
 		public override Rectangle2D Bounds
 		{

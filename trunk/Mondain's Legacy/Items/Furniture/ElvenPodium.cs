@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	[Furniture]
 	[Flipable(0x2D4B, 0x2D4C)]
-	public class ElvenPodium : Item
+	public class ElvenPodium : CraftableFurniture
 	{
 		public override int LabelNumber{ get{ return 1073399; } } // elven podium
 		

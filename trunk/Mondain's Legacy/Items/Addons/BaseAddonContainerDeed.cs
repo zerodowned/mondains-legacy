@@ -1,15 +1,33 @@
 using System;
-using System.Collections.Generic;
 using Server;
 using Server.Multis;
 using Server.Targeting;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
 	[Flipable( 0x14F0, 0x14EF )]
-	public abstract class BaseAddonContainerDeed : Item
+	public abstract class BaseAddonContainerDeed : Item, ICraftable
 	{
 		public abstract BaseAddonContainer Addon{ get; }
+		
+		private CraftResource m_Resource;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftResource Resource
+		{
+			get{ return m_Resource;	}
+			set
+			{
+				if ( m_Resource != value )
+				{
+					m_Resource = value;
+					Hue = CraftResources.GetHue( m_Resource );
+					
+					InvalidateProperties();
+				}
+			}
+		}
 
 		public BaseAddonContainerDeed() : base( 0x14F0 )
 		{
@@ -27,7 +45,10 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
+
+			// version 1
+			writer.Write( (int) m_Resource );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -35,6 +56,13 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			switch ( version )
+			{
+				case 1:
+					m_Resource = (CraftResource) reader.ReadInt();
+					break;
+			}
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -44,6 +72,33 @@ namespace Server.Items
 			else
 				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 		}
+
+		public override void GetProperties( ObjectPropertyList list )
+		{
+			base.GetProperties( list );
+
+			if ( !CraftResources.IsStandard( m_Resource ) )
+				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) );
+		}
+
+		#region ICraftable
+		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
+		{
+			Type resourceType = typeRes;
+
+			if ( resourceType == null )
+				resourceType = craftItem.Ressources.GetAt( 0 ).ItemType;
+
+			Resource = CraftResources.GetFromType( resourceType );
+
+			CraftContext context = craftSystem.GetContext( from );
+
+			if ( context != null && context.DoNotColor )
+				Hue = 0;
+
+			return quality;
+		}
+		#endregion
 
 		private class InternalTarget : Target
 		{
@@ -67,6 +122,7 @@ namespace Server.Items
 				if ( m_Deed.IsChildOf( from.Backpack ) )
 				{
 					BaseAddonContainer addon = m_Deed.Addon;
+					addon.Resource = m_Deed.Resource;
 
 					Server.Spells.SpellHelper.GetSurfaceTop( ref p );
 
@@ -91,6 +147,7 @@ namespace Server.Items
 					{
 						m_Deed.Delete();
 						house.Addons.Add( addon );
+						house.AddSecure( from, addon );
 					}
 					else
 					{

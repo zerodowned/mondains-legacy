@@ -3,13 +3,35 @@ using System.Collections.Generic;
 using Server;
 using Server.Multis;
 using Server.Targeting;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
 	[Flipable( 0x14F0, 0x14EF )]
-	public abstract class BaseAddonDeed : Item
+	public abstract class BaseAddonDeed : Item, ICraftable
 	{
-		public abstract BaseAddon Addon{ get; }
+		public abstract BaseAddon Addon{ get;
+		}
+
+		#region Mondain's Legacy		
+		private CraftResource m_Resource;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftResource Resource
+		{
+			get{ return m_Resource;	}
+			set
+			{
+				if ( m_Resource != value )
+				{
+					m_Resource = value;
+					Hue = CraftResources.GetHue( m_Resource );
+					
+					InvalidateProperties();
+				}
+			}
+		}
+		#endregion
 
 		public BaseAddonDeed() : base( 0x14F0 )
 		{
@@ -27,7 +49,11 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
+
+			#region Mondain's Legacy version 1
+			writer.Write( (int) m_Resource );
+			#endregion
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -35,6 +61,15 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			switch ( version )
+			{
+				#region Mondain's Legacy
+				case 1:
+					m_Resource = (CraftResource) reader.ReadInt();
+					break;
+				#endregion
+			}
 
 			if ( Weight == 0.0 )
 				Weight = 1.0;
@@ -53,6 +88,33 @@ namespace Server.Items
 		{
 			Delete();
 		}
+
+		public override void GetProperties( ObjectPropertyList list )
+		{
+			base.GetProperties( list );
+
+			if ( !CraftResources.IsStandard( m_Resource ) )
+				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) );
+		}		
+
+		#region ICraftable
+		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
+		{
+			Type resourceType = typeRes;
+
+			if ( resourceType == null )
+				resourceType = craftItem.Ressources.GetAt( 0 ).ItemType;
+
+			Resource = CraftResources.GetFromType( resourceType );
+
+			CraftContext context = craftSystem.GetContext( from );
+
+			if ( context != null && context.DoNotColor )
+				Hue = 0;
+
+			return quality;
+		}
+		#endregion
 		#endregion
 
 		private class InternalTarget : Target

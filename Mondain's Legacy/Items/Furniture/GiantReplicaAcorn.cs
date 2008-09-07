@@ -3,7 +3,7 @@ using System;
 namespace Server.Items
 {
 	[Furniture]
-	public class GiantReplicaAcorn : Item
+	public class GiantReplicaAcorn : CraftableFurniture
 	{
 		public override int LabelNumber{ get{ return 1072889; } } // giant replica acorn
 		

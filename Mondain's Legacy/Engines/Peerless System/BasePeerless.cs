@@ -64,8 +64,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 			
-			m_Altar = reader.ReadItem() as PeerlessAltar;					
-			m_CurrentWave = MaxHelpersWaves;
+			m_Altar = reader.ReadItem() as PeerlessAltar;
 		}
 		
 		#region Helpers		

@@ -7,8 +7,10 @@ using Server.Regions;
 
 namespace Server.Items
 {
-	public abstract class BaseAddonContainer : Container, IChopable, IAddon
+	public abstract class BaseAddonContainer : BaseContainer, IChopable, IAddon
 	{
+		public override bool DisplayWeight{ get{ return false; } }
+
 		[Hue, CommandProperty( AccessLevel.GameMaster )]
 		public override int Hue
 		{
@@ -55,9 +57,7 @@ namespace Server.Items
 		}
 
 		public BaseAddonContainer( int itemID ) : base( itemID )
-		{
-			Movable = false;
-			
+		{			
 			AddonComponent.ApplyLightTo( this );
 
 			m_Components = new List<AddonContainerComponent>();
@@ -241,6 +241,8 @@ namespace Server.Items
 
 				if ( deed != null )
 				{
+					deed.Resource = Resource;
+
 					if ( RetainDeedHue )
 						deed.Hue = hue;
 

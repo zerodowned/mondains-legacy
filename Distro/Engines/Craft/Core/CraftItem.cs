@@ -114,6 +114,25 @@ namespace Server.Engines.Craft
 					itemId = 4517;
 				}
 
+				#region Mondain's Legacy
+				else if ( type == typeof( ArcaneBookshelfSouthDeed ) )
+					itemId = 0x2DEF;
+				else if ( type == typeof( ArcaneBookshelfEastDeed ) )
+					itemId = 0x2DF0;
+				else if ( type == typeof( OrnateElvenChestSouthDeed ) )
+					itemId = 0x2DE9;
+				else if ( type == typeof( OrnateElvenChestEastDeed ) )
+					itemId = 0x2DEA;
+				else if ( type == typeof( ElvenWashBasinSouthDeed ) )
+					itemId = 0x2D0B;
+				else if ( type == typeof( ElvenWashBasinEastDeed ) )
+					itemId = 0x2D0C;
+				else if ( type == typeof( ElvenDresserSouthDeed ) )
+					itemId = 0x2D09;
+				else if ( type == typeof( ElvenDresserEastDeed ) )
+					itemId = 0x2D0A;
+				#endregion
+
 				if ( itemId == 0 ) {
 					object[] attrs = type.GetCustomAttributes( typeof( CraftItemIDAttribute ), false );
 

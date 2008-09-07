@@ -26,14 +26,6 @@ namespace Server.Items
 	
 		public BlightedGroveAltar( Serial serial ) : base( serial )
 		{
-		}	
-		
-		public override void BeginSequence( Mobile from )
-		{
-			base.BeginSequence( from );
-			
-			if ( Peerless != null )
-				Peerless.SpawnHelpers();
 		}
 		
 		public override void Serialize( GenericWriter writer )

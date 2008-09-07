@@ -262,7 +262,7 @@ namespace Server.Items
 			
 		public override void GetProperties( ObjectPropertyList list )
 		{							
-			base.GetProperties( list );
+			base.AddNameProperty( list );
 			
 			if ( m_VacationLeft > 0 )
 				list.Add( 1074430, "{0}", m_VacationLeft ); // Vacation days left: ~1_DAYS
@@ -278,7 +278,11 @@ namespace Server.Items
 			if ( DeadCreatures > 0 )
 				list.Add( 1074248, "{0}", DeadCreatures ); // Dead Creatures: ~1_NUM~
 			
-			list.Add( 1074249, "{0}", Items.Count - m_LiveCreatures - DeadCreatures ); // Decorations: ~1_NUM~
+			int decorations = Items.Count - m_LiveCreatures - DeadCreatures;
+
+			if ( decorations > 0 )
+				list.Add( 1074249, "{0}", Items.Count - m_LiveCreatures - DeadCreatures ); // Decorations: ~1_NUM~
+			
 			list.Add( 1074250, "#" + FoodNumber() ); // Food state: ~1_STATE~
 			list.Add( 1074251, "#" + WaterNumber() ); // Water state: ~1_STATE~
 			

@@ -72,6 +72,11 @@ namespace Server.Items
 		private int m_MaxHits;
 		private SlayerName m_Slayer;
 		private SlayerName m_Slayer2;
+
+		#region Mondain's Legacy
+		private TalismanSlayerName m_Slayer3;
+		#endregion
+
 		private SkillMod m_SkillMod, m_MageMod;
 		private CraftResource m_Resource;
 		private bool m_PlayerConstructed;
@@ -277,6 +282,13 @@ namespace Server.Items
 		{
 			get { return m_Slayer2; }
 			set { m_Slayer2 = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TalismanSlayerName Slayer3
+		{
+			get { return m_Slayer3; }
+			set { m_Slayer3 = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -1529,6 +1541,9 @@ namespace Server.Items
 			#region Mondain's Legacy
 			if ( Core.ML )
 			{
+				if ( defender is BaseCreature && TalismanSlayer.Check( m_Slayer3, (BaseCreature) defender ) )
+					percentageBonus += 100;
+
 				if ( this is ButchersWarCleaver )
 				{
 					if ( defender is Bull || defender is Cow || defender is Gaman )
@@ -2533,8 +2548,12 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 9 ); // version
-			
+			writer.Write( (int) 10 ); // version
+
+			#region Mondain's Legacy version 10
+			writer.Write( (int) m_Slayer3 );
+			#endregion
+
 			#region Mondain's Legacy version 9
 			SetFlag sflags = SetFlag.None;
 			
@@ -2756,6 +2775,11 @@ namespace Server.Items
 			switch ( version )
 			{
 				#region Mondain's Legacy
+				case 10:
+				{
+					m_Slayer3 = (TalismanSlayerName) reader.ReadInt();
+					goto case 9;
+				}
 				case 9:
 				{
 					SetFlag flags = (SetFlag) reader.ReadEncodedInt();
@@ -3342,6 +3366,11 @@ namespace Server.Items
 				if( entry != null )
 					list.Add( entry.Title );
 			}
+
+			#region Mondain's Legacy
+			if ( m_Slayer3 != TalismanSlayerName.None )
+				list.Add( (int) m_Slayer3 );
+			#endregion
 
 
 			base.AddResistanceProperties( list );

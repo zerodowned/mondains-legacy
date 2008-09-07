@@ -31,7 +31,10 @@ namespace Server.Items
 		public override void OnDoubleClick( Mobile from )
 		{	
 			if ( CanOfferConfirmation( from ) )
+			{
+				from.CloseGump( typeof( ConfirmPartyGump ) );			
 				from.SendGump( new ConfirmPartyGump( this ) );
+			}
 		}	
 		
 		public override void OnAfterDelete()

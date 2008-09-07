@@ -8,6 +8,7 @@ namespace Server.Engines.Quests
 	public class Bravehorn : BaseEscort
 	{				
 		public override bool InitialInnocent{ get{ return true; } }
+		public override bool IsInvulnerable{ get{ return false; } }
 	
 		public override Type[] Quests{ get{ return new Type[] 
 		{
@@ -22,6 +23,11 @@ namespace Server.Engines.Quests
 		
 		public Bravehorn( Serial serial ) : base( serial )
 		{
+		}		
+		
+		public override bool CanBeDamaged()
+		{
+			return true;
 		}
 		
 		public override void InitBody()
@@ -57,6 +63,7 @@ namespace Server.Mobiles
 		public BravehornsMate() : base()
 		{			
 			Name = "bravehorn's mate";
+			Tamable = false;
 		}
 		
 		public BravehornsMate( Serial serial ) : base( serial )

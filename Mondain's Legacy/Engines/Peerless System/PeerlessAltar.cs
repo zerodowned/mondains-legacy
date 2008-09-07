@@ -177,8 +177,15 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
+
+			// version 1
+			writer.Write( (bool) ( m_Helpers != null ) );
 			
+			if ( m_Helpers != null )
+				writer.WriteMobileList<BaseCreature>( m_Helpers );
+
+			// version 0			
 			writer.Write( (Mobile) m_Peerless );
 			writer.Write( (Point3D) m_BossLocation );
 			writer.Write( (Point3D) m_TeleportDest );
@@ -211,27 +218,36 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 			
-			m_Peerless = reader.ReadMobile() as BasePeerless;
-			m_BossLocation = reader.ReadPoint3D();
-			m_TeleportDest = reader.ReadPoint3D();
-			m_ExitDest = reader.ReadPoint3D();
-			
-			m_Deadline = reader.ReadDateTime();
-			
-			// deserialize master keys
-			m_MasterKeys = reader.ReadStrongItemList();		
-				
-			// deserialize fightes			
-			m_Fighters = reader.ReadStrongMobileList();
-				
-			// deserialize pets
-			m_Pets = new Dictionary<Mobile,List<Mobile>>();
-			int count = reader.ReadInt();
-			
-			for ( int i = 0; i < count; i ++ )
-				m_Pets.Add( reader.ReadMobile(), reader.ReadStrongMobileList() );
-				
-			m_Spawned = reader.ReadBool();
+			switch ( version )
+			{
+				case 1:
+					if ( reader.ReadBool() )
+						m_Helpers = reader.ReadStrongMobileList<BaseCreature>();
+					goto case 0;
+				case 0:
+					m_Peerless = reader.ReadMobile() as BasePeerless;
+					m_BossLocation = reader.ReadPoint3D();
+					m_TeleportDest = reader.ReadPoint3D();
+					m_ExitDest = reader.ReadPoint3D();
+					
+					m_Deadline = reader.ReadDateTime();
+					
+					// deserialize master keys
+					m_MasterKeys = reader.ReadStrongItemList();		
+						
+					// deserialize fightes			
+					m_Fighters = reader.ReadStrongMobileList();
+						
+					// deserialize pets
+					m_Pets = new Dictionary<Mobile,List<Mobile>>();
+					int count = reader.ReadInt();
+					
+					for ( int i = 0; i < count; i ++ )
+						m_Pets.Add( reader.ReadMobile(), reader.ReadStrongMobileList() );
+						
+					m_Spawned = reader.ReadBool();
+					break;
+			}			
 			
 			FinishSequence();
 		}

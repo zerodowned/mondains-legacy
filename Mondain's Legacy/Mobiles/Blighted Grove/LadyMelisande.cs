@@ -50,7 +50,8 @@ namespace Server.Mobiles
 			m_Speak = DateTime.Now;		
 			m_NextHeal = DateTime.Now;
 			m_NextSlowAttack = DateTime.Now;
-			m_SpawnedMinions = false;
+
+			Timer.DelayCall( TimeSpan.FromSeconds( 1 ), new TimerCallback( SpawnSatyrs ) );
 		}	
 		
 		public override void GenerateLoot()
@@ -112,7 +113,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool CanAnimateDead{ get{ return true; } }
-		public override BaseCreature Animates{ get{ return new LichLord(); } }
+		public override BaseCreature Animates{ get{ return new LichLord(); } }	
 		public override bool GivesMinorArtifact{ get{ return true; } }
 		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
@@ -209,33 +210,28 @@ namespace Server.Mobiles
 		#region Helpers
 		public override bool CanSpawnHelpers{ get{ return true; } }
 		public override int MaxHelpersWaves{ get{ return 1; } }
-		public override double SpawnHelpersChance{ get{ return 0.1; } }
-		
-		private bool m_SpawnedMinions;
-		
-		public override bool CanSpawnWave()
-		{
-			if ( !m_SpawnedMinions && Hits < 200 )
-				return ( m_SpawnedMinions = true );
-				
-			return base.CanSpawnWave();
+
+		public void SpawnSatyrs()
+		{			
+			SpawnHelper( new EnslavedSatyr(), 6485, 945, 19 );
+			SpawnHelper( new EnslavedSatyr(), 6486, 948, 22 );
+			SpawnHelper( new EnslavedSatyr(), 6487, 945, 17 ); 
+			SpawnHelper( new EnslavedSatyr(), 6488, 947, 23 ); 
 		}
 		
+		public override bool CanSpawnWave()
+		{				
+			return CurrentWave > 0 && Hits < 200;
+		}
+
 		public override void SpawnHelpers()
-		{			
-			if ( Hits < 1000 )
-			{
-				SpawnHelper( new InsaneDryad(), 6498, 945, 17 );
-				SpawnHelper( new Reaper(), 6491, 948, 18 );
-				SpawnHelper( new StoneHarpy(), 6500, 939, 10 ); 				
-			}
-			else
-			{
-				SpawnHelper( new EnslavedSatyr(), 6493, 947, 16 );
-				SpawnHelper( new EnslavedSatyr(), 6498, 944, 16 );
-				SpawnHelper( new EnslavedSatyr(), 6501, 940, 8 ); 
-			}
-						
+		{
+			CurrentWave	-= 1;
+			
+			SpawnHelper( new InsaneDryad(), 6498, 945, 17 );
+			SpawnHelper( new Reaper(), 6491, 948, 18 );
+			SpawnHelper( new StoneHarpy(), 6500, 939, 10 ); 	
+			
 			Say( 1075119 ); // Awake my children!  I summon thee!
 		}
 		#endregion

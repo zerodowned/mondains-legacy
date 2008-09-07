@@ -63,7 +63,7 @@ namespace Server.Engines.Quests
 				dagger.Name = "Misericord";
 				dagger.WeaponAttributes.UseBestSkill = 0;
 				dagger.QuestItem = false;
-				// TODO wolf slayer
+				dagger.Slayer3 = TalismanSlayerName.Wolf;
 			}
 		}
 		

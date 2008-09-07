@@ -12,9 +12,11 @@ namespace Server.Items
 		{
 			Hue = 0xEB;		
 			
-			DamageModifier.Direct = 10;
-			DamageModifier.Physical = 40;
-			DamageModifier.Cold = 50;
+			DamageModifier.Physical = 20;
+			DamageModifier.Energy = 20;
+			DamageModifier.Poison = 20;
+			DamageModifier.Cold = 20;
+			DamageModifier.Fire = 20;
 			
 			WeightReduction = 25;
 			DamageIncrease = 10;

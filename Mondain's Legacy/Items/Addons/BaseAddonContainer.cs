@@ -118,6 +118,12 @@ namespace Server.Items
 		}
 		
 		#region Members
+		public void DropItemsToGround()
+		{
+			for ( int i = Items.Count - 1; i >= 0; i-- )
+				Items[ i ].MoveToWorld( Location );			
+		}
+
 		public void AddComponent( AddonContainerComponent c, int x, int y, int z )
 		{
 			if ( Deleted )
@@ -217,37 +223,44 @@ namespace Server.Items
 
 			if ( house != null && house.IsOwner( from ) && house.Addons.Contains( this ) )
 			{
-				Effects.PlaySound( GetWorldLocation(), Map, 0x3B3 );
-				from.SendLocalizedMessage( 500461 ); // You destroy the item.
-
-				int hue = 0;
-
-				if ( RetainDeedHue )
+				if ( !IsSecure )
 				{
-					for ( int i = 0; hue == 0 && i < m_Components.Count; ++i )
-					{
-						AddonContainerComponent c = m_Components[i];
+					Effects.PlaySound( GetWorldLocation(), Map, 0x3B3 );
+					from.SendLocalizedMessage( 500461 ); // You destroy the item.
 
-						if ( c.Hue != 0 )
-							hue = c.Hue;
-					}
-				}
-
-				Delete();
-
-				house.Addons.Remove( this );
-
-				BaseAddonContainerDeed deed = Deed;
-
-				if ( deed != null )
-				{
-					deed.Resource = Resource;
+					int hue = 0;
 
 					if ( RetainDeedHue )
-						deed.Hue = hue;
+					{
+						for ( int i = 0; hue == 0 && i < m_Components.Count; ++i )
+						{
+							AddonContainerComponent c = m_Components[i];
 
-					from.AddToBackpack( deed );
+							if ( c.Hue != 0 )
+								hue = c.Hue;
+						}
+					}
+
+					DropItemsToGround();
+
+					Delete();
+
+					house.Addons.Remove( this );
+
+					BaseAddonContainerDeed deed = Deed;
+
+					if ( deed != null )
+					{
+						deed.Resource = Resource;
+
+						if ( RetainDeedHue )
+							deed.Hue = hue;
+
+						from.AddToBackpack( deed );
+					}
 				}
+				else
+					from.SendLocalizedMessage( 1074870 ); // This item must be unlocked/unsecured before re-deeding it.
 			}
 		}
 		

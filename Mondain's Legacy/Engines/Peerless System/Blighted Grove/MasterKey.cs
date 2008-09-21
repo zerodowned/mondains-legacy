@@ -33,7 +33,7 @@ namespace Server.Items
 		public override bool CanOfferConfirmation( Mobile from )
 		{
 			if ( from.Region != null && from.Region.IsPartOf( "Blighted Grove" ) )
-				return true;
+				return base.CanOfferConfirmation( from );
 				
 			return false;
 		}

@@ -4233,7 +4233,7 @@ namespace Server.Mobiles
 		{
 			typeof( AegisOfGrace ), typeof( BladeDance ), 
 			typeof( Bonesmasher ), typeof( FeyLeggings ),
-			typeof( FleshRipper ), typeof( MelisandesCorrodedHatchet ),
+			typeof( FleshRipper ), typeof( HelmOfSwiftness ),
 			typeof( PadsOfTheCuSidhe ), typeof( RaedsGlory ),
 			typeof( RighteousAnger ), typeof( RobeOfTheEclipse ),
 			typeof( RobeOfTheEquinox ), typeof( SoulSeeker ),
@@ -4241,7 +4241,7 @@ namespace Server.Mobiles
 			typeof( TotemOfVoid ), typeof( QuiverOfRage ),
 			typeof( QuiverOfElements ), typeof( BrightsightLenses ),
 			typeof( Boomstick ), typeof( WildfireBow ), 
-			typeof( Windsong ), typeof( HelmOfSwiftness )			
+			typeof( Windsong )
 		};
 		
 		public static void GiveMinorArtifact( Mobile m )

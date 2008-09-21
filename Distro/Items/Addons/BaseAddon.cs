@@ -26,6 +26,26 @@ namespace Server.Items
 
 	public abstract class BaseAddon : Item, IChopable, IAddon
 	{
+		#region Mondain's Legacy
+		private CraftResource m_Resource;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftResource Resource
+		{
+			get{ return m_Resource;	}
+			set
+			{
+				if ( m_Resource != value )
+				{
+					m_Resource = value;
+					Hue = CraftResources.GetHue( m_Resource );
+					
+					InvalidateProperties();
+				}
+			}
+		}
+		#endregion
+
 		private List<AddonComponent> m_Components;
 
 		public void AddComponent( AddonComponent c, int x, int y, int z )
@@ -80,15 +100,12 @@ namespace Server.Items
 
 				if ( deed != null )
 				{
+					#region Mondain's Legacy
+					deed.Resource = m_Resource;
+					#endregion
+
 					if ( RetainDeedHue )
 						deed.Hue = hue;
-
-					#region Mondain's Legacy
-					CraftResource resource = CraftResources.GetFromHue( hue );
-
-					if ( resource != CraftResource.None )
-						deed.Resource = resource;
-					#endregion
 
 					from.AddToBackpack( deed );
 				}
@@ -259,7 +276,11 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
+
+			#region Mondain's Legacy version 2
+			writer.Write( (int) m_Resource );
+			#endregion
 
 			writer.WriteItemList<AddonComponent>( m_Components );
 		}
@@ -272,6 +293,12 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				#region Mondain's Legacy
+				case 2:
+					m_Resource = (CraftResource) reader.ReadInt();
+
+					goto case 1;
+				#endregion
 				case 1:
 				case 0:
 				{

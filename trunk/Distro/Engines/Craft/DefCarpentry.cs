@@ -763,6 +763,8 @@ namespace Server.Engines.Craft
 			AddSubRes( typeof( HeartwoodLog ),	1072536, 100.0, 1072653 );
 			AddSubRes( typeof( BloodwoodLog ),	1072538, 100.0, 1072653 );
 			AddSubRes( typeof( FrostwoodLog ),	1072539, 100.0, 1072653 );
+
+			CanEnhance = Core.ML;
 			#endregion
 
 			MarkOption = true;

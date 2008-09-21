@@ -705,47 +705,6 @@ namespace Server.Items
 
 			return GetFromOreInfo( info );
 		}
-
-		#region Mondain's Legacy
-		/// <summary>
-		/// Returns the <see cref="CraftResource"/> value which represents '<paramref name="hue"/>'.
-		/// </summary>
-		public static CraftResource GetFromHue( int hue )
-		{
-			CraftResource resource = CraftResource.None;
-
-			resource = GetFromHue( hue, m_WoodInfo );
-
-			if ( resource != CraftResource.None )
-				return resource;			
-
-			resource = GetFromHue( hue, m_MetalInfo );
-
-			if ( resource != CraftResource.None )
-				return resource;
-
-			resource = GetFromHue( hue, m_LeatherInfo );
-
-			if ( resource != CraftResource.None )
-				return resource;
-
-			return GetFromHue( hue, m_ScaleInfo );
-		}
-		
-		/// <summary>
-		/// Returns the <see cref="CraftResource"/> value which represents '<paramref name="hue"/>' from '<paramref name="from"/>' collection.
-		/// </summary>
-		private static CraftResource GetFromHue( int hue, CraftResourceInfo[] from )
-		{
-			foreach ( CraftResourceInfo info in from )
-			{
-				if ( info.Hue == hue )
-					return info.Resource;
-			}
-
-			return CraftResource.None;
-		}
-		#endregion
 	}
 
 	// NOTE: This class is only for compatability with very old RunUO versions.

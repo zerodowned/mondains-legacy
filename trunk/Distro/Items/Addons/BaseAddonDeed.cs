@@ -162,8 +162,13 @@ namespace Server.Items
 					if ( res == AddonFitResult.Valid )
 					{						
 						#region Mondain's Legacy
-						if ( addon != null && addon.RetainDeedHue )
-							addon.Hue = m_Deed.Hue;
+						if ( addon != null )
+						{
+							addon.Resource = m_Deed.Resource;
+
+							if ( addon.RetainDeedHue )
+								addon.Hue = m_Deed.Hue;
+						}
 							
 						m_Deed.DeleteDeed();
 						#endregion

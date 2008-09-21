@@ -419,6 +419,22 @@ namespace Server.Multis
 			}
 		}
 
+		#region Mondain's Legacy
+		public bool HasAddonContainers
+		{
+			get
+			{
+				foreach ( Item item in Addons )
+				{
+					if ( item is BaseAddonContainer )
+						return true;
+				}
+
+				return false;
+			}
+		}
+		#endregion
+
 		public ArrayList AvailableVendorsFor( Mobile m )
 		{
 			ArrayList list = new ArrayList();
@@ -518,7 +534,7 @@ namespace Server.Multis
 					{
 						deed = ((IAddon)addon).Deed;
 
-						if( addon is BaseAddon && ((BaseAddon)addon).RetainDeedHue)	//There are things that are IAddon which aren't BaseAddon
+						if ( addon is BaseAddon && ((BaseAddon)addon).RetainDeedHue)	//There are things that are IAddon which aren't BaseAddon
 						{
 							BaseAddon ba = (BaseAddon)addon;
 							retainDeedHue = true;
@@ -535,6 +551,18 @@ namespace Server.Multis
 
 					if ( deed != null )
 					{
+						#region Mondain's Legacy
+						if ( deed is BaseAddonContainerDeed && addon is BaseAddonContainer )
+						{
+							BaseAddonContainer c = (BaseAddonContainer) addon;
+							c.DropItemsToGround();
+
+							((BaseAddonContainerDeed) deed).Resource = c.Resource;
+						}
+						else if ( deed is BaseAddonDeed && addon is BaseAddon )
+							((BaseAddonDeed) deed).Resource = ((BaseAddon) addon).Resource;
+						#endregion
+
 						addon.Delete();
 
 						if( retainDeedHue )
@@ -715,8 +743,23 @@ namespace Server.Multis
 									}
 								}
 
-								if( deed != null && retainDeedHue )
-									deed.Hue = hue;
+								#region Mondain's Legacy
+								if ( deed != null )
+								{
+									if ( deed is BaseAddonContainerDeed && item is BaseAddonContainer )
+									{
+										BaseAddonContainer c = (BaseAddonContainer) item;
+										c.DropItemsToGround();
+
+										((BaseAddonContainerDeed) deed).Resource = c.Resource;
+									}
+									else if ( deed is BaseAddonDeed && item is BaseAddon )
+										((BaseAddonDeed) deed).Resource = ((BaseAddon) item).Resource;
+
+									if ( retainDeedHue )
+										deed.Hue = hue;
+								}
+								#endregion
 
 								relocateItem = deed;
 								item.Delete();

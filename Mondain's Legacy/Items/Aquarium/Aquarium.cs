@@ -262,7 +262,7 @@ namespace Server.Items
 			
 		public override void GetProperties( ObjectPropertyList list )
 		{							
-			base.AddNameProperty( list );
+			base.GetProperties( list );
 			
 			if ( m_VacationLeft > 0 )
 				list.Add( 1074430, "{0}", m_VacationLeft ); // Vacation days left: ~1_DAYS

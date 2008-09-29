@@ -76,26 +76,7 @@ namespace Server.Mobiles
 		public override bool CanAnimateDead{ get{ return true; } }
 		public override BaseCreature Animates{ get{ return new LichLord(); } }
 		public override bool GivesMinorArtifact{ get{ return true; } }
-		public override int TreasureMapLevel{ get{ return 5; } }
-		
-		private bool m_SpawnedHelpers;
-
-		public override void OnThink()
-		{
-			base.OnThink();
-			
-			if ( Combatant == null )
-				return;			
-				
-			if ( Combatant.Player && Name != Combatant.Name )
-				Morph();	
-				
-			if ( Hits < HitsMax * 0.01 && !m_SpawnedHelpers )
-				Spawn();
-				
-			if ( Hits > HitsMax * 0.015 )
-				m_SpawnedHelpers = false;
-		}
+		public override int TreasureMapLevel{ get{ return 5; } }		
 		
 		public override void GenerateLoot()
 		{
@@ -116,29 +97,38 @@ namespace Server.Mobiles
 			int version = reader.ReadInt();
 		}
 		
-		private List<Item> m_Items;
+		private bool m_SpawnedHelpers;
 		private Timer m_Timer;
+		private string m_Name;
+		private int m_Hue;
+
+		public override void OnThink()
+		{
+			base.OnThink();
+			
+			if ( Combatant == null )
+				return;				
+				
+			if ( Combatant.Player && Name != Combatant.Name )
+				Morph();	
+		}
 		
 		public virtual void Morph()
-		{			
+		{
+			m_Name = Name;
+			m_Hue = Hue;
+			
 			Body = Combatant.Body; 
 			Hue = Combatant.Hue; 
 			Name = Combatant.Name;
-			Title = Combatant.Title;
 			Female = Combatant.Female;
-			
-			Item nItem;
-			
-			m_Items = new List<Item>();
+			Title = Combatant.Title;
   				
 			foreach ( Item item in Combatant.Items )
 			{
-				if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount )
-				{
-					nItem = CloneItem( item ); 
-					AddItem( nItem );
-					m_Items.Add( nItem );
-				}
+				if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
+					if ( FindItemOnLayer( item.Layer ) == null )
+						AddItem( new ClonedItem( item ) );
 			}
 			
 			PlaySound( 0x511 );
@@ -146,29 +136,22 @@ namespace Server.Mobiles
 			
 			if ( m_Timer != null )
 				m_Timer.Stop();
-				
-			FixedParticles( 0x376A, 1, 14, 0x13B5, EffectLayer.Waist );
-			PlaySound( 0x511 );
-
 			
-			Timer.DelayCall( TimeSpan.FromSeconds( 2 ), TimeSpan.FromSeconds( 2 ), 3, new TimerCallback( Clone ) );				
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), new TimerCallback( EndMorph ) );
 		}
-
-		public virtual Item CloneItem( Item item )
-		{
-			Item newItem = new Item( item.ItemID );
-			
-			newItem.Name = item.Name;			
-			newItem.Hue = item.Hue;
-			newItem.Layer = item.Layer;
-
-			return newItem;
-		}
 		
-		public virtual void Clone()
-		{
-			new Clone( this ).MoveToWorld( GetSpawnPosition( 2 ), Map );
+		public void DeleteItems()
+		{		
+			for ( int i = Items.Count - 1; i >= 0; i -- )
+				if ( Items[ i ] is ClonedItem )
+					Items[ i ].Delete();
+					
+			if ( Backpack != null )
+			{
+				for ( int i = Backpack.Items.Count - 1; i >= 0; i -- )
+					if ( Backpack.Items[ i ] is ClonedItem )
+						Backpack.Items[ i ].Delete();
+			}
 		}
 		
 		public virtual void EndMorph()
@@ -176,49 +159,111 @@ namespace Server.Mobiles
 			if ( Combatant != null && Name == Combatant.Name )
 				return;
 		
-			if ( m_Items != null )
-			{
-				for ( int i = m_Items.Count - 1; i >= 0; i-- )
-				{
-					Item item = m_Items[ i ];
-					
-					if ( item != null )
-						item.Delete();
-				}
-			}
+			DeleteItems();
 			
 			if ( m_Timer != null )
-				m_Timer.Stop();			
+			{
+				m_Timer.Stop();		
+				m_Timer = null;	
+			}
 				
 			if ( Combatant != null )
 			{
-				Morph();
-				
+				Morph();				
 				return;
 			}
-				
-			m_Timer = null;
 			
+			Body = 264;
 			Title = null;
-			Name = "a travesty";
-			Body = 0x108;
-			Hue = 0;
+			Name = m_Name;
+			Hue = m_Hue;
 			
 			PlaySound( 0x511 );
 			FixedParticles( 0x376A, 1, 14, 5045, EffectLayer.Waist );
 		}
 		
-		public virtual void Spawn()
+		public override bool OnBeforeDeath()
+		{			
+			if ( m_Timer != null )
+				m_Timer.Stop();
+					
+			return base.OnBeforeDeath();
+		}		
+		
+		public override void OnAfterDelete()
+		{					
+			if ( m_Timer != null )
+				m_Timer.Stop();
+				
+			base.OnAfterDelete();
+		}
+
+		#region Spawn Helpers
+		public override bool CanSpawnHelpers{ get{ return true; } }
+		public override int MaxHelpersWaves{ get{ return 1; } }
+		
+		public override bool CanSpawnWave()
+		{		
+			if ( Hits > 1100 )
+				m_SpawnedHelpers = false;
+
+			return !m_SpawnedHelpers && Hits < 1000;
+		}
+
+		public override void SpawnHelpers()
 		{
 			m_SpawnedHelpers = true;
 			
-			for ( int i = 0; i < 10; i ++ )
+			for ( int i = 0; i < 10; i++ )
+			{
 				switch ( Utility.Random( 3 ) )
 				{
-					case 0: new DragonsFlameMage().MoveToWorld( GetSpawnPosition( 10 ), Map ); break;
-					case 1: new SerpentsFangAssassin().MoveToWorld( GetSpawnPosition( 10 ), Map ); break;
-					case 2: new TigersClawThief().MoveToWorld( GetSpawnPosition( 10 ), Map ); break;
+					case 0: SpawnHelper( new DragonsFlameMage(), 25 ); break;
+					case 1: SpawnHelper( new SerpentsFangAssassin(), 25 ); break;
+					case 2: SpawnHelper( new TigersClawThief(), 25 ); break;
 				}
+			}
+		}
+		#endregion
+
+		private class ClonedItem : Item
+		{	
+			public ClonedItem( Item oItem ) : base( oItem.ItemID )
+			{
+				Name = oItem.Name;
+				Weight = oItem.Weight;
+				Hue = oItem.Hue;
+				Layer = oItem.Layer;
+			}
+	
+			public override DeathMoveResult OnParentDeath( Mobile parent )
+			{
+				return DeathMoveResult.RemainEquiped;
+			}
+			
+			public override DeathMoveResult OnInventoryDeath( Mobile parent )
+			{
+				Delete();
+				return base.OnInventoryDeath( parent );
+			}
+	
+			public ClonedItem( Serial serial ) : base( serial )
+			{
+			}
+	            
+			public override void Serialize( GenericWriter writer )
+			{
+				base.Serialize( writer );
+				
+				writer.Write( (int) 0 ); // version
+			}
+	
+			public override void Deserialize( GenericReader reader )
+			{
+				base.Deserialize( reader );
+				
+				int version = reader.ReadInt();
+			}
 		}
 	}
 }

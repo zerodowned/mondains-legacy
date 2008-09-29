@@ -89,6 +89,18 @@ namespace Server.Items
 				c.Map = Map;
 		}
 
+		public override void OnDelete()
+		{
+			BaseHouse house = BaseHouse.FindHouseAt( this );
+
+			if ( house != null )
+			{
+				house.Addons.Remove( this );
+			}
+
+			base.OnDelete();
+		}
+
 		public override void OnAfterDelete()
 		{
 			base.OnAfterDelete();
@@ -221,7 +233,7 @@ namespace Server.Items
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house != null && house.IsOwner( from ) && house.Addons.Contains( this ) )
+			if ( house != null && house.IsOwner( from ) )
 			{
 				if ( !IsSecure )
 				{

@@ -6683,10 +6683,6 @@ namespace Server
 						{
 							ns.Send( new MobileIncoming( this, m ) );
 							
-							#region Mondain's Legacy
-							m.OnRequestedAnimation( this );
-							#endregion
-							
 							if( m.IsDeadBondedPet )
 								ns.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
 
@@ -7890,10 +7886,6 @@ namespace Server
 						{
 							Map = m_LogoutMap;
 							Location = m_LogoutLocation;
-							
-							#region Mondain's Legacy
-							SendIncomingPacket();
-							#endregion
 						}
 					}
 
@@ -8346,13 +8338,13 @@ namespace Server
 				#region Mondain's Legacy
 				if ( poison == Poison.Darkglow )
 				{
-					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042861 );
-					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042862, Name );
+					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + ( poison.Level - 10 ) * 2 );
+					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + ( poison.Level - 10 ) * 2, Name );
 				}
 				else if ( poison == Poison.Parasitic )
 				{
-					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042863 );
-					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042864, Name );
+					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + ( poison.Level - 14 ) * 2 );
+					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + ( poison.Level - 14 ) * 2, Name );
 				}
 				else
 				{
@@ -8362,15 +8354,6 @@ namespace Server
 				#endregion
 			}
 		}
-		
-		#region Mondain's Legacy
-		/// <summary>
-		/// Overridable. This method is invoked when Mobile from requests info packet.
-		/// </summary>
-		public virtual void OnRequestedAnimation( Mobile from )
-		{			
-		}
-		#endregion
 
 		/// <summary>
 		/// Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is immune to some <see cref="Poison" />. If true, <see cref="OnPoisonImmunity" /> will be invoked and <see cref="ApplyPoisonResult.Immune" /> is returned.
@@ -8947,13 +8930,6 @@ namespace Server
 									continue;
 
 								bool inOldRange = Utility.InUpdateRange( oldLocation, m.m_Location );
-									
-								#region Mondain's Legacy
-								bool inRange = Utility.InRange( oldLocation, m.m_Location, 13 );
-								
-								if ( ( isTeleport || !inRange ) )
-									m.OnRequestedAnimation( this );
-								#endregion
 
 								if( (isTeleport || !inOldRange) && m.m_NetState != null && m.CanSee( this ) )
 								{
@@ -9326,11 +9302,7 @@ namespace Server
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
 				foreach( NetState state in eable )
-				{										
-					#region Mondain's Legacy
-					state.Mobile.OnRequestedAnimation( this );
-					#endregion
-					
+				{															
 					if( state.Mobile.CanSee( this ) )
 					{
 						state.Send( new MobileIncoming( state.Mobile, this ) );				
@@ -9949,10 +9921,6 @@ namespace Server
 						if( sendIncoming )
 						{
 							state.Send( new MobileIncoming( beholder, m ) );
-									
-							#region Mondain's Legacy
-							state.Mobile.OnRequestedAnimation( m );
-							#endregion
 
 							if( m.IsDeadBondedPet )
 							{

@@ -14,7 +14,9 @@ Scripts	297
 	- Merge everything else in Distro folder with appropriate files in Scripts
 
 	- after you install, start server and imediately shut it down with save. Now go 
-	to Scripts\Items\Containers\Container.cs and uncomment block in Deserialize 
+	to Scripts\Items\Containers\Container.cs and uncomment code in Deserialize 
+	function (about line 210).
+	to Mondain's Legacy\Items\Furniture\CraftableFurniture.cs and uncomment code in Deserialize 
 	function (about line 210).
 
 4. Changelog

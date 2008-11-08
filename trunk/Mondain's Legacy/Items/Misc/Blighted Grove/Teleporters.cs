@@ -36,13 +36,14 @@ namespace Server.Items
 				if ( Utility.RandomDouble() < 0.75 || machete.Insured || machete.LootType == LootType.Blessed )
 				{
 					m.SendLocalizedMessage( 1075008 ); // Your bone handled machete has grown dull but you still manage to force your way past the venomous branches.
-					return base.OnMoveOver( m );
 				}
 				else
 				{
 					machete.Delete();
 					m.SendLocalizedMessage( 1075007 ); // Your bone handled machete snaps in half as you force your way through the poisonous undergrowth.
 				}
+				
+				return base.OnMoveOver( m );
 			}
 			else
 				m.SendLocalizedMessage( 1074275 ); // You are unable to push your way through the tangling roots of the mighty tree.

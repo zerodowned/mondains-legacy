@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Server;
 using Server.Engines.Craft;
 
@@ -93,11 +93,11 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			/*int version = reader.ReadInt();
+			int version = reader.ReadInt();
 
 			m_Crafter = reader.ReadMobile();
 			m_Resource = (CraftResource) reader.ReadInt();
-			m_Quality = (ItemQuality) reader.ReadInt();*/
+			m_Quality = (ItemQuality) reader.ReadInt();
 		}
 
 		#region ICraftable

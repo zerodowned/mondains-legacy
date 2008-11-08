@@ -1549,9 +1549,6 @@ namespace Server.Items
 					if ( defender is Bull || defender is Cow || defender is Gaman )
 						percentageBonus += 100;
 				}
-				
-				if ( defender.Poison == Poison.Darkglow && attacker.InRange( defender.Location, 1 ) )
-					percentageBonus += 10;
 			}
 			#endregion
 
@@ -3345,12 +3342,12 @@ namespace Server.Items
 			if ( m_Poison != null && m_PoisonCharges > 0 )
 			{
 				
-				if ( m_Poison == Poison.GetPoison( "Darkglow" ) )
+				if ( m_Poison == Poison.Darkglow )
 					list.Add( 1072853, m_PoisonCharges.ToString() ); // darkglow poison charges: ~1_val~
-				else if ( m_Poison == Poison.GetPoison( "Parasitic" ) )
+				else if ( m_Poison == Poison.Parasitic )
 					list.Add( 1072852, m_PoisonCharges.ToString() ); // parasitic poison charges: ~1_val~
 				else
-				list.Add( 1062412 + m_Poison.Level, m_PoisonCharges.ToString() );
+					list.Add( 1062412 + m_Poison.Level, m_PoisonCharges.ToString() );
 			}
 
 			if( m_Slayer != SlayerName.None )

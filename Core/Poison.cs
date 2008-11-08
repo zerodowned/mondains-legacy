@@ -63,8 +63,8 @@ namespace Server
 		public static Poison Lethal{ get{ return GetPoison( "Lethal" ); } }
 
 		#region Mondain's Legacy
-		public static Poison Parasitic{ get{ return GetPoison( "Parasitic" ); } }
-		public static Poison Darkglow{ get{ return GetPoison( "Darkglow" ); } }
+		public static Poison Parasitic{ get{ return GetPoison( "DeadlyParasitic" ); } }
+		public static Poison Darkglow{ get{ return GetPoison( "GreaterDarkglow" ); } }
 		#endregion
 
 		public static ArrayList Poisons

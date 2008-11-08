@@ -71,6 +71,10 @@ namespace Server.Items
 
 	public abstract class BasePlayerBB : CraftableFurniture, ISecurable
 	{
+		#region Mondain's Legacy
+		public override bool ShowCraferName{ get{ return false; } }
+		#endregion
+
 		private PlayerBBMessage m_Greeting;
 		private List<PlayerBBMessage> m_Messages;
 		private string m_Title;

@@ -62,33 +62,123 @@ namespace Server.Engines.Quests
 
 		public override void InitBody()
 		{
-			SetStr( 90, 100 );
-			SetDex( 90, 100 );
-			SetInt( 15, 25 );
+			SetStr( 50, 60 );
+			SetDex( 20, 30 );
+			SetInt( 100, 110 );
 
 			Hue = Utility.RandomSkinHue();
+			Female = Utility.RandomBool();
+			Race = Race.Human;
 
-			if ( Female = Utility.RandomBool() )
-			{
-				Body = 401;
+			if ( Female )
 				Name = NameList.RandomName( "female" );
-			}
 			else
-			{
-				Body = 400;
 				Name = NameList.RandomName( "male" );
-			}
 		}
 
 		public override void InitOutfit()
 		{
-			AddItem( new FancyShirt( Utility.RandomNeutralHue() ) );
-			AddItem( new ShortPants( Utility.RandomNeutralHue() ) );
-			AddItem( new Boots( Utility.RandomNeutralHue() ) );
+			if ( Body.IsHuman )
+			{
+				switch ( Utility.Random( 3 ) )
+				{
+					case 0: 
+					{
+						Title = Utility.RandomBool() ? "the seeker of adventure" : "the noble";
 
-			Utility.AssignRandomHair( this );
+						if ( Female )
+						{
+							switch ( Utility.Random( 6 ) )
+							{
+								case 0: AddItem( new ShortPants( GetRandomHue() ) ); break;
+								case 1:
+								case 2: AddItem( new Kilt( GetRandomHue() ) ); break;
+								case 3:
+								case 4:
+								case 5: AddItem( new Skirt( GetRandomHue() ) ); break;
+							}
+						}
+						else
+						{
+							switch ( Utility.Random( 2 ) )
+							{
+								case 0: AddItem( new LongPants( GetRandomHue() ) ); break;
+								case 1: AddItem( new ShortPants( GetRandomHue() ) ); break;
+							}
+						}
 
-			PackGold( 200, 250 );
+						AddItem( new FancyShirt( GetRandomHue() ) );
+						AddItem( new BodySash( GetRandomHue() ) );
+						AddItem( new Cloak( GetRandomHue() ) );
+
+						switch ( Utility.Random( 2 ) )
+						{
+							case 0: AddItem( new Boots( GetShoeHue() ) ); break;
+							case 1: AddItem( new ThighBoots( GetShoeHue() ) ); break;
+						}
+
+						AddItem( new Longsword() );
+						break;
+					}
+					case 1:
+					{
+						Title = Utility.RandomBool() ? "the mage" : "the wandering healer";
+
+						AddItem( new Robe( Utility.RandomYellowHue() ) );
+						AddItem( new Sandals() );
+						break;
+					}
+					case 2:
+					{
+						switch ( Utility.Random( 3 ) )
+						{
+							case 0: Title = "the peasant"; break;
+							case 1: Title = "the messenger"; break;
+							case 2: Title = "the merchant"; break;
+						}
+
+						if ( Female )
+						{
+							switch ( Utility.Random( 6 ) )
+							{
+								case 0: AddItem( new ShortPants( GetRandomHue() ) ); break;
+								case 1:
+								case 2: AddItem( new Kilt( GetRandomHue() ) ); break;
+								case 3:
+								case 4:
+								case 5: AddItem( new Skirt( GetRandomHue() ) ); break;
+							}
+						}
+						else
+						{
+							switch ( Utility.Random( 2 ) )
+							{
+								case 0: AddItem( new LongPants( GetRandomHue() ) ); break;
+								case 1: AddItem( new ShortPants( GetRandomHue() ) ); break;
+							}
+						}
+
+						switch ( Utility.Random( 3 ) )
+						{
+							case 0: AddItem( new FancyShirt( GetRandomHue() ) ); break;
+							case 1: AddItem( new Doublet( GetRandomHue() ) ); break;
+							case 2: AddItem( new Shirt( GetRandomHue() ) ); break;
+						}
+
+						switch ( Utility.Random( 2 ) )
+						{
+							case 0: AddItem( new Shoes( GetShoeHue() ) ); break;
+							case 1: AddItem( new Sandals( GetShoeHue() ) ); break;
+						}
+						break;
+					}
+				}
+
+				int hairHue = GetHairHue();
+
+				Utility.AssignRandomHair( this, hairHue );
+				Utility.AssignRandomFacialHair( this, hairHue );
+			}
 		}
 
 		private static Hashtable m_EscortTable = new Hashtable();

@@ -98,10 +98,10 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
+			/*int version = reader.ReadInt();
 			
 			m_Addon = reader.ReadItem() as BaseAddonContainer;
-			m_Offset = reader.ReadPoint3D();
+			m_Offset = reader.ReadPoint3D();*/
 
 			if ( m_Addon != null )
 				m_Addon.OnComponentLoaded( this );

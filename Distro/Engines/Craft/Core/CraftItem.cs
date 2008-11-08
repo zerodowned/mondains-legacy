@@ -401,7 +401,7 @@ namespace Server.Engines.Craft
 					typeof( DarkSapphireBracelet ), typeof( EcruCitrineRing ), 
 					typeof( FireRubyBracelet ), typeof( PerfectEmeraldRing ), 
 					typeof( TurqouiseRing ), typeof( WhitePearlBracelet ), 
-					typeof( BaseContainer ),
+					typeof( BaseContainer ), typeof( CraftableFurniture ),
 					#endregion
 				
 					typeof( BaseArmor ),

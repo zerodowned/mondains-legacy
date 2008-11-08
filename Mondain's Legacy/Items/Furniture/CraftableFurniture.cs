@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Server;
 using Server.Engines.Craft;
 
@@ -13,6 +13,8 @@ namespace Server.Items
 
 	public class CraftableFurniture : Item, ICraftable
 	{
+		public virtual bool ShowCraferName{ get{ return true; } }
+
 		private Mobile m_Crafter;
 		private CraftResource m_Resource;
 		private ItemQuality m_Quality;
@@ -59,7 +61,7 @@ namespace Server.Items
 		{
 			base.AddWeightProperty( list );
 
-			if ( m_Crafter != null )
+			if ( ShowCraferName && m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
 			if ( m_Quality == ItemQuality.Exceptional )
@@ -91,11 +93,11 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
+			/*int version = reader.ReadInt();
 
 			m_Crafter = reader.ReadMobile();
 			m_Resource = (CraftResource) reader.ReadInt();
-			m_Quality = (ItemQuality) reader.ReadInt();
+			m_Quality = (ItemQuality) reader.ReadInt();*/
 		}
 
 		#region ICraftable

@@ -30,8 +30,9 @@ namespace Server.Engines.Quests
 		{		
 		}
 		
-		public MondainQuester() : this( null )
+		public MondainQuester() : base( null )
 		{
+			SpeechHue = 0x3B2;
 		}
 		
 		public MondainQuester( string name ) : this( name, null )
@@ -40,8 +41,6 @@ namespace Server.Engines.Quests
 
 		public MondainQuester( string name, string title ) : base( title )
 		{
-			m_Spoken = DateTime.Now;
-			
 			Name = name;
 			SpeechHue = 0x3B2;
 		}

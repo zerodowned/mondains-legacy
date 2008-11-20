@@ -28,7 +28,7 @@ namespace Server.Items
 			SetAttributes.BonusInt = 10;
 			SetAttributes.SpellDamage = 15;
 			
-			SetArmorAttributes.SelfRepair = 3;
+			SetSelfRepair = 3;
 			
 			SetPhysicalBonus = 4;
 			SetFireBonus = 5;

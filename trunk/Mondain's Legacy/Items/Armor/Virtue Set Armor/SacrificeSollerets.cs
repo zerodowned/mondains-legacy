@@ -23,8 +23,7 @@ namespace Server.Items
 			Weight = 1.0;
 			Hue = 0x226;
 			
-			SetClothingAttributes.SelfRepair = 5;
-			
+			SetSelfRepair = 5;			
 			SetPhysicalBonus = 5;
 			SetFireBonus = 5;
 			SetColdBonus = 5;

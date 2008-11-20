@@ -99,54 +99,6 @@ namespace Server.Items
 		}
 		#endregion
 		
-		#region Set Armor
-		public virtual SetItem SetID{ get{ return SetItem.None; } }
-		public virtual int Pieces{ get{ return 0; } }
-		public virtual bool MixedSet{ get{ return false; } }
-		
-		public bool IsSetItem{ get{ return SetID == SetItem.None ? false : true; } }
-		
-		private int m_SetHue;
-		private bool m_SetEquipped;
-		private bool m_LastEquipped;
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int SetHue
-		{
-			get{ return m_SetHue; }
-			set{ m_SetHue = value; InvalidateProperties(); }
-		}
-		
-		public bool SetEquipped
-		{
-			get{ return m_SetEquipped; }
-			set{ m_SetEquipped = value; }
-		}
-		
-		public bool LastEquipped
-		{
-			get{ return m_LastEquipped; }
-			set{ m_LastEquipped = value; }
-		}		
-		
-		private AosAttributes m_SetAttributes;
-		private AosSkillBonuses m_SetSkillBonuses;
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public AosAttributes SetAttributes
-		{
-			get{ return m_SetAttributes; }
-			set{}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public AosSkillBonuses SetSkillBonuses
-		{
-			get{ return m_SetSkillBonuses; }
-			set{}
-		}	
-		#endregion
-		
 		public BaseQuiver() : this( 0x2FB7 )
 		{
 		}
@@ -235,15 +187,16 @@ namespace Server.Items
 				if ( ranged != null )
 					ranged.InvalidateProperties();	
 								
-				#region Set Armor
+				#region Mondain's Legacy Sets
 				if ( IsSetItem )
-					m_SetEquipped = SetHelper.FullSetPresent( mob, SetID, Pieces );
-				
-				if ( m_SetEquipped )
 				{
-					m_LastEquipped = true;				
-					
-					SetHelper.AddSetBonus( mob, SetID );
+					m_SetEquipped = SetHelper.FullSetEquipped( mob, SetID, Pieces );
+				
+					if ( m_SetEquipped )
+					{
+						m_LastEquipped = true;							
+						SetHelper.AddSetBonus( mob, SetID );
+					}
 				}
 				#endregion
 			}
@@ -267,22 +220,22 @@ namespace Server.Items
 				mob.RemoveStatMod( modName + "Int" );
 
 				mob.CheckStatTimers();					
-				
-				if ( IsSetItem ? m_SetEquipped : false )
+								
+				#region Mondain's Legacy Sets
+				if ( IsSetItem && m_SetEquipped )
 					SetHelper.RemoveSetBonus( mob, SetID, this );
+				#endregion
 			}
 		}	
 		
 		public override bool OnDragLift( Mobile from )
 		{
-			#region Set Armor
+			#region Mondain's Legacy Sets
 			if ( Parent is Mobile && from == Parent )
-			{
-				Mobile m = (Mobile) Parent;
-			
-				if ( IsSetItem ? m_SetEquipped : false )
+			{			
+				if ( IsSetItem && m_SetEquipped )
 					SetHelper.RemoveSetBonus( from, SetID, this );
-			}			
+			}				
 			#endregion
 			
 			return base.OnDragLift( from );
@@ -438,16 +391,15 @@ namespace Server.Items
 			if ( (prop = m_LowerAmmoCost) > 0 )
 				list.Add( 1075208, prop.ToString() ); // Lower Ammo Cost ~1_Percentage~%
 				
-			#region Set Armor
+			#region Mondain's Legacy Sets
 			if ( IsSetItem )
 			{
 				list.Add( 1073491, Pieces.ToString() ); // Part of a Weapon/Armor Set (~1_val~ pieces)
 					
 				if ( m_SetEquipped )
 				{
-					list.Add( 1073492 ); // Full Weapon/Armor Set Present				
-					
-					SetHelper.GetSetProperties( list, m_Attributes, m_SetAttributes, m_SetEquipped );
+					list.Add( 1073492 ); // Full Weapon/Armor Set Present					
+					SetHelper.GetSetProperties( list, this );
 				}
 			}
 			#endregion	
@@ -463,12 +415,11 @@ namespace Server.Items
 				list.Add( 1072210, prop.ToString() ); // Weight reduction: ~1_PERCENTAGE~%	
 				
 			
-			#region Set Armor
+			#region Mondain's Legacy Sets
 			if ( IsSetItem && !m_SetEquipped )
 			{
-				list.Add( 1072378 ); // <br>Only when full set is present:
-				
-				SetHelper.GetSetProperties( list, m_Attributes, m_SetAttributes, m_SetEquipped );
+				list.Add( 1072378 ); // <br>Only when full set is present:				
+				SetHelper.GetSetProperties( list, this );
 			}
 			#endregion		
 		}
@@ -497,11 +448,12 @@ namespace Server.Items
 			PlayerConstructed	= 0x00000040,
 			Capacity			= 0x00000080,
 			
-			#region Set Armor
+			#region Mondain's Legacy Sets
 			SetAttributes		= 0x00000100,
 			SetHue				= 0x00000200,
 			LastEquipped		= 0x00000400,
 			SetEquipped			= 0x00000800,
+			SetSkillAttributes	= 0x00002000,
 			#endregion
 			
 			DamageIncrease		= 0x00001000
@@ -525,11 +477,12 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	m_PlayerConstructed );
 			SetSaveFlag( ref flags, SaveFlag.Capacity,			m_Capacity > 0 );
 			
-			#region Set Armor
+			#region Mondain's Legacy Sets
 			SetSaveFlag( ref flags, SaveFlag.SetAttributes,		!m_SetAttributes.IsEmpty );
+			SetSaveFlag( ref flags, SaveFlag.SetSkillAttributes,!m_SetSkillBonuses.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.SetHue,			m_SetHue != 0 );
-			SetSaveFlag( ref flags, SaveFlag.LastEquipped,		true );			
-			SetSaveFlag( ref flags, SaveFlag.SetEquipped,		true );
+			SetSaveFlag( ref flags, SaveFlag.LastEquipped,		m_LastEquipped );			
+			SetSaveFlag( ref flags, SaveFlag.SetEquipped,		m_SetEquipped );
 			#endregion
 			
 			writer.WriteEncodedInt( (int) flags );
@@ -561,9 +514,12 @@ namespace Server.Items
 			if ( GetSaveFlag( flags, SaveFlag.Capacity ) )
 				writer.Write( (int) m_Capacity );
 				
-			#region Set Armor			
+			#region Mondain's Legacy Sets
 			if ( GetSaveFlag( flags, SaveFlag.SetAttributes ) )
 				m_SetAttributes.Serialize( writer );
+
+			if ( GetSaveFlag( flags, SaveFlag.SetSkillAttributes ) )
+				m_SetSkillBonuses.Serialize( writer );
 				
 			if ( GetSaveFlag( flags, SaveFlag.SetHue ) )
 				writer.Write( (int) m_SetHue );
@@ -615,14 +571,16 @@ namespace Server.Items
 			if ( GetSaveFlag( flags, SaveFlag.Capacity ) )
 				m_Capacity = reader.ReadInt();
 							
-			#region Set Armor		
-			if ( m_SetSkillBonuses == null )
-				m_SetSkillBonuses = new AosSkillBonuses( this );
-				
+			#region Mondain's Legacy Sets
 			if ( GetSaveFlag( flags, SaveFlag.SetAttributes ) )
 				m_SetAttributes = new AosAttributes( this, reader );
 			else
 				m_SetAttributes = new AosAttributes( this );
+
+			if ( GetSaveFlag( flags, SaveFlag.SetSkillAttributes ) )
+				m_SetSkillBonuses = new AosSkillBonuses( this, reader );
+			else
+				m_SetSkillBonuses = new AosSkillBonuses( this );
 				
 			if ( GetSaveFlag( flags, SaveFlag.SetHue ) )
 				m_SetHue = reader.ReadInt();
@@ -638,7 +596,7 @@ namespace Server.Items
 				Layer = Layer.Cloak;
 		}
 		
-		#region Virtual members		
+		#region Virtual members
 		public virtual void GetDamageTypes( out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
 			phys = m_DamageModifier.Physical;
@@ -683,7 +641,7 @@ namespace Server.Items
 		};
 		#endregion
 		
-		#region Members		
+		#region Members
 		public bool CheckType( Item item )
 		{		
 			Type type = item.GetType();
@@ -732,6 +690,53 @@ namespace Server.Items
 			
 			return quality;
 		}
+		#endregion
+		
+		#region Mondain's Legacy Sets
+		public virtual SetItem SetID{ get{ return SetItem.None; } }
+		public virtual int Pieces{ get{ return 0; } }
+		
+		public bool IsSetItem{ get{ return SetID != SetItem.None; } }
+		
+		private int m_SetHue;
+		private bool m_SetEquipped;
+		private bool m_LastEquipped;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int SetHue
+		{
+			get{ return m_SetHue; }
+			set{ m_SetHue = value; InvalidateProperties(); }
+		}
+		
+		public bool SetEquipped
+		{
+			get{ return m_SetEquipped; }
+			set{ m_SetEquipped = value; }
+		}
+		
+		public bool LastEquipped
+		{
+			get{ return m_LastEquipped; }
+			set{ m_LastEquipped = value; }
+		}		
+		
+		private AosAttributes m_SetAttributes;
+		private AosSkillBonuses m_SetSkillBonuses;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public AosAttributes SetAttributes
+		{
+			get{ return m_SetAttributes; }
+			set{}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public AosSkillBonuses SetSkillBonuses
+		{
+			get{ return m_SetSkillBonuses; }
+			set{}
+		}	
 		#endregion
 	}
 }

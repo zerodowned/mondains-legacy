@@ -32,7 +32,7 @@ namespace Server.Items
 			SetHue = 0;
 			Hue = 0x226;
 			
-			SetArmorAttributes.SelfRepair = 5;
+			SetSelfRepair = 5;
 			
 			SetPhysicalBonus = 5;
 			SetFireBonus = 5;

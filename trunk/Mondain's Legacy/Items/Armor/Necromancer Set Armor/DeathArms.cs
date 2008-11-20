@@ -28,7 +28,7 @@ namespace Server.Items
 			
 			SetSkillBonuses.SetValues( 0, SkillName.Necromancy, 10 );
 			
-			SetArmorAttributes.SelfRepair = 3;
+			SetSelfRepair = 3;
 			
 			SetPhysicalBonus = 4;
 			SetFireBonus = 5;

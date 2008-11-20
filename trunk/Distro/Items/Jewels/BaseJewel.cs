@@ -17,7 +17,7 @@ namespace Server.Items
 		Diamond
 	}
 
-	public abstract class BaseJewel : Item, ICraftable
+	public abstract class BaseJewel : Item, ICraftable, ISetItem
 	{
 		private AosAttributes m_AosAttributes;
 		private AosElementAttributes m_AosResistances;
@@ -80,7 +80,7 @@ namespace Server.Items
 
 		public virtual int ArtifactRarity{ get{ return 0; } }
 		
-		#region Mondain's Legacy		
+		#region Mondain's Legacy
 		private Mobile m_Crafter;
 		private ArmorQuality m_Quality;
 		
@@ -137,6 +137,19 @@ namespace Server.Items
 				}
 
 				from.CheckStatTimers();
+								
+				#region Mondain's Legacy Sets
+				if ( IsSetItem )
+				{
+					m_SetEquipped = SetHelper.FullSetEquipped( from, SetID, Pieces );
+				
+					if ( m_SetEquipped )
+					{
+						m_LastEquipped = true;							
+						SetHelper.AddSetBonus( from, SetID );
+					}
+				}
+				#endregion
 			}
 		}
 
@@ -155,6 +168,11 @@ namespace Server.Items
 				from.RemoveStatMod( modName + "Int" );
 
 				from.CheckStatTimers();
+
+				#region Mondain's Legacy Sets
+				if ( IsSetItem && m_SetEquipped )
+					SetHelper.RemoveSetBonus( from, SetID, this );
+				#endregion
 			}
 		}
 
@@ -166,12 +184,25 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 			
-			#region Mondain's Legacy							
+			#region Mondain's Legacy
 			if ( m_Quality == ArmorQuality.Exceptional )
 				list.Add( 1063341 ); // exceptional
 				
 			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+			#endregion
+
+			#region Mondain's Legacy Sets
+			if ( IsSetItem )
+			{
+				list.Add( 1080240, Pieces.ToString() ); // Part of a Jewelry Set (~1_val~ pieces)
+					
+				if ( m_SetEquipped )
+				{
+					list.Add( 1080241 ); // Full Jewelry Set Present					
+					SetHelper.GetSetProperties( list, this );
+				}
+			}
 			#endregion
 
 			m_AosSkillBonuses.GetProperties( list );
@@ -257,7 +288,16 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 3 ); // version
+			writer.Write( (int) 4 ); // version
+
+			#region Mondain's Legacy Sets version 4
+			writer.Write( (bool) m_LastEquipped );
+			writer.Write( (bool) m_SetEquipped );
+			writer.Write( (int) m_SetHue );
+
+			m_SetAttributes.Serialize( writer );
+			m_SetSkillBonuses.Serialize( writer );
+			#endregion
 			
 			#region Mondain's Legacy version 3
 			writer.Write( (Mobile) m_Crafter );
@@ -280,15 +320,28 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				#region Mondain's Legacy Sets
+				case 4:
+				{
+					m_LastEquipped = reader.ReadBool();
+					m_SetEquipped = reader.ReadBool();
+					m_SetHue = reader.ReadInt();
+
+					m_SetAttributes = new AosAttributes( this, reader );
+					m_SetSkillBonuses = new AosSkillBonuses( this, reader );
+
+					goto case 3;
+				}
+				#endregion
+				#region Mondain's Legacy
 				case 3:
 				{
-					#region Mondain's Legacy
 					m_Crafter = reader.ReadMobile();
 					m_Quality = (ArmorQuality) reader.ReadInt();
-					#endregion
-					
+										
 					goto case 2;
 				}
+				#endregion
 				case 2:
 				{
 					m_Resource = (CraftResource)reader.ReadEncodedInt();
@@ -339,6 +392,14 @@ namespace Server.Items
 					break;
 				}
 			}
+
+			#region Mondain's Legacy Sets
+			if ( m_SetAttributes == null )
+				m_SetAttributes = new AosAttributes( this );
+
+			if ( m_SetSkillBonuses == null )
+				m_SetSkillBonuses = new AosSkillBonuses( this );
+			#endregion
 
 			if ( version < 2 )
 			{
@@ -396,6 +457,65 @@ namespace Server.Items
 			return quality;
 		}
 
+		#endregion
+		
+		#region Mondain's Legacy Sets
+		public override bool OnDragLift( Mobile from )
+		{
+			if ( Parent is Mobile && from == Parent )
+			{			
+				if ( IsSetItem && m_SetEquipped )
+					SetHelper.RemoveSetBonus( from, SetID, this );
+			}			
+			
+			return base.OnDragLift( from );
+		}
+
+		public virtual SetItem SetID{ get{ return SetItem.None; } }
+		public virtual int Pieces{ get{ return 0; } }
+		public virtual bool MixedSet{ get{ return false; } }
+		
+		public bool IsSetItem{ get{ return SetID == SetItem.None ? false : true; } }
+		
+		private int m_SetHue;
+		private bool m_SetEquipped;
+		private bool m_LastEquipped;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int SetHue
+		{
+			get{ return m_SetHue; }
+			set{ m_SetHue = value; InvalidateProperties(); }
+		}
+		
+		public bool SetEquipped
+		{
+			get{ return m_SetEquipped; }
+			set{ m_SetEquipped = value; }
+		}
+		
+		public bool LastEquipped
+		{
+			get{ return m_LastEquipped; }
+			set{ m_LastEquipped = value; }
+		}		
+		
+		private AosAttributes m_SetAttributes;
+		private AosSkillBonuses m_SetSkillBonuses;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public AosAttributes SetAttributes
+		{
+			get{ return m_SetAttributes; }
+			set{}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public AosSkillBonuses SetSkillBonuses
+		{
+			get{ return m_SetSkillBonuses; }
+			set{}
+		}	
 		#endregion
 	}
 }

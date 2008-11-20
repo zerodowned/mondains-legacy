@@ -148,12 +148,13 @@ namespace Server.Items
 		public virtual int InitMinHits{ get{ return 0; } }
 		public virtual int InitMaxHits{ get{ return 0; } }
 
-		// Mondain's Legacy Mod
-		public override int PhysicalResistance{ get{ return m_AosWeaponAttributes.ResistPhysicalBonus + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.ResistPhysicalBonus : 0 ); } }
-		public override int FireResistance{ get{ return m_AosWeaponAttributes.ResistFireBonus + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.ResistFireBonus : 0 ); } }
-		public override int ColdResistance{ get{ return m_AosWeaponAttributes.ResistColdBonus + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.ResistColdBonus : 0 ); } }
-		public override int PoisonResistance{ get{ return m_AosWeaponAttributes.ResistPoisonBonus + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.ResistPoisonBonus : 0 ); } }
-		public override int EnergyResistance{ get{ return m_AosWeaponAttributes.ResistEnergyBonus + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.ResistEnergyBonus : 0 ); } }
+		#region Mondain's Legacy Sets
+		public override int PhysicalResistance{ get{ return m_AosWeaponAttributes.ResistPhysicalBonus; } }
+		public override int FireResistance{ get{ return m_AosWeaponAttributes.ResistFireBonus; } }
+		public override int ColdResistance{ get{ return m_AosWeaponAttributes.ResistColdBonus; } }
+		public override int PoisonResistance{ get{ return m_AosWeaponAttributes.ResistPoisonBonus; } }
+		public override int EnergyResistance{ get{ return m_AosWeaponAttributes.ResistEnergyBonus; } }
+		#endregion
 
 		public virtual SkillName AccuracySkill { get { return SkillName.Tactics; } }
 		#endregion
@@ -506,7 +507,7 @@ namespace Server.Items
 
 			int v = m_AosWeaponAttributes.LowerStatReq;
 
-			#region Mondain's Legacy						
+			#region Mondain's Legacy
 			if ( m_Resource == CraftResource.Heartwood )
 				return v;
 			#endregion
@@ -674,15 +675,16 @@ namespace Server.Items
 				if ( Core.AOS )
 					m_AosSkillBonuses.AddTo( from );
 
-				#region Mondain's Legacy						
+				#region Mondain's Legacy Sets
 				if ( IsSetItem )
-					m_SetEquipped = SetHelper.FullSetPresent( from, SetID, Pieces );
-				
-				if ( m_SetEquipped )
 				{
-					m_LastEquipped = true;				
-					
-					SetHelper.AddSetBonus( from, SetID );
+					m_SetEquipped = SetHelper.FullSetEquipped( from, SetID, Pieces );
+				
+					if ( m_SetEquipped )
+					{
+						m_LastEquipped = true;						
+						SetHelper.AddSetBonus( from, SetID );
+					}
 				}
 				#endregion
 
@@ -725,9 +727,11 @@ namespace Server.Items
 				m.CheckStatTimers();
 
 				m.Delta( MobileDelta.WeaponDamage );
-				
-				if ( IsSetItem ? m_SetEquipped : false )
+
+				#region Mondain's Legacy Sets
+				if ( IsSetItem && m_SetEquipped )
 					SetHelper.RemoveSetBonus( m, SetID, this );
+				#endregion
 			}
 			
 			InvalidateProperties();
@@ -737,8 +741,7 @@ namespace Server.Items
 		{
 			SkillName sk;
 
-			// Mondain's Legacy Mod
-			if ( checkSkillAttrs && m_AosWeaponAttributes.UseBestSkill + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.UseBestSkill : 0 ) != 0 )
+			if ( checkSkillAttrs && m_AosWeaponAttributes.UseBestSkill != 0 )
 			{
 				double swrd = m.Skills[SkillName.Swords].Value;
 				double fenc = m.Skills[SkillName.Fencing].Value;
@@ -751,8 +754,7 @@ namespace Server.Items
 				if ( fenc > val ){ sk = SkillName.Fencing; val = fenc; }
 				if ( mcng > val ){ sk = SkillName.Macing; val = mcng; }
 			}
-			// Mondain's Legacy Mod
-			else if ( m_AosWeaponAttributes.MageWeapon + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.MageWeapon : 0 ) != 0 )
+			else if ( m_AosWeaponAttributes.MageWeapon != 0 )
 			{
 				if ( m.Skills[SkillName.Magery].Value > m.Skills[Skill].Value )
 					sk = SkillName.Magery;
@@ -1707,8 +1709,9 @@ namespace Server.Items
 			{
 				if ( MaxRange <= 1 && (defender is Slime || defender is ToxicElemental) )
 					attacker.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500263 ); // *Acid blood scars your weapon!*
-				// Mondain's Legacy Mod
-				if ( Core.AOS && m_AosWeaponAttributes.SelfRepair + ( IsSetItem && m_SetEquipped ? m_SetWeaponAttributes.SelfRepair : 0 ) > Utility.Random( 10 ) )
+				
+				// Mondain's Legacy Sets
+				if ( Core.AOS && m_AosWeaponAttributes.SelfRepair + ( IsSetItem && m_SetEquipped ? m_SetSelfRepair : 0 )> Utility.Random( 10 ) )
 				{
 					HitPoints += 2;
 				}
@@ -2551,28 +2554,24 @@ namespace Server.Items
 			writer.Write( (int) m_Slayer3 );
 			#endregion
 
-			#region Mondain's Legacy version 9
+			#region Mondain's Legacy Sets version 9
 			SetFlag sflags = SetFlag.None;
 			
 			SetSaveFlag( ref sflags, SetFlag.Attributes,		!m_SetAttributes.IsEmpty );
-			SetSaveFlag( ref sflags, SetFlag.WeaponAttributes,	!m_SetWeaponAttributes.IsEmpty );
 			SetSaveFlag( ref sflags, SetFlag.SkillBonuses,		!m_SetSkillBonuses.IsEmpty );
-			SetSaveFlag( ref sflags, SetFlag.SetHue,			m_SetHue != 0 );
-			SetSaveFlag( ref sflags, SetFlag.LastEquipped,		true );
-			SetSaveFlag( ref sflags, SetFlag.SetEquipped,		true );
+			SetSaveFlag( ref sflags, SetFlag.Hue,				m_SetHue != 0 );
+			SetSaveFlag( ref sflags, SetFlag.LastEquipped,		m_LastEquipped );
+			SetSaveFlag( ref sflags, SetFlag.SetEquipped,		m_SetEquipped );
 			
 			writer.WriteEncodedInt( (int) sflags );
 			
 			if ( GetSaveFlag( sflags, SetFlag.Attributes ) )
 				m_SetAttributes.Serialize( writer );
 
-			if ( GetSaveFlag( sflags, SetFlag.WeaponAttributes ) )
-				m_SetWeaponAttributes.Serialize( writer );		
-
 			if ( GetSaveFlag( sflags, SetFlag.SkillBonuses ) )
 				m_SetSkillBonuses.Serialize( writer );
 				
-			if ( GetSaveFlag( sflags, SetFlag.SetHue ) )
+			if ( GetSaveFlag( sflags, SetFlag.Hue ) )
 				writer.Write( (int) m_SetHue );
 				
 			if ( GetSaveFlag( sflags, SetFlag.LastEquipped ) )
@@ -2738,7 +2737,7 @@ namespace Server.Items
 			ElementalDamages		= 0x20000000
 		}
 
-		#region Mondain's Legacy		
+		#region Mondain's Legacy Sets
 		private static void SetSaveFlag( ref SetFlag flags, SetFlag toSet, bool setIf )
 		{
 			if ( setIf )
@@ -2757,7 +2756,7 @@ namespace Server.Items
 			Attributes			= 0x00000001,
 			WeaponAttributes	= 0x00000002,
 			SkillBonuses		= 0x00000004,
-			SetHue				= 0x00000008,
+			Hue					= 0x00000008,
 			LastEquipped		= 0x00000010,
 			SetEquipped			= 0x00000020,
 		}
@@ -2785,18 +2784,13 @@ namespace Server.Items
 						m_SetAttributes = new AosAttributes( this, reader );
 					else
 						m_SetAttributes = new AosAttributes( this );
-
-					if ( GetSaveFlag( flags, SetFlag.WeaponAttributes ) )
-						m_SetWeaponAttributes = new AosWeaponAttributes( this, reader );
-					else
-						m_SetWeaponAttributes = new AosWeaponAttributes( this );
 						
 					if ( GetSaveFlag( flags, SetFlag.SkillBonuses ) )
 						m_SetSkillBonuses = new AosSkillBonuses( this, reader );
 					else
 						m_SetSkillBonuses =  new AosSkillBonuses( this );
 						
-					if ( GetSaveFlag( flags, SetFlag.SetHue ) )
+					if ( GetSaveFlag( flags, SetFlag.Hue ) )
 						m_SetHue = reader.ReadInt();
 						
 					if ( GetSaveFlag( flags, SetFlag.LastEquipped ) )
@@ -3080,12 +3074,9 @@ namespace Server.Items
 				}
 			}
 
-			#region Mondain's Legacy
+			#region Mondain's Legacy Sets
 			if ( m_SetAttributes == null )
 				m_SetAttributes = new AosAttributes( this );
-	
-			if ( m_SetWeaponAttributes == null )
-				m_SetWeaponAttributes = new AosWeaponAttributes( this );
 				
 			if ( m_SetSkillBonuses == null )
 				m_SetSkillBonuses =  new AosSkillBonuses( this );	
@@ -3154,12 +3145,9 @@ namespace Server.Items
 			m_AosSkillBonuses = new AosSkillBonuses( this );
 			m_AosElementDamages = new AosElementAttributes( this );
 			
-			#region Mondain's Legacy
+			#region Mondain's Legacy Sets
 			m_SetAttributes = new AosAttributes( this );
-			m_SetWeaponAttributes = new AosWeaponAttributes( this );
 			m_SetSkillBonuses = new AosSkillBonuses( this );
-			
-			m_LastEquipped = false;
 			#endregion
 		}
 
@@ -3309,16 +3297,14 @@ namespace Server.Items
 				list.Add( 1041350 ); // faction item
 			#endregion
 
-			#region Mondain's Legacy
+			#region Mondain's Legacy Sets
 			if ( IsSetItem )
 			{
-				// always mixed
 				list.Add( 1073491, Pieces.ToString() ); // Part of a Weapon/Armor Set (~1_val~ pieces)
 					
 				if ( m_SetEquipped )
 				{
-					list.Add( 1073492 ); // Full Weapon/Armor Set Present
-				
+					list.Add( 1073492 ); // Full Weapon/Armor Set Present			
 					GetSetProperties( list );
 				}
 			}
@@ -3563,11 +3549,10 @@ namespace Server.Items
 			if ( m_Hits >= 0 && m_MaxHits > 0 )
 				list.Add( 1060639, "{0}\t{1}", m_Hits, m_MaxHits ); // durability ~1_val~ / ~2_val~
 				
-			#region Mondain's Legacy
+			#region Mondain's Legacy Sets
 			if ( IsSetItem && !m_SetEquipped )
 			{
-				list.Add( 1072378 ); // <br>Only when full set is present:
-				
+				list.Add( 1072378 ); // <br>Only when full set is present:				
 				GetSetProperties( list );
 			}
 			#endregion
@@ -3824,16 +3809,14 @@ namespace Server.Items
 
 		#endregion
 		
-		#region Mondain's Legacy Set Armor
+		#region Mondain's Legacy Sets
 		public override bool OnDragLift( Mobile from )
 		{
 			if ( Parent is Mobile && from == Parent )
-			{
-				Mobile m = (Mobile) Parent;
-				
-				if ( IsSetItem ? m_SetEquipped : false )
-					SetHelper.RemoveSetBonus( from, SetID, this );			
-			}
+			{			
+				if ( IsSetItem && m_SetEquipped )
+					SetHelper.RemoveSetBonus( from, SetID, this );
+			}			
 			
 			return base.OnDragLift( from );
 		}
@@ -3841,7 +3824,7 @@ namespace Server.Items
 		public virtual SetItem SetID{ get{ return SetItem.None; } }
 		public virtual int Pieces{ get{ return 0; } }
 				
-		public bool IsSetItem{ get{ return SetID == SetItem.None ? false : true; } }
+		public bool IsSetItem{ get{ return SetID != SetItem.None; } }
 		
 		private int m_SetHue;
 		private bool m_SetEquipped;
@@ -3867,20 +3850,13 @@ namespace Server.Items
 		}		
 		
 		private AosAttributes m_SetAttributes;
-		private AosWeaponAttributes m_SetWeaponAttributes;
 		private AosSkillBonuses m_SetSkillBonuses;
+		private int m_SetSelfRepair;
 		
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosAttributes SetAttributes
 		{
 			get{ return m_SetAttributes; }
-			set{}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public AosWeaponAttributes SetWeaponAttributes
-		{
-			get{ return m_SetWeaponAttributes; }
 			set{}
 		}
 
@@ -3891,92 +3867,21 @@ namespace Server.Items
 			set{}
 		}	
 		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int SetSelfRepair
+		{
+			get{ return m_SetSelfRepair; }
+			set{ m_SetSelfRepair = value; InvalidateProperties(); }
+		}
+		
 		public virtual void GetSetProperties( ObjectPropertyList list )
-		{						
+		{					
 			int prop;
-			
-			if ( !SetEquipped )	
-			{
-				if ( (prop = m_SetWeaponAttributes.ResistPhysicalBonus) != 0 )
-					list.Add( 1072382, prop.ToString() ); // physical resist +~1_val~%
-					
-				if ( (prop = m_SetWeaponAttributes.ResistFireBonus) != 0 )
-					list.Add( 1072383, prop.ToString() ); // fire resist +~1_val~%
-					
-				if ( (prop = m_SetWeaponAttributes.ResistColdBonus) != 0 )
-					list.Add( 1072384, prop.ToString() ); // cold resist +~1_val~%
-					
-				if ( (prop = m_SetWeaponAttributes.ResistPoisonBonus) != 0 )
-					list.Add( 1072385, prop.ToString() ); // poison resist +~1_val~%
-					
-				if ( (prop = m_SetWeaponAttributes.ResistEnergyBonus) != 0 )
-					list.Add( 1072386, prop.ToString() ); // energy resist +~1_val~%				
-			}						
-	
-			if ( (prop = m_SetWeaponAttributes.UseBestSkill) != 0 && WeaponAttributes.UseBestSkill == 0 )
-				list.Add( 1060400 ); // use best weapon skill
-				
-			if ( (prop = m_SetWeaponAttributes.DurabilityBonus) != 0 && GetDurabilityBonus() == 0 )
-				list.Add( 1060410, prop.ToString() ); // durability ~1_val~%
-				
-			if ( (prop = m_SetWeaponAttributes.LowerStatReq) != 0 && GetLowerStatReq() == 0 )
-				list.Add( 1060435, prop.ToString() ); // lower requirements ~1_val~%
-				
-			if ( (prop = m_SetWeaponAttributes.MageWeapon) != 0 && WeaponAttributes.MageWeapon == 0 )
-				list.Add( 1060438, (30 - prop).ToString() ); // mage weapon -~1_val~ skill
-				
-			if ( (prop = m_SetWeaponAttributes.SelfRepair) != 0 && WeaponAttributes.SelfRepair == 0 )
+
+			if ( (prop = m_SetSelfRepair) != 0 && WeaponAttributes.SelfRepair == 0 )
 				list.Add( 1060450, prop.ToString() ); // self repair ~1_val~	
-	            		
-			if ( m_AosSkillBonuses.Skill_1_Value != 0 )
-				list.Add( 1072502, "{0}\t{1}", "#" + ( 1044060 + (int) m_AosSkillBonuses.Skill_1_Name ), m_AosSkillBonuses.Skill_1_Value ); // ~1_skill~ ~2_val~ (total)
-			
-			SetHelper.GetSetProperties( list, Attributes, m_SetAttributes, m_SetEquipped );
-			
-			if ( (prop = m_SetWeaponAttributes.HitColdArea) != 0 && WeaponAttributes.HitColdArea == 0 )
-				list.Add( 1060416, prop.ToString() ); // hit cold area ~1_val~%
 
-			if ( (prop = m_SetWeaponAttributes.HitDispel) != 0 && WeaponAttributes.HitDispel == 0 )
-				list.Add( 1060417, prop.ToString() ); // hit dispel ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitEnergyArea) != 0 && WeaponAttributes.HitEnergyArea == 0 )
-				list.Add( 1060418, prop.ToString() ); // hit energy area ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitFireArea) != 0 && WeaponAttributes.HitFireArea == 0 )
-				list.Add( 1060419, prop.ToString() ); // hit fire area ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitFireball) != 0 && WeaponAttributes.HitFireball == 0 )
-				list.Add( 1060420, prop.ToString() ); // hit fireball ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitHarm) != 0 && WeaponAttributes.HitHarm == 0 )
-				list.Add( 1060421, prop.ToString() ); // hit harm ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitLeechHits) != 0 && WeaponAttributes.HitLeechHits == 0 )
-				list.Add( 1060422, prop.ToString() ); // hit life leech ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitLightning) != 0 && WeaponAttributes.HitLightning == 0 )
-				list.Add( 1060423, prop.ToString() ); // hit lightning ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitLowerAttack) != 0 && WeaponAttributes.HitLowerAttack == 0 )
-				list.Add( 1060424, prop.ToString() ); // hit lower attack ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitLowerDefend) != 0 && WeaponAttributes.HitLowerDefend == 0 )
-				list.Add( 1060425, prop.ToString() ); // hit lower defense ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitMagicArrow) != 0 && WeaponAttributes.HitMagicArrow == 0 )
-				list.Add( 1060426, prop.ToString() ); // hit magic arrow ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitLeechMana) != 0 && WeaponAttributes.HitLeechMana == 0 )
-				list.Add( 1060427, prop.ToString() ); // hit mana leech ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitPhysicalArea) != 0 && WeaponAttributes.HitPhysicalArea == 0 )
-				list.Add( 1060428, prop.ToString() ); // hit physical area ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitPoisonArea) != 0 && WeaponAttributes.HitPoisonArea == 0 )
-				list.Add( 1060429, prop.ToString() ); // hit poison area ~1_val~%
-
-			if ( (prop = m_SetWeaponAttributes.HitLeechStam) != 0 && WeaponAttributes.HitLeechStam == 0 )
-				list.Add( 1060430, prop.ToString() ); // hit stamina leech ~1_val~%
+			SetHelper.GetSetProperties( list, this );
 		}
 		#endregion
 	}

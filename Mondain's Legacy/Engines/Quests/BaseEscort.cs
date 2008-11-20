@@ -12,6 +12,8 @@ namespace Server.Engines.Quests
 {
 	public class BaseEscort : MondainQuester
 	{
+		public override bool InitialInnocent{ get{ return true; } }
+		public override bool IsInvulnerable{ get{ return false; } }
 		public override bool Commandable{ get{ return false; } }
 		public override Type[] Quests{ get{ return null; } }	
 
@@ -49,9 +51,6 @@ namespace Server.Engines.Quests
 			RangeFight = 1;
 			ActiveSpeed = 0.2;
 			PassiveSpeed = 1.0;
-		
-			InitBody();
-			InitOutfit();
 			
 			ControlSlots = 3;
 		}

@@ -297,6 +297,8 @@ namespace Server.Misc
 				
 				return Notoriety.Innocent;
 			}
+			else if ( source.Player && target is Engines.Quests.BaseEscort )
+				return Notoriety.Innocent;
 			#endregion
 
 			if( target.Criminal )

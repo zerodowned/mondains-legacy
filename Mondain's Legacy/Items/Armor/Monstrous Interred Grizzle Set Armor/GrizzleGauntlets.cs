@@ -28,7 +28,7 @@ namespace Server.Items
 			SetAttributes.DefendChance = 10;
 			SetAttributes.BonusStr = 12;
 			
-			SetArmorAttributes.SelfRepair = 3;
+			SetSelfRepair = 3;
 			
 			SetPhysicalBonus = 3;
 			SetFireBonus = 5;

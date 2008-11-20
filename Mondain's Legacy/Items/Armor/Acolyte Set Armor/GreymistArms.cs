@@ -27,7 +27,7 @@ namespace Server.Items
 			SetAttributes.Luck = 100;
 			SetAttributes.NightSight = 1;
 			
-			SetArmorAttributes.SelfRepair = 3;
+			SetSelfRepair = 3;
 			
 			SetPhysicalBonus = 3;
 			SetFireBonus = 3;

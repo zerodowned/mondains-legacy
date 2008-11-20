@@ -122,9 +122,9 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			/*int version = reader.ReadInt();
+			int version = reader.ReadInt();
 			
-			m_Components = reader.ReadStrongItemList<AddonContainerComponent>();*/
+			m_Components = reader.ReadStrongItemList<AddonContainerComponent>();
 			
 			AddonComponent.ApplyLightTo( this );
 		}

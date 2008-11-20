@@ -430,9 +430,7 @@ namespace Server.Engines.Quests
 	}
 
 	public class NewHavenEscortable : BaseEscort
-	{				
-		public override bool InitialInnocent{ get{ return true; } }
-		public override bool IsInvulnerable{ get{ return false; } }		
+	{
 		public override Type[] Quests{ get{ return new Type[] {	m_Quest }; } }
 
 		private Type m_Quest;
@@ -455,7 +453,6 @@ namespace Server.Engines.Quests
 				case 10: m_Quest = typeof( NewHavenBowyerEscortQuest ); break;
 				case 11: m_Quest = typeof( NewHavenBankEscortQuest ); break;
 			}
-
 		}
 		
 		public NewHavenEscortable( Serial serial ) : base( serial )
@@ -507,6 +504,7 @@ namespace Server.Engines.Quests
 			base.InitBody();
 
 			Female = true;
+			Body = 401;
 			Name = NameList.RandomName( "female" );
 		}
 
@@ -551,6 +549,7 @@ namespace Server.Engines.Quests
 			base.InitBody();
 
 			Female = false;
+			Body = 400;
 			Name = NameList.RandomName( "male" );
 		}
 

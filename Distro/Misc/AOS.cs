@@ -509,15 +509,7 @@ namespace Server
 
 					if( attrs != null )
 						value += attrs[attribute];
-				}
-				
-				if ( obj is BaseWeapon )
-				{
-					AosWeaponAttributes attrs = ((BaseWeapon)obj).SetWeaponAttributes;
-					
-					if( attrs != null && ((BaseWeapon)obj).SetEquipped )
-						value += attrs[attribute];
-				}				
+				}			
 				#endregion
 			}
 
@@ -658,23 +650,6 @@ namespace Server
 					if( attrs != null )
 						value += attrs[attribute];
 				}
-				
-				#region Mondain's Legacy
-				if ( obj is BaseArmor )
-				{
-					AosArmorAttributes attrs = ((BaseArmor)obj).SetArmorAttributes;
-					
-					if( attrs != null && ((BaseArmor)obj).SetEquipped )
-						value += attrs[attribute];
-				}
-				else if( obj is BaseClothing )
-				{
-					AosArmorAttributes attrs = ((BaseArmor)obj).SetArmorAttributes;
-
-					if( attrs != null && ((BaseArmor)obj).SetEquipped )
-						value += attrs[attribute];
-				}
-				#endregion
 			}
 
 			return value;

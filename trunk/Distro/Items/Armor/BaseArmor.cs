@@ -776,6 +776,7 @@ namespace Server.Items
 			Hue					= 0x00000100,
 			LastEquipped		= 0x00000200,
 			SetEquipped			= 0x00000400,
+			SetSelfRepair		= 0x00000800,
 		}
 		#endregion
 
@@ -798,6 +799,7 @@ namespace Server.Items
 			SetSaveFlag( ref sflags, SetFlag.Hue,				m_SetHue != 0 );
 			SetSaveFlag( ref sflags, SetFlag.LastEquipped,		m_LastEquipped );			
 			SetSaveFlag( ref sflags, SetFlag.SetEquipped,		m_SetEquipped );
+			SetSaveFlag( ref sflags, SetFlag.SetSelfRepair,		m_SetSelfRepair != 0 );
 			
 			writer.WriteEncodedInt( (int) sflags );
 			
@@ -830,6 +832,9 @@ namespace Server.Items
 				
 			if ( GetSaveFlag( sflags, SetFlag.SetEquipped ) )
 				writer.Write( (bool) m_SetEquipped );
+				
+			if ( GetSaveFlag( sflags, SetFlag.SetSelfRepair ) )
+				writer.WriteEncodedInt( (int) m_SetSelfRepair );
 			#endregion
 
 			SaveFlag flags = SaveFlag.None;
@@ -948,6 +953,9 @@ namespace Server.Items
 						m_SetAttributes = new AosAttributes( this, reader );
 					else
 						m_SetAttributes = new AosAttributes( this );
+					
+					if ( GetSaveFlag( sflags, SetFlag.ArmorAttributes ) )
+						m_SetSelfRepair = (new AosArmorAttributes( this, reader )).SelfRepair;
 						
 					if ( GetSaveFlag( sflags, SetFlag.SkillBonuses ) )
 						m_SetSkillBonuses = new AosSkillBonuses( this, reader );
@@ -977,6 +985,9 @@ namespace Server.Items
 						
 					if ( GetSaveFlag( sflags, SetFlag.SetEquipped ) )
 						m_SetEquipped = reader.ReadBool();
+						
+					if ( GetSaveFlag( sflags, SetFlag.SetSelfRepair ) )
+						m_SetSelfRepair = reader.ReadEncodedInt();
 					
 					goto case 7;
 				#endregion

@@ -917,7 +917,7 @@ namespace Server.Items
 						m_SetAttributes = new AosAttributes( this );
 					
 					if ( GetSaveFlag( sflags, SetFlag.ArmorAttributes ) )
-						m_SetSelfRepair = (new AosWeaponAttributes( this, reader )).SelfRepair;
+						m_SetSelfRepair = (new AosArmorAttributes( this, reader )).SelfRepair;
 						
 					if ( GetSaveFlag( sflags, SetFlag.SkillBonuses ) )
 						m_SetSkillBonuses = new AosSkillBonuses( this, reader );

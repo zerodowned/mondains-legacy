@@ -108,6 +108,11 @@ namespace Server.Items
 			m_GemType = GemType.None;
 
 			Layer = layer;
+
+			#region Mondain's Legacy Sets
+			m_SetAttributes = new AosAttributes( this );
+			m_SetSkillBonuses = new AosSkillBonuses( this );
+			#endregion
 		}
 
 		public override void OnAdded( object parent )
@@ -293,7 +298,7 @@ namespace Server.Items
 			#region Mondain's Legacy Sets version 4
 			writer.Write( (bool) m_LastEquipped );
 			writer.Write( (bool) m_SetEquipped );
-			writer.Write( (int) m_SetHue );
+			writer.WriteEncodedInt( (int) m_SetHue );
 
 			m_SetAttributes.Serialize( writer );
 			m_SetSkillBonuses.Serialize( writer );
@@ -325,7 +330,7 @@ namespace Server.Items
 				{
 					m_LastEquipped = reader.ReadBool();
 					m_SetEquipped = reader.ReadBool();
-					m_SetHue = reader.ReadInt();
+					m_SetHue = reader.ReadEncodedInt();
 
 					m_SetAttributes = new AosAttributes( this, reader );
 					m_SetSkillBonuses = new AosSkillBonuses( this, reader );

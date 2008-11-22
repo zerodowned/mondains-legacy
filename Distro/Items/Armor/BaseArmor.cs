@@ -825,7 +825,7 @@ namespace Server.Items
 				writer.WriteEncodedInt( (int) m_SetEnergyBonus );
 				
 			if ( GetSaveFlag( sflags, SetFlag.Hue ) )
-				writer.Write( (int) m_SetHue );
+				writer.WriteEncodedInt( (int) m_SetHue );
 				
 			if ( GetSaveFlag( sflags, SetFlag.LastEquipped ) )
 				writer.Write( (bool) m_LastEquipped );
@@ -978,7 +978,7 @@ namespace Server.Items
 						m_SetEnergyBonus = reader.ReadEncodedInt();
 						
 					if ( GetSaveFlag( sflags, SetFlag.Hue ) )
-						m_SetHue = reader.ReadInt();
+						m_SetHue = reader.ReadEncodedInt();
 						
 					if ( GetSaveFlag( sflags, SetFlag.LastEquipped ) )
 						m_LastEquipped = reader.ReadBool();

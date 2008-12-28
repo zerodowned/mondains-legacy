@@ -905,10 +905,11 @@ namespace Server.Items
 
 			double delayInSeconds;
 
+			#region Mondain's Legacy
 			if ( Core.ML )
 			{
 				float ticks = MlSpeed * 4;
-				int stamTicks = Math.Min( m.Stam / 30, 1 );
+				int stamTicks = m.Stam / 30;
 								
 				// Swing speed bonus
 				int bonus = AosAttributes.GetValue( m, AosAttribute.WeaponSpeed );
@@ -942,8 +943,9 @@ namespace Server.Items
 				if ( bonus > 60 )
 					bonus = 60;
 					
-				delayInSeconds = Math.Max( ( ( ticks - stamTicks ) * ( 100.0 / ( 100 + bonus ) ) ) / 4, 1.25 );								
+				delayInSeconds = Math.Max( ( ( ticks - stamTicks ) * ( 100.0 / ( 100 + bonus ) ) ) / 4, 1.25 );
 			}
+			#endregion
 			else if ( Core.SE )
 			{
 				/*

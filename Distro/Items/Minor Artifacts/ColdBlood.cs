@@ -3,34 +3,34 @@ using Server;
 
 namespace Server.Items
 {
-	public class DreadsRevenge : Kryss
+	public class ColdBlood : Cleaver
 	{
-		public override int LabelNumber{ get{ return 1072092; } } // Dread's Revenge
+		public override int LabelNumber{ get{ return 1070818; } } // Cold Blood
 
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
 		[Constructable]
-		public DreadsRevenge() : base()
+		public ColdBlood()
 		{
-			Hue = 0x3A;
-			
-			SkillBonuses.SetValues( 0, SkillName.Fencing, 20.0 );
-			
-			WeaponAttributes.HitPoisonArea = 30;
-			Attributes.AttackChance = 15;
-			Attributes.WeaponSpeed = 50;
+			Hue = 0x4F2;
+
+			Attributes.WeaponSpeed = 40;
+
+			Attributes.BonusHits = 6;
+			Attributes.BonusStam = 6;
+			Attributes.BonusMana = 6;
         }
 
 		#region Mondain's Legacy
 		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = fire = cold = nrgy = chaos = direct = 0;
-			pois = 100;
+			phys = fire = pois = nrgy = chaos = direct = 0;
+			cold = 100;
 		}
 		#endregion
 
-		public DreadsRevenge( Serial serial ) : base( serial )
+		public ColdBlood( Serial serial ) : base( serial )
 		{
 		}
 
@@ -38,7 +38,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 0 );
 		}
 		
 		public override void Deserialize(GenericReader reader)

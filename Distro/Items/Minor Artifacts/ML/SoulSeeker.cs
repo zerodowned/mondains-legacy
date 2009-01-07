@@ -1,26 +1,26 @@
 using System;
+using Server.Network;
 using Server.Items;
 
 namespace Server.Items
 {
-	public class MischiefMaker : MagicalShortbow
+	public class SoulSeeker : RadiantScimitar
 	{
-		public override int LabelNumber{ get{ return 1072910; } } // Mischief Maker
+		public override int LabelNumber{ get{ return 1075046; } } // Soul Seeker
+
+		public override int InitMinHits{ get{ return 255; } }
+		public override int InitMaxHits{ get{ return 255; } }
 
 		[Constructable]
-		public MischiefMaker() : base()
+		public SoulSeeker()
 		{
-			Hue = 0x8AB;
-			Balanced = true;
-			
-			Slayer = SlayerName.Exorcism;
-			
-			Attributes.WeaponSpeed = 35;
-			Attributes.WeaponDamage = 45;
-		}
+			Hue = 0x38C;
 
-		public MischiefMaker( Serial serial ) : base( serial )
-		{
+			WeaponAttributes.HitLeechStam = 40;
+			WeaponAttributes.HitLeechMana = 40;
+			WeaponAttributes.HitLeechHits = 40;
+			Attributes.WeaponSpeed = 60;
+			Slayer = SlayerName.Repond;
 		}
 
 		#region Mondain's Legacy
@@ -30,6 +30,10 @@ namespace Server.Items
 			cold = 100;
 		}
 		#endregion
+
+		public SoulSeeker( Serial serial ) : base( serial )
+		{
+		}
 
 		public override void Serialize( GenericWriter writer )
 		{

@@ -2066,12 +2066,12 @@ namespace Server.Items
 		}
 
 		// Mondain's Legacy mod
-		public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		/*public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
 		{
 			int dummy;
 			
 			GetDamageTypes( wielder, out phys, out fire, out cold, out pois, out nrgy, out dummy, out dummy );
-		}
+		}*/
 		
 		public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
@@ -2084,9 +2084,12 @@ namespace Server.Items
 				cold = bc.ColdDamage;
 				pois = bc.PoisonDamage;
 				nrgy = bc.EnergyDamage;
-				chaos = 0;
+
+                #region Mondain's Legacy
+                chaos = 0;
 				direct = 0;
-			}
+                #endregion
+            }
 			else
 			{
 				fire = m_AosElementDamages.Fire;
@@ -3187,10 +3190,13 @@ namespace Server.Items
 
 		public int GetElementalDamageHue()
 		{
-			int phys, fire, cold, pois, nrgy;
-			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy );
-			//Order is Cold, Energy, Fire, Poison, Physical left
+			#region Mondain's Legacy
+			int phys, fire, cold, pois, nrgy, chaos, direct;
+			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );
+			#endregion
 
+			//Order is Cold, Energy, Fire, Poison, Physical left
+			
 			int currentMax = 50;
 			int hue = 0;
 

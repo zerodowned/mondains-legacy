@@ -1,36 +1,35 @@
 using System;
+using Server.Network;
 using Server.Items;
 
 namespace Server.Items
 {
-	public class FaerieFire : ElvenCompositeLongbow
+	public class SilvanisFeywoodBow : ElvenCompositeLongbow
 	{
-		public override int LabelNumber{ get{ return 1072908; } } // Faerie Fire
+		public override int LabelNumber{ get{ return 1072955; } } // Silvani's Feywood Bow
 
 		[Constructable]
-		public FaerieFire() : base()
+		public SilvanisFeywoodBow()
 		{
-			Hue = 0x489;
-			Balanced = true;
-			
-			Attributes.BonusDex = 3;
-			Attributes.WeaponSpeed = 20;
-			Attributes.WeaponDamage = 60;
-			
-			WeaponAttributes.HitFireball = 25;
-		}
+			Hue = 0x1A;
 
-		public FaerieFire( Serial serial ) : base( serial )
-		{
+			Attributes.SpellChanneling = 1;
+			Attributes.AttackChance = 12;
+			Attributes.WeaponSpeed = 30;
+			Attributes.WeaponDamage = 35;
         }
 
-		#region Mondain's Legacy
+        #region Mondain's Legacy
 		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = cold = pois = nrgy = chaos = direct = 0;
-			fire = 100;
+			phys = fire = cold = pois = chaos = direct = 0;
+			nrgy = 100;
 		}
-		#endregion
+        #endregion
+
+		public SilvanisFeywoodBow( Serial serial ) : base( serial )
+		{
+		}
 
 		public override void Serialize( GenericWriter writer )
 		{

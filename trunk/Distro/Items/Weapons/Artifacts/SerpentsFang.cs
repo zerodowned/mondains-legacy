@@ -3,34 +3,35 @@ using Server;
 
 namespace Server.Items
 {
-	public class DreadsRevenge : Kryss
+	public class SerpentsFang : Kryss
 	{
-		public override int LabelNumber{ get{ return 1072092; } } // Dread's Revenge
+		public override int LabelNumber{ get{ return 1061601; } } // Serpent's Fang
+		public override int ArtifactRarity{ get{ return 11; } }
 
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
 		[Constructable]
-		public DreadsRevenge() : base()
+		public SerpentsFang()
 		{
-			Hue = 0x3A;
-			
-			SkillBonuses.SetValues( 0, SkillName.Fencing, 20.0 );
-			
-			WeaponAttributes.HitPoisonArea = 30;
+			ItemID = 0x1400;
+			Hue = 0x488;
+			WeaponAttributes.HitPoisonArea = 100;
+			WeaponAttributes.ResistPoisonBonus = 20;
 			Attributes.AttackChance = 15;
-			Attributes.WeaponSpeed = 50;
+			Attributes.WeaponDamage = 50;
         }
 
 		#region Mondain's Legacy
 		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = fire = cold = nrgy = chaos = direct = 0;
-			pois = 100;
+			fire = cold = nrgy = chaos = direct = 0;
+			phys = 25;
+			pois = 75;
 		}
 		#endregion
 
-		public DreadsRevenge( Serial serial ) : base( serial )
+		public SerpentsFang( Serial serial ) : base( serial )
 		{
 		}
 
@@ -38,7 +39,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 0 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
@@ -46,6 +47,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( ItemID == 0x1401 )
+				ItemID = 0x1400;
 		}
 	}
 }

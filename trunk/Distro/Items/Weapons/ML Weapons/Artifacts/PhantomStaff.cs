@@ -1,35 +1,34 @@
 using System;
+using Server.Network;
 using Server.Items;
 
 namespace Server.Items
 {
-	public class MischiefMaker : MagicalShortbow
+	public class PhantomStaff : WildStaff
 	{
-		public override int LabelNumber{ get{ return 1072910; } } // Mischief Maker
+		public override int LabelNumber{ get{ return 1072919; } } // Phantom Staff
 
 		[Constructable]
-		public MischiefMaker() : base()
+		public PhantomStaff()
 		{
-			Hue = 0x8AB;
-			Balanced = true;
-			
-			Slayer = SlayerName.Exorcism;
-			
-			Attributes.WeaponSpeed = 35;
-			Attributes.WeaponDamage = 45;
+			Hue = 0x1;
+			Attributes.RegenHits = 2;
+			Attributes.NightSight = 1;
+			Attributes.WeaponSpeed = 20;
+			Attributes.WeaponDamage = 60;
 		}
-
-		public MischiefMaker( Serial serial ) : base( serial )
-		{
-		}
-
+        
 		#region Mondain's Legacy
 		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			pois = fire = phys = nrgy = chaos = direct = 0;
-			cold = 100;
+			phys = fire = nrgy = chaos = direct = 0;
+			cold = pois = 50;
 		}
 		#endregion
+
+		public PhantomStaff( Serial serial ) : base( serial )
+		{
+		}
 
 		public override void Serialize( GenericWriter writer )
 		{

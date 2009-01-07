@@ -3,23 +3,21 @@ using Server;
 
 namespace Server.Items
 {
-	public class DreadsRevenge : Kryss
+	public class WrathOfTheDryad : GnarledStaff
 	{
-		public override int LabelNumber{ get{ return 1072092; } } // Dread's Revenge
+		public override int LabelNumber{ get{ return 1070853; } } // Wrath of the Dryad
 
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
 		[Constructable]
-		public DreadsRevenge() : base()
+		public WrathOfTheDryad()
 		{
-			Hue = 0x3A;
-			
-			SkillBonuses.SetValues( 0, SkillName.Fencing, 20.0 );
-			
-			WeaponAttributes.HitPoisonArea = 30;
+			Hue = 0x29C;
+			WeaponAttributes.HitLeechMana = 50;
+			WeaponAttributes.HitLightning = 33;
 			Attributes.AttackChance = 15;
-			Attributes.WeaponSpeed = 50;
+			Attributes.WeaponDamage = 40;
         }
 
 		#region Mondain's Legacy
@@ -30,7 +28,7 @@ namespace Server.Items
 		}
 		#endregion
 
-		public DreadsRevenge( Serial serial ) : base( serial )
+		public WrathOfTheDryad( Serial serial ) : base( serial )
 		{
 		}
 
@@ -38,7 +36,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 0 );
 		}
 		
 		public override void Deserialize(GenericReader reader)

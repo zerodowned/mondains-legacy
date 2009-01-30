@@ -437,44 +437,61 @@ namespace Server.Engines.Quests
 		}
 	}
 
-	public class NewBaseEscortable : BaseEscort
+	public class TownEscortable : BaseEscort
 	{
-		public override Type[] Quests{ get{ return new Type[] {	m_Quest }; } }
+		private static Type[] m_Quests = new Type[]
+		{
+			typeof( EscortToYewQuest ),
+			typeof( EscortToVesperQuest ),
+			typeof( EscortToTrinsicQuest ),
+			typeof( EscortToSkaraQuest ),
+			typeof( EscortToSerpentsHoldQuest ),
+			typeof( EscortToNujelmQuest ),
+			typeof( EscortToMoonglowQuest ),
+			typeof( EscortToMinocQuest ),
+			typeof( EscortToMaginciaQuest ),
+			typeof( EscortToJhelomQuest ),
+			typeof( EscortToCoveQuest ),
+			typeof( EscortToBritainQuest )
+		};
 
-		private Type m_Quest;
+		private static string[] m_Destinations = new string[]
+		{
+			"Yew",
+			"Vesper",
+			"Trinsic",
+			"Skara Brae",
+			"Serpent's Hold",
+			"Nujel'm",
+			"Moonglow",
+			"Minoc",
+			"Magincia",
+			"Jhelom",
+			"Cove",
+			"Britain"
+		};
+
+		public override Type[] Quests { get { return new Type[] { m_Quests[ m_Quest ] }; } }
+
+		private int m_Quest;
 	
-		[Constructable]
-		public NewBaseEscortable() : base()
-		{			
-			switch ( Utility.Random( 12 ) )
-			{
-				case 0: m_Quest = typeof( EscortToYewQuest ); break;
-				case 1: m_Quest = typeof( EscortToVesperQuest ); break;
-				case 2: m_Quest = typeof( EscortToTrinsicQuest ); break;
-				case 3: m_Quest = typeof( EscortToSkaraQuest ); break;
-				case 4: m_Quest = typeof( EscortToSerpentsHoldQuest ); break;
-				case 5: m_Quest = typeof( EscortToNujelmQuest ); break;
-				case 6: m_Quest = typeof( EscortToMoonglowQuest ); break;
-				case 7: m_Quest = typeof( EscortToMinocQuest ); break;
-				case 8: m_Quest = typeof( EscortToMaginciaQuest ); break;
-				case 9: m_Quest = typeof( EscortToJhelomQuest ); break;
-				case 10: m_Quest = typeof( EscortToCoveQuest ); break;
-				case 11: m_Quest = typeof( EscortToBritainQuest ); break;
-			}
+		public TownEscortable() : base()
+		{
+			m_Quest = Utility.Random( m_Quests.Length );
 		}
 		
-		public NewBaseEscortable( Serial serial ) : base( serial )
+		public TownEscortable( Serial serial ) : base( serial )
 		{
 		}
-		
-		public override bool CanBeDamaged()
-		{
-			return true;
-		}
-		
+
 		public override void Advertise()
 		{
 			Say( Utility.RandomMinMax( 1072301, 1072303 ) );
+		}
+
+		public override Region GetDestination()
+		{
+			return QuestHelper.FindRegion( m_Destinations[ m_Quest ] );
 		}
 		
 		public override void Serialize( GenericWriter writer )
@@ -482,8 +499,8 @@ namespace Server.Engines.Quests
 			base.Serialize( writer );
 
 			writer.WriteEncodedInt( 0 ); // version
-			
-			QuestWriter.Type( writer, m_Quest );
+
+			writer.Write( m_Quest );
 		}
 		
 		public override void Deserialize( GenericReader reader )
@@ -491,25 +508,25 @@ namespace Server.Engines.Quests
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-
-			m_Quest = QuestReader.Type( reader );
+			
+			m_Quest = reader.ReadInt();
 		}
 	}
 
-	public class NewMerchant : NewBaseEscortable
+	public class EscortableMerchant : TownEscortable
 	{
 		public override bool CanTeach { get { return true; } }
 		public override bool ClickTitle { get { return false; } }
 
 		[Constructable]
-		public NewMerchant()
+		public EscortableMerchant()
 		{
 			Title = "the merchant";
 			SetSkill( SkillName.ItemID, 55.0, 78.0 );
 			SetSkill( SkillName.ArmsLore, 55, 78 );
 		}
 
-		public NewMerchant( Serial serial ) : base( serial )
+		public EscortableMerchant( Serial serial ) : base( serial )
 		{
 		}
 
@@ -533,8 +550,6 @@ namespace Server.Engines.Quests
 			if( !Female )
 				AddItem( new BodySash( lowHue ) );
 
-			Utility.AssignRandomHair( this );
-
 			PackGold( 200, 250 );
 		}
 
@@ -551,15 +566,15 @@ namespace Server.Engines.Quests
 
 			int version = reader.ReadEncodedInt();
 		}
-	}	
-	
-	public class NewEscortableMage : NewBaseEscortable
+	}
+
+	public class EscortableMage : TownEscortable
 	{
 		public override bool CanTeach{ get{ return true; } }
 		public override bool ClickTitle{ get{ return false; } }
 
 		[Constructable]
-		public NewEscortableMage()
+		public EscortableMage()
 		{
 			Title = "the mage";
 
@@ -570,7 +585,7 @@ namespace Server.Engines.Quests
 			SetSkill( SkillName.MagicResist, 80.0, 100.0 );
 		}
 
-		public NewEscortableMage( Serial serial ) : base( serial )
+		public EscortableMage( Serial serial ) : base( serial )
 		{
 		}
 
@@ -586,8 +601,6 @@ namespace Server.Engines.Quests
 				AddItem( new ThighBoots( lowHue ) );
 			else
 				AddItem( new Boots( lowHue ) );
-
-			Utility.AssignRandomHair( this );
 
 			PackGold( 200, 250 );
 		}
@@ -606,19 +619,18 @@ namespace Server.Engines.Quests
 			int version = reader.ReadEncodedInt();
 		}
 	}
-	
-	public class NewMessenger : NewBaseEscortable
+
+	public class EscortableMessenger : TownEscortable
 	{
-		public override bool CanTeach{ get{ return true; } }
 		public override bool ClickTitle{ get{ return false; } }
 
 		[Constructable]
-		public NewMessenger()
+		public EscortableMessenger()
 		{
 			Title = "the messenger";
 		}
 
-		public NewMessenger( Serial serial ) : base( serial )
+		public EscortableMessenger( Serial serial ) : base( serial )
 		{
 		}
 
@@ -663,14 +675,69 @@ namespace Server.Engines.Quests
 			int version = reader.ReadEncodedInt();
 		}
 	}
-	
-	public class NewNoble : NewBaseEscortable
+
+	public class EscortableSeekerOfAdventure : TownEscortable
+	{
+		public override bool ClickTitle { get { return false; } }
+
+		[Constructable]
+		public EscortableSeekerOfAdventure()
+		{
+			Title = "the seeker of adventure";
+		}
+
+		public EscortableSeekerOfAdventure( Serial serial )	: base( serial )
+		{
+		}
+
+		public override void InitOutfit()
+		{
+			if ( Female )
+				AddItem( new FancyDress( GetRandomHue() ) );
+			else
+				AddItem( new FancyShirt( GetRandomHue() ) );
+
+			int lowHue = GetRandomHue();
+
+			AddItem( new ShortPants( lowHue ) );
+
+			if ( Female )
+				AddItem( new ThighBoots( lowHue ) );
+			else
+				AddItem( new Boots( lowHue ) );
+
+			if ( !Female )
+				AddItem( new BodySash( lowHue ) );
+
+			AddItem( new Cloak( GetRandomHue() ) );
+
+			AddItem( new Longsword() );
+
+			PackGold( 100, 150 );
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.WriteEncodedInt( (int) 0 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadEncodedInt();
+		}
+	}
+
+	public class EscortableNoble : TownEscortable
 	{
 		public override bool CanTeach{ get{ return true; } }
 		public override bool ClickTitle{ get{ return false; } }
 
 		[Constructable]
-		public NewNoble()
+		public EscortableNoble()
 		{
 			Title = "the noble";
 
@@ -679,7 +746,7 @@ namespace Server.Engines.Quests
 			SetSkill( SkillName.Tactics, 80.0, 100.0 );
 		}
 
-		public NewNoble( Serial serial ) : base( serial )
+		public EscortableNoble( Serial serial ) : base( serial )
 		{
 		}
 
@@ -707,8 +774,6 @@ namespace Server.Engines.Quests
 			if ( !Female )
 				AddItem( new Longsword() );
 
-			Utility.AssignRandomHair( this );
-
 			PackGold( 200, 250 );
 		}
 
@@ -726,14 +791,13 @@ namespace Server.Engines.Quests
 			int version = reader.ReadEncodedInt();
 		}
 	}
-	
-	public class NewBrideGroom : NewBaseEscortable
+
+	public class EscortableBrideGroom : TownEscortable
 	{
-		public override bool CanTeach{ get{ return true; } }
 		public override bool ClickTitle{ get{ return false; } }
 
 		[Constructable]
-		public NewBrideGroom()
+		public EscortableBrideGroom()
 		{
 			if ( Female )
 				Title = "the bride";
@@ -741,7 +805,7 @@ namespace Server.Engines.Quests
 				Title = "the groom";	
 		}
 
-		public NewBrideGroom( Serial serial ) : base( serial )
+		public EscortableBrideGroom( Serial serial ) : base( serial )
 		{
 		}
 
@@ -766,7 +830,7 @@ namespace Server.Engines.Quests
 			else
 				HairItemID = 0x203C;
 
-			HairHue = this.Race.RandomHairHue();
+			HairHue = Race.RandomHairHue();
 
 			PackGold( 200, 250 );
 		}

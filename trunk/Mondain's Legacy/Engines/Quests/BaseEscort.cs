@@ -48,6 +48,8 @@ namespace Server.Engines.Quests
 			RangeFight = 1;
 			ActiveSpeed = 0.2;
 			PassiveSpeed = 1.0;
+
+			ControlSlots = 0;
 		}
 		
 		public BaseEscort( Serial serial ) : base( serial )
@@ -103,6 +105,7 @@ namespace Server.Engines.Quests
 			Race = Race.Human;
 
 			Utility.AssignRandomHair( this );
+			Utility.AssignRandomFacialHair( this );
 		}
 
 		public override void Serialize( GenericWriter writer )

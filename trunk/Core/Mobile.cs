@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Mobile.cs 274 2007-12-17 20:41:34Z mark $
+ *   $Id: Mobile.cs 304 2009-01-30 23:12:13Z mark $
  *
  ***************************************************************************/
 
@@ -774,8 +774,8 @@ namespace Server
 
 		#endregion
 
-		private static TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds( 0.5 );
-		private static TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds( 2.0 );
+		private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds( (Core.SE ? 1.0 : 0.5) );
+		private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds( (Core.SE ? 4.0 : 2.0) );
 		private const int WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -1182,7 +1182,7 @@ namespace Server
 			UpdateAggrExpire();
 		}
 
-		public List<Mobile> Stabled { get { return m_Stabled; } set { m_Stabled = value; } }
+		public List<Mobile> Stabled { get { return m_Stabled; } }
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
 		public VirtueInfo Virtues { get { return m_Virtues; } set { } }
@@ -6682,7 +6682,7 @@ namespace Server
 						if( CanSee( m ) && Utility.InUpdateRange( m_Location, m.m_Location ) )
 						{
 							ns.Send( new MobileIncoming( this, m ) );
-							
+
 							if( m.IsDeadBondedPet )
 								ns.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
 
@@ -9302,11 +9302,11 @@ namespace Server
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
 				foreach( NetState state in eable )
-				{															
+				{
 					if( state.Mobile.CanSee( this ) )
 					{
-						state.Send( new MobileIncoming( state.Mobile, this ) );				
-						
+						state.Send( new MobileIncoming( state.Mobile, this ) );
+
 						if( IsDeadBondedPet )
 							state.Send( new BondedStatus( 0, m_Serial, 1 ) );
 

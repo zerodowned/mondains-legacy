@@ -351,16 +351,12 @@ namespace Server.Engines.Craft
 		private static Type[][] m_TypesTable = new Type[][]
 			{
 				new Type[]{ typeof( Log ), typeof( Board ) },
-				
-				#region Mondain's Legacy
-				new Type[]{ typeof( OakLog ), typeof( OakBoard ) },
-				new Type[]{ typeof( AshLog ), typeof( AshBoard ) },
-				new Type[]{ typeof( YewLog ), typeof( YewBoard ) },
 				new Type[]{ typeof( HeartwoodLog ), typeof( HeartwoodBoard ) },
 				new Type[]{ typeof( BloodwoodLog ), typeof( BloodwoodBoard ) },
 				new Type[]{ typeof( FrostwoodLog ), typeof( FrostwoodBoard ) },
-				#endregion
-				
+				new Type[]{ typeof( OakLog ), typeof( OakBoard ) },
+				new Type[]{ typeof( AshLog ), typeof( YewBoard ) },
+				new Type[]{ typeof( YewLog ), typeof( YewBoard ) },
 				new Type[]{ typeof( Leather ), typeof( Hides ) },
 				new Type[]{ typeof( SpinedLeather ), typeof( SpinedHides ) },
 				new Type[]{ typeof( HornedLeather ), typeof( HornedHides ) },

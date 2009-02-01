@@ -117,7 +117,20 @@ namespace Server.Items
 		
 		public BaseQuiver( Serial serial ) : base( serial )
 		{
-		}		
+		}
+
+		public override void OnAfterDuped( Item newItem )
+		{
+			BaseQuiver quiver = newItem as BaseQuiver;
+
+			if ( quiver == null )
+				return;
+
+			quiver.m_Attributes = new AosAttributes( newItem, m_Attributes );
+			quiver.m_SetAttributes = new AosAttributes( newItem, m_SetAttributes );
+			quiver.m_SetSkillBonuses = new AosSkillBonuses( newItem, m_SetSkillBonuses );
+			quiver.m_DamageModifier = new AosElementAttributes( newItem, m_DamageModifier );
+		}	
 		
 		public override int GetTotal( TotalType type )
 		{

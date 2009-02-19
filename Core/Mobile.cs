@@ -8335,23 +8335,8 @@ namespace Server
 		{
 			if( poison != null )
 			{
-				#region Mondain's Legacy
-				if ( poison == Poison.Darkglow )
-				{
-					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + ( poison.Level - 10 ) * 2 );
-					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + ( poison.Level - 10 ) * 2, Name );
-				}
-				else if ( poison == Poison.Parasitic )
-				{
-					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + ( poison.Level - 14 ) * 2 );
-					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + ( poison.Level - 14 ) * 2, Name );
-				}
-				else
-				{
-					this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + (poison.Level * 2) );
-					this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + (poison.Level * 2), Name );
-				}
-				#endregion
+				this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + (poison.Level * 2) );
+				this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + (poison.Level * 2), Name );
 			}
 		}
 
@@ -8374,7 +8359,9 @@ namespace Server
 		/// </summary>
 		public virtual bool CheckHigherPoison( Mobile from, Poison poison )
 		{
-			return (m_Poison != null && m_Poison.Level >= poison.Level);
+			#region Mondain's Legacy mod
+			return (m_Poison != null && m_Poison.RealLevel >= poison.RealLevel);
+			#endregion
 		}
 
 		/// <summary>

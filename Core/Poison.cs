@@ -63,6 +63,9 @@ namespace Server
 		public static Poison Lethal{ get{ return GetPoison( "Lethal" ); } }
 
 		#region Mondain's Legacy
+		public abstract int RealLevel{ get; }
+		public abstract int LabelNumber{ get; }
+
 		public static Poison Parasitic{ get{ return GetPoison( "DeadlyParasitic" ); } }
 		public static Poison Darkglow{ get{ return GetPoison( "GreaterDarkglow" ); } }
 		#endregion

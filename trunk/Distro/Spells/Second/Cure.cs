@@ -40,7 +40,7 @@ namespace Server.Spells.Second
 				if ( p != null )
 				{
 					#region Mondain's Legacy mod
-					int chanceToCure = 10000 + (int)(Caster.Skills[SkillName.Magery].Value * 75) - ((p.Level + 1) * (Core.AOS ? (p.RealLevel < 4 ? 3300 : 3100) : 1750));
+					int chanceToCure = 10000 + (int)(Caster.Skills[SkillName.Magery].Value * 75) - ((p.RealLevel + 1) * (Core.AOS ? (p.RealLevel < 4 ? 3300 : 3100) : 1750));
 					#endregion
 
 					chanceToCure /= 100;

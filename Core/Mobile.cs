@@ -8335,8 +8335,10 @@ namespace Server
 		{
 			if( poison != null )
 			{
-				this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + (poison.Level * 2) );
-				this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + (poison.Level * 2), Name );
+				#region Mondain's Legacy
+				this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + (poison.RealLevel * 2) );
+				this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + (poison.RealLevel * 2), Name );
+				#endregion
 			}
 		}
 

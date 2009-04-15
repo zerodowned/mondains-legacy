@@ -340,10 +340,10 @@ namespace Server
 				}
 				else if ( attribute == AosAttribute.CastSpeed )
 				{
-					if ( MonstrousInterredGrizzle.UnderCacophonicAttack( m ) || LadyMelisande.UnderSlowAttack( m ) )
+					if ( MonstrousInterredGrizzle.UnderCacophonicAttack( m ) || LadyMelisande.UnderPutridNausea( m ) )
 						value -= 3; // TODO check
 				}
-				else if ( attribute == AosAttribute.WeaponSpeed || LadyMelisande.UnderSlowAttack( m ))
+				else if ( attribute == AosAttribute.WeaponSpeed || LadyMelisande.UnderPutridNausea( m ) )
 				{
 					if ( MonstrousInterredGrizzle.UnderCacophonicAttack( m ) )
 						value -= 3; // TODO check

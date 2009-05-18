@@ -29,7 +29,7 @@ namespace Server.SkillHandlers
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )
-			{			
+			{
 				if ( !from.Alive )
 				{
 					from.SendLocalizedMessage( 500331 ); // The spirits of the dead are not the province of animal lore.
@@ -87,7 +87,7 @@ namespace Server.SkillHandlers
 			if ( skill.Base < 10.0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0:F1}</div>", skill.Base );
+			return String.Format( "<div align=right>{0:F1}</div>", skill.Value );
 		}
 
 		private static string FormatAttributes( int cur, int max )

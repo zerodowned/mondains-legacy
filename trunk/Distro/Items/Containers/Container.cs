@@ -216,14 +216,14 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 			
-			/*#region Mondain's Legacy
+			#region Mondain's Legacy
 			int version = reader.ReadInt();
 
 			m_EngravedText = reader.ReadString();
 			m_Quality = (ClothingQuality) reader.ReadInt();
 			m_Resource = (CraftResource) reader.ReadInt();
 			m_Crafter = reader.ReadMobile();			
-			#endregion*/
+			#endregion
 		}
 		
 		#region ICraftable
@@ -322,6 +322,8 @@ namespace Server.Items
 			Layer = Layer.Backpack;
 			Weight = 3.0;
 		}
+
+		public override int DefaultMaxWeight { get { if ( Core.ML ) { return 550; } else { return 400; } } }
 
 		public Backpack( Serial serial ) : base( serial )
 		{

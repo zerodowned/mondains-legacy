@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
-using System.Collections.Generic;
 
 namespace Server.Commands
 {
@@ -180,6 +180,10 @@ namespace Server.Commands
 	
 							if ( indexOf >= 0 )
 								wall.PointDest = Point3D.Parse( m_Params[i].Substring( ++indexOf ) );
+						}
+						else if ( m_Params[i].StartsWith( "Unlocked" ) )
+						{
+							wall.Locked = false;
 						}
 					}
 					

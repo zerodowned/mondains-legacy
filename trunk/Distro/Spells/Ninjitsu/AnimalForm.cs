@@ -207,8 +207,8 @@ namespace Server.Spells.Ninjitsu
 		{
 			m_Table[m] = context;
 
-			if ( context.Type == typeof( BakeKitsune ) || context.Type == typeof( GreyWolf ) )
-				m.Hits += 20;
+			/*if ( context.Type == typeof( BakeKitsune ) || context.Type == typeof( GreyWolf ) )
+				m.Hits += 20;*/
 		}
 
 		public static void RemoveContext( Mobile m, bool resetGraphics )
@@ -266,9 +266,8 @@ namespace Server.Spells.Ninjitsu
 /*
 		private delegate void AnimalFormCallback( Mobile from );
 		private delegate bool AnimalFormRequirementCallback( Mobile from );
- * */
-
-		public class AnimalFormEntry
+*/
+ 		public class AnimalFormEntry
 		{
 			private Type m_Type;
 			private TextDefinition m_Name;
@@ -295,8 +294,7 @@ namespace Server.Spells.Ninjitsu
 			private AnimalFormCallback m_TransformCallback;
 			private AnimalFormCallback m_UntransformCallback;
 			private AnimalFormRequirementCallback m_RequirementCallback;
-			 * */
-
+			*/
 			public AnimalFormEntry( Type type, TextDefinition name, int itemID, int hue, int tooltip, double reqSkill, int bodyMod, bool stealthBonus, bool speedBoost )
 				: this( type, name, itemID, hue, tooltip, reqSkill, bodyMod, 0, stealthBonus, speedBoost )
 			{
@@ -337,7 +335,6 @@ namespace Server.Spells.Ninjitsu
 
 		public class AnimalFormGump : Gump
 		{
-
 			//TODO: Convert this for ML to the BaseImageTileButtonsgump
 			private Mobile m_Caster;
 			private AnimalForm m_Spell;

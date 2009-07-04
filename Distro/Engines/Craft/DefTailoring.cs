@@ -62,6 +62,29 @@ namespace Server.Engines.Craft
 			return 0;
 		}
 
+		private static Type[] m_TailorColorables = new Type[]
+			{
+				typeof( GozaMatEastDeed ), typeof( GozaMatSouthDeed ),
+				typeof( SquareGozaMatEastDeed ), typeof( SquareGozaMatSouthDeed ),
+				typeof( BrocadeGozaMatEastDeed ), typeof( BrocadeGozaMatSouthDeed ),
+				typeof( BrocadeSquareGozaMatEastDeed ), typeof( BrocadeSquareGozaMatSouthDeed )
+			};
+
+		public override bool RetainsColorFrom( CraftItem item, Type type )
+		{
+			if ( type != typeof( Cloth ) && type != typeof( UncutCloth ) )
+				return false;
+
+			type = item.ItemType;
+
+			bool contains = false;
+
+			for ( int i = 0; !contains && i < m_TailorColorables.Length; ++i )
+				contains = ( m_TailorColorables[i] == type );
+
+			return contains;
+		}
+
 		public override void PlayCraftEffect( Mobile from )
 		{
 			from.PlaySound( 0x248 );
@@ -315,7 +338,7 @@ namespace Server.Engines.Craft
 				AddRes( index, typeof( Putrefication ), 1032678, 10, 1044253 );
 				AddRes( index, typeof( Scourge ), 1032677, 10, 1044253 );
 				AddRecipe( index, (int) TailorRecipe.SpellWovenBritches );	
-				ForceNonExceptional( index );				
+				ForceNonExceptional( index );
 				SetNeededExpansion( index, Expansion.ML );
 				
 				index = AddCraft( typeof( SongWovenMantle ), 1015293, 1072931, 92.5, 117.5, typeof( Leather ), 1044462, 15, 1044463 );

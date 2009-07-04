@@ -23,6 +23,15 @@ namespace Server.Items
 
 	public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, ISetItem
 	{
+		private string m_EngravedText;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string EngravedText
+		{
+			get{ return m_EngravedText; }
+			set{ m_EngravedText = value; InvalidateProperties(); }
+		}
+
 		#region Factions
 		private FactionItem m_FactionState;
 
@@ -147,6 +156,8 @@ namespace Server.Items
 
 		public virtual int InitMinHits{ get{ return 0; } }
 		public virtual int InitMaxHits{ get{ return 0; } }
+
+		public virtual bool CanFortify{ get{ return true; } }
 
 		#region Mondain's Legacy Sets
 		public override int PhysicalResistance{ get{ return m_AosWeaponAttributes.ResistPhysicalBonus; } }
@@ -816,9 +827,6 @@ namespace Server.Items
 			double atkValue = atkWeapon.GetAttackSkillValue( attacker, defender );
 			double defValue = defWeapon.GetDefendSkillValue( attacker, defender );
 
-			//attacker.CheckSkill( atkSkill.SkillName, defValue - 20.0, 120.0 );
-			//defender.CheckSkill( defSkill.SkillName, atkValue - 20.0, 120.0 );
-
 			double ourValue, theirValue;
 
 			int bonus = GetHitChanceBonus();
@@ -847,12 +855,23 @@ namespace Server.Items
 				if ( HitLower.IsUnderAttackEffect( attacker ) )
 					bonus -= 25; // Under Hit Lower Attack effect -> 25% malus
 
-				ourValue = (atkValue + 20.0) * (100 + bonus);
+				WeaponAbility ability = WeaponAbility.GetCurrentAbility( attacker );
 
-				// Defense Chance Increase = 45%
-				bonus = AosAttributes.GetValue( defender, AosAttribute.DefendChance );
+				if ( ability != null )
+					bonus += ability.AccuracyBonus;
+
+				SpecialMove move = SpecialMove.GetCurrentMove( attacker );
+
+				if ( move != null )
+					bonus += move.GetAccuracyBonus( attacker );
+
+				// Max Hit Chance Increase = 45%
 				if ( bonus > 45 )
 					bonus = 45;
+
+				ourValue = (atkValue + 20.0) * (100 + bonus);
+
+				bonus = AosAttributes.GetValue( defender, AosAttribute.DefendChance );
 
 				if ( Spells.Chivalry.DivineFurySpell.UnderEffect( defender ) )
 					bonus -= 20; // defender loses 20% bonus when they're under divine fury
@@ -875,6 +894,10 @@ namespace Server.Items
 				// Defender loses -0/-28% if under the effect of Discordance.
 				if ( SkillHandlers.Discordance.GetEffect( attacker, ref discordanceEffect ) )
 					bonus -= discordanceEffect;
+
+				// Defense Chance Increase = 45%
+				if ( bonus > 45 )
+					bonus = 45;
 
 				theirValue = (defValue + 20.0) * (100 + bonus);
 
@@ -899,19 +922,7 @@ namespace Server.Items
 			if ( Core.AOS && chance < 0.02 )
 				chance = 0.02;
 
-			WeaponAbility ability = WeaponAbility.GetCurrentAbility( attacker );
-
-			if ( ability != null )
-				chance *= ability.AccuracyScalar;
-
-			SpecialMove move = SpecialMove.GetCurrentMove( attacker );
-
-			if ( move != null )
-				chance *= move.GetAccuracyScalar( attacker );
-
 			return attacker.CheckSkill( atkSkill.SkillName, chance );
-
-			//return ( chance >= Utility.RandomDouble() );
 		}
 
 		public virtual TimeSpan GetDelay( Mobile m )
@@ -1163,11 +1174,13 @@ namespace Server.Items
 
 			if ( shield != null )
 			{
-				double chance = (parry - bushidoNonRacial) / 400.0;	//As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+				double chance = (parry - bushidoNonRacial) / 400.0;	// As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
 
+				if ( chance < 0 ) // chance shouldn't go below 0
+					chance = 0;				
 
-				// Parry over 100 grants a 5% bonus.
-				if ( parry >= 100.0 )
+				// Parry/Bushido over 100 grants a 5% bonus.
+				if ( parry >= 100.0 || bushido >= 100.0)
 					chance += 0.05;
 
 				// Evasion grants a variable bonus post ML. 50% prior.
@@ -2639,6 +2652,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.SkillBonuses,		!m_AosSkillBonuses.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.Slayer2,			m_Slayer2 != SlayerName.None );
 			SetSaveFlag( ref flags, SaveFlag.ElementalDamages,	!m_AosElementDamages.IsEmpty );
+			SetSaveFlag( ref flags, SaveFlag.EngravedText,		!String.IsNullOrEmpty( m_EngravedText ) );
 
 			writer.Write( (int) flags );
 
@@ -2725,6 +2739,9 @@ namespace Server.Items
 
 			if( GetSaveFlag( flags, SaveFlag.ElementalDamages ) )
 				m_AosElementDamages.Serialize( writer );
+
+			if( GetSaveFlag( flags, SaveFlag.EngravedText ) )
+				writer.Write( (string) m_EngravedText );
 		}
 
 		[Flags]
@@ -2760,7 +2777,8 @@ namespace Server.Items
 			PlayerConstructed		= 0x04000000,
 			SkillBonuses			= 0x08000000,
 			Slayer2					= 0x10000000,
-			ElementalDamages		= 0x20000000
+			ElementalDamages		= 0x20000000,
+			EngravedText			= 0x40000000
 		}
 
 		#region Mondain's Legacy Sets
@@ -2997,6 +3015,9 @@ namespace Server.Items
 						m_AosElementDamages = new AosElementAttributes( this, reader );
 					else
 						m_AosElementDamages = new AosElementAttributes( this );
+
+					if( GetSaveFlag( flags, SaveFlag.EngravedText ) )
+						m_EngravedText = reader.ReadString();
 
 					break;
 				}
@@ -3286,6 +3307,9 @@ namespace Server.Items
 				list.Add( LabelNumber );
 			else
 				list.Add( Name );
+				
+			if ( !String.IsNullOrEmpty( m_EngravedText ) )
+				list.Add( 1062613, m_EngravedText );
 		}
 
 		public override bool AllowEquipedCast( Mobile from )
@@ -3687,7 +3711,10 @@ namespace Server.Items
 
 			if ( Core.AOS )
 			{
-				Resource = CraftResources.GetFromType( resourceType );
+				#region Mondain's Legacy
+				if ( !craftItem.ForceNonExceptional )
+					Resource = CraftResources.GetFromType( resourceType );
+				#endregion
 
 				CraftContext context = craftSystem.GetContext( from );
 
@@ -3711,6 +3738,10 @@ namespace Server.Items
 					if( Core.ML )
 					{
 						Attributes.WeaponDamage += (int)(from.Skills.ArmsLore.Value / 20);
+
+						if ( Attributes.WeaponDamage > 50 )
+							Attributes.WeaponDamage = 50;
+
 						from.CheckSkill( SkillName.ArmsLore, 0, 100 );
 					}
 				}
@@ -3800,7 +3831,7 @@ namespace Server.Items
 				}
 			}
 
-			#region Mondain's Legacy				
+			#region Mondain's Legacy
 			if ( craftItem != null && !craftItem.ForceNonExceptional )
 			{
 				CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );

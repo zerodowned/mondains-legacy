@@ -18,7 +18,7 @@ namespace Server.Items
 			WeaponAttributes.HitLightning = 60;
 			Attributes.WeaponSpeed = 25;
 			Attributes.WeaponDamage = 50;
-        }
+		}
 
 		#region Mondain's Legacy
 		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )

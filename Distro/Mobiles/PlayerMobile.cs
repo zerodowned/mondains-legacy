@@ -45,6 +45,7 @@ namespace Server.Mobiles
 		Young				= 0x00000400,
 		AcceptGuildInvites	= 0x00000800,
 		DisplayChampionTitle= 0x00001000,
+		HasStatReward		= 0x00002000,
 		
 		#region Mondain's Legacy
 		Bedlam				= 0x00010000,
@@ -111,7 +112,22 @@ namespace Server.Mobiles
 
 		private int m_GuildMessageHue, m_AllianceMessageHue;
 
+		private List<Mobile> m_AutoStabled;
+		private List<Mobile> m_AllFollowers;
+
 		#region Getters & Setters
+		public List<Mobile> AutoStabled { get { return m_AutoStabled; } }
+
+		public List<Mobile> AllFollowers
+		{ 
+			get
+			{
+				if( m_AllFollowers == null )
+					m_AllFollowers = new List<Mobile>();; 
+				return m_AllFollowers;
+			} 
+		}
+
 		public Server.Guilds.RankDefinition GuildRank
 		{
 			get
@@ -282,7 +298,23 @@ namespace Server.Mobiles
 			get{ return GetFlag( PlayerFlag.AcceptGuildInvites ); }
 			set{ SetFlag( PlayerFlag.AcceptGuildInvites, value ); }
 		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool HasStatReward
+		{
+			get{ return GetFlag( PlayerFlag.HasStatReward ); }
+			set{ SetFlag( PlayerFlag.HasStatReward, value ); }
+		}
 		#endregion
+
+		private DateTime m_AnkhNextUse;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime AnkhNextUse
+		{
+			get{ return m_AnkhNextUse; }
+			set{ m_AnkhNextUse = value; }
+		}
 
 		#region Mondain's Legacy
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -545,7 +577,11 @@ namespace Server.Mobiles
 				}
 
 				from.SendGump( new NoticeGump( 1060637, 30720, notice, 0xFFC000, 300, 140, null, null ) );
+				return;
 			}
+
+			if( from is PlayerMobile )
+				((PlayerMobile)from).ClaimAutoStabledPets();
 		}
 
 		private bool m_NoDeltaRecursion;
@@ -797,6 +833,8 @@ namespace Server.Mobiles
 
 		private static void OnLogout( LogoutEventArgs e )
 		{
+			if( e.Mobile is PlayerMobile )
+				((PlayerMobile)e.Mobile).AutoStablePets();
 		}
 
 		private static void EventSink_Connected( ConnectedEventArgs e )
@@ -1034,6 +1072,9 @@ namespace Server.Mobiles
 					strBase = this.Str;	//this.Str already includes GetStatOffset/str
 					strOffs = AosAttributes.GetValue( this, AosAttribute.BonusHits );
 
+					if ( Core.ML && strOffs > 25 )
+						strOffs = 25;
+
 					if ( AnimalForm.UnderTransformation( this, typeof( BakeKitsune ) ) || AnimalForm.UnderTransformation( this, typeof( GreyWolf ) ) )
 						strOffs += 20;
 				}
@@ -1191,6 +1232,13 @@ namespace Server.Mobiles
 				{
 					if( m_AnimalFormRestrictedSkills[i] == skill )
 					{
+						#region Mondain's Legacy
+						AnimalFormContext context = AnimalForm.GetContext( this );
+
+						if ( skill == SkillName.Stealing && context.StealingBonus )
+							continue;
+						#endregion
+
 						SendLocalizedMessage( 1070771 ); // You cannot use that skill in this form.
 						return false;
 					}
@@ -2063,6 +2111,7 @@ namespace Server.Mobiles
 		private TimeSpan m_LongTermElapse;
 		private DateTime m_SessionStart;
 		private DateTime m_LastEscortTime;
+		private DateTime m_LastPetBallTime;
 		private DateTime m_NextSmithBulkOrder;
 		private DateTime m_NextTailorBulkOrder;
 		private DateTime m_SavagePaintExpiration;
@@ -2137,8 +2186,17 @@ namespace Server.Mobiles
 			set{ m_LastEscortTime = value; }
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime LastPetBallTime
+		{
+			get{ return m_LastPetBallTime; }
+			set{ m_LastPetBallTime = value; }
+		}
+
 		public PlayerMobile()
 		{
+			m_AutoStabled = new List<Mobile>();
+
 			#region Mondain's Legacy
 			m_Quests = new List<BaseQuest>();
 			m_Chains = new Dictionary<QuestChain,BaseChain>();
@@ -2170,6 +2228,9 @@ namespace Server.Mobiles
 		public override bool MutateSpeech( List<Mobile> hears, ref string text, ref object context )
 		{
 			if ( Alive )
+				return false;
+
+			if ( Core.ML && Skills[SkillName.SpiritSpeak].Value >= 100.0 )
 				return false;
 
 			if ( Core.AOS )
@@ -2347,6 +2408,9 @@ namespace Server.Mobiles
 			if ( target is BaseCreature && ((BaseCreature)target).InitialInnocent && !((BaseCreature)target).Controlled )
 				return false;
 
+			if ( Core.ML && target is BaseCreature && ((BaseCreature)target).Controlled && this == ((BaseCreature)target).ControlMaster )
+				return false;
+
 			return base.IsHarmfulCriminal( target );
 		}
 
@@ -2406,6 +2470,13 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
+				case 27: 
+				{
+					m_AnkhNextUse = reader.ReadDateTime();
+					m_AutoStabled = reader.ReadStrongMobileList();
+
+					goto case 26;
+				}
 				case 26:
 				{
 					#region Mondain's Legacy
@@ -2628,6 +2699,8 @@ namespace Server.Mobiles
 				}
 				case 0:
 				{
+					if( version < 26 )
+						m_AutoStabled = new List<Mobile>();
 					break;
 				}
 			}
@@ -2723,7 +2796,10 @@ namespace Server.Mobiles
 
 			base.Serialize( writer );
 			
-			writer.Write( (int) 26 ); // version
+			writer.Write( (int) 27 ); // version
+
+			writer.Write( (DateTime) m_AnkhNextUse );
+			writer.Write( m_AutoStabled, true );
 			
 			#region Mondain's Legacy version 26
 			QuestWriter.Quests( writer, m_Quests );
@@ -2899,6 +2975,9 @@ namespace Server.Mobiles
 
 		public override bool CanSee( Mobile m )
 		{
+			if ( m is CharacterStatue )
+				((CharacterStatue) m).OnRequestedAnimation( this );
+
 			if ( m is PlayerMobile && ((PlayerMobile)m).m_VisList.Contains( this ) )
 				return true;
 
@@ -4153,5 +4232,99 @@ namespace Server.Mobiles
 				m_BuffTable = null;
 		}
 		#endregion
+
+		public void AutoStablePets()
+		{
+			if ( Core.SE && AllFollowers.Count > 0 )
+			{
+				for ( int i = 0; i < m_AllFollowers.Count; ++i )
+				{
+					BaseCreature pet = AllFollowers[i] as BaseCreature;
+
+					if ( pet == null || pet.ControlMaster == null || ( pet.Summoned && !Core.ML ) )
+						continue;
+
+					if ( pet is IMount && ((IMount)pet).Rider != null )
+						continue;
+
+					if ( (pet is PackLlama || pet is PackHorse || pet is Beetle || pet is HordeMinionFamiliar) && (pet.Backpack != null && pet.Backpack.Items.Count > 0) )
+						continue;
+
+					if ( !pet.Summoned && !pet.IsBonded )
+						continue;
+
+					pet.ControlTarget = null;
+					pet.ControlOrder = OrderType.Stay;
+					pet.Internalize();
+
+					pet.SetControlMaster( null );
+					pet.SummonMaster = null;
+
+					pet.IsStabled = true;
+
+					pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
+
+					Stabled.Add( pet );
+					m_AutoStabled.Add( pet );
+					--i;
+				}
+			}
+		}
+
+		public void ClaimAutoStabledPets()
+		{
+			if( !Core.SE || m_AutoStabled.Count <= 0 )
+				return;
+
+			if( !Alive )
+			{
+				SendLocalizedMessage( 1076251 ); // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.				
+				return;
+			}
+
+			for ( int i = 0; i < m_AutoStabled.Count; ++i )
+			{
+				BaseCreature pet = m_AutoStabled[i] as BaseCreature;
+
+				if ( pet == null || pet.Deleted )
+				{
+					pet.IsStabled = false;
+					m_AutoStabled.RemoveAt( i );
+					if( Stabled.Contains( pet ) )
+						Stabled.Remove( pet );
+					--i;
+					continue;
+				}
+
+				if ( (Followers + pet.ControlSlots) <= FollowersMax )
+				{
+					m_AutoStabled.RemoveAt( i );
+					--i;
+
+					pet.SetControlMaster( this );
+
+					if ( pet.Summoned )
+						pet.SummonMaster = this;
+
+					pet.ControlTarget = this;
+					pet.ControlOrder = OrderType.Follow;
+
+					pet.MoveToWorld( Location, Map );
+
+					pet.IsStabled = false;
+
+					pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
+
+					if( Stabled.Contains( pet ) )
+						Stabled.Remove( pet );
+				}
+				else
+				{
+					SendMessage( 1049612, pet.Name ); // ~1_NAME~ remained in the stables because you have too many followers.
+				}
+			}
+
+			m_AutoStabled.Clear();
+		}
 	}
 }

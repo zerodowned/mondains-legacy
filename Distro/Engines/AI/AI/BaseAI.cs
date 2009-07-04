@@ -1097,6 +1097,7 @@ namespace Server.Mobiles
 
 				case OrderType.Stop:
 				m_Mobile.ControlMaster.RevealingAction();
+				m_Mobile.Home = m_Mobile.Location;
 				m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
 				m_Mobile.PlaySound( m_Mobile.GetIdleSound() );
 				m_Mobile.Warmode = false;

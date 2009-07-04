@@ -20,6 +20,11 @@ namespace Server.Items
 
 		public override int BaseMana{ get{ return 15; } }
 
+		public override bool RequiresTactics( Mobile from )
+		{
+			return false;
+		}
+
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
 			if ( !Validate( attacker ) )
@@ -47,7 +52,6 @@ namespace Server.Items
 
 			// Infectious strike special move now uses poisoning skill to help determine potency 
 			int maxLevel = attacker.Skills[SkillName.Poisoning].Fixed / 200;
-
 			if ( maxLevel < 0 ) maxLevel = 0;
 
 			#region Mondain's Legacy

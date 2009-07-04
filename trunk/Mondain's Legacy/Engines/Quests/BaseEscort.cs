@@ -76,13 +76,15 @@ namespace Server.Engines.Quests
 		}
 
 		public override void OnAfterDelete()
-		{			
+		{
 			if ( m_Quest != null )
+			{
 				m_Quest.RemoveQuest();
 
-			if ( ControlMaster != null )
-				m_EscortTable.Remove( ControlMaster );
-
+				if ( m_Quest.Owner != null )
+					m_EscortTable.Remove( m_Quest.Owner );
+			}
+			
 			base.OnAfterDelete();
 		}
 

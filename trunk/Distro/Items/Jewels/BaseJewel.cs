@@ -19,6 +19,9 @@ namespace Server.Items
 
 	public abstract class BaseJewel : Item, ICraftable, ISetItem
 	{
+		private int m_MaxHitPoints;
+		private int m_HitPoints;
+
 		private AosAttributes m_AosAttributes;
 		private AosElementAttributes m_AosResistances;
 		private AosSkillBonuses m_AosSkillBonuses;
@@ -26,6 +29,36 @@ namespace Server.Items
 		private GemType m_GemType;
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public int MaxHitPoints
+		{
+			get{ return m_MaxHitPoints; }
+			set{ m_MaxHitPoints = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int HitPoints
+		{
+			get 
+			{
+				return m_HitPoints;
+			}
+			set 
+			{
+				if ( value != m_HitPoints && MaxHitPoints > 0 )
+				{
+					m_HitPoints = value;
+
+					if ( m_HitPoints < 0 )
+						Delete();
+					else if ( m_HitPoints > MaxHitPoints )
+						m_HitPoints = MaxHitPoints;
+
+					InvalidateProperties();
+				}
+			}
+		}
+
+		[CommandProperty( AccessLevel.Player )]
 		public AosAttributes Attributes
 		{
 			get{ return m_AosAttributes; }
@@ -66,6 +99,9 @@ namespace Server.Items
 		public override int PoisonResistance{ get{ return m_AosResistances.Poison; } }
 		public override int EnergyResistance{ get{ return m_AosResistances.Energy; } }
 		public virtual int BaseGemTypeNumber{ get{ return 0; } }
+
+		public virtual int InitMinHits{ get{ return 0; } }
+		public virtual int InitMaxHits{ get{ return 0; } }
 
 		public override int LabelNumber
 		{
@@ -304,13 +340,19 @@ namespace Server.Items
 				list.Add( 1060486, prop.ToString() ); // swing speed increase ~1_val~%
 
 			base.AddResistanceProperties( list );
+
+			if ( m_HitPoints >= 0 && m_MaxHitPoints > 0 )
+				list.Add( 1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints ); // durability ~1_val~ / ~2_val~
 		}
 
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 4 ); // version
+			writer.Write( (int) 5 ); // version
+
+			writer.WriteEncodedInt( (int) m_MaxHitPoints );
+			writer.WriteEncodedInt( (int) m_HitPoints );			
 
 			#region Mondain's Legacy Sets version 4
 			writer.Write( (bool) m_LastEquipped );
@@ -342,6 +384,13 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 5:
+				{
+					m_MaxHitPoints = reader.ReadEncodedInt();
+					m_HitPoints = reader.ReadEncodedInt();
+
+					goto case 4;
+				}
 				#region Mondain's Legacy Sets
 				case 4:
 				{
@@ -438,7 +487,10 @@ namespace Server.Items
 			if ( resourceType == null )
 				resourceType = craftItem.Ressources.GetAt( 0 ).ItemType;
 
-			Resource = CraftResources.GetFromType( resourceType );
+			#region Mondain's Legacy
+			if ( !craftItem.ForceNonExceptional )
+				Resource = CraftResources.GetFromType( resourceType );
+			#endregion
 
 			CraftContext context = craftSystem.GetContext( from );
 

@@ -70,7 +70,7 @@ namespace Server.Items
 
 		public virtual bool RetainDeedHue{ get{ return false; } }
 
-		public void OnChop( Mobile from )
+		public virtual void OnChop( Mobile from )
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 

@@ -1067,6 +1067,8 @@ namespace Server.Multis
 				return true;
 			else if ( item is VendorRentalContract )
 				return true;
+			else if ( item is RewardBrazier )
+				return true;
 
 			return false;
 		}

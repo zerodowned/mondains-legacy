@@ -113,8 +113,6 @@ namespace Server.Misc
 			#region Mondain's Legacy
 			if ( target is Gregorio )
 			{
-				Gregorio gregorio = (Gregorio) target;
-
 				if ( Gregorio.IsMurderer( from ) )
 					return true;
 				
@@ -297,6 +295,16 @@ namespace Server.Misc
 
 				if ( master != null && master.AccessLevel > AccessLevel.Player )
 					return Notoriety.CanBeAttacked;
+
+				master = bc.ControlMaster;
+
+				if ( Core.ML && master != null )
+				{
+					if( source == master && CheckAggressor( target.Aggressors, source ) )
+						return Notoriety.CanBeAttacked;
+					else
+						return MobileNotoriety( source, master );
+				}
 
 				if( !bc.Summoned && !bc.Controlled && ((PlayerMobile)source).EnemyOfOneType == target.GetType() )
 					return Notoriety.Enemy;

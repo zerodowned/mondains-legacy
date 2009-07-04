@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
+using Server.Items;
 using Server.Gumps;
 using Server.Network;
 using Server.Mobiles;
+using Server.Targeting;
 using Server.Spells.Fifth;
 using Server.Spells.Seventh;
 
@@ -193,10 +196,21 @@ namespace Server.Spells.Ninjitsu
 				m.AddSkillMod( mod );
 			}
 
+			#region Mondain's Legacy
+			if ( entry.StealingBonus )
+			{
+				mod = new DefaultSkillMod( SkillName.Stealing, true, 10.0 );
+				mod.ObeyCap = true;
+				m.AddSkillMod( mod );
+			}
+
+			m.Target = null;
+			#endregion
+
 			Timer timer = new AnimalFormTimer( m, entry.BodyMod, entry.HueMod );
 			timer.Start();
 
-			AddContext( m, new AnimalFormContext( timer, mod, entry.SpeedBoost, entry.Type ) );
+			AddContext( m, new AnimalFormContext( timer, mod, entry.SpeedBoost, entry.Type, entry.StealingBonus ) );
 			return MorphResult.Success;
 		}
 
@@ -207,8 +221,8 @@ namespace Server.Spells.Ninjitsu
 		{
 			m_Table[m] = context;
 
-			/*if ( context.Type == typeof( BakeKitsune ) || context.Type == typeof( GreyWolf ) )
-				m.Hits += 20;*/
+			if ( context.Type == typeof( BakeKitsune ) || context.Type == typeof( GreyWolf ) )
+				m.CheckStatTimers();
 		}
 
 		public static void RemoveContext( Mobile m, bool resetGraphics )
@@ -290,21 +304,35 @@ namespace Server.Spells.Ninjitsu
 			public int HueMod{ get{ return m_HueMod; } }
 			public bool StealthBonus{ get{ return m_StealthBonus; } }
 			public bool SpeedBoost{ get{ return m_SpeedBoost; } }
+
+			#region Mondain's Legacy
+			private int m_Width;
+			private int m_Height;
+			private bool m_StealingBonus;
+			private Type m_Talisman;
+
+			public int Width{ get{ return m_Width; } }
+			public int Height{ get{ return m_Height; } }
+			public bool StealingBonus { get{ return m_StealingBonus; } }
+			public Type Talisman{ get{ return m_Talisman; } }
+			#endregion
 			/*
 			private AnimalFormCallback m_TransformCallback;
 			private AnimalFormCallback m_UntransformCallback;
 			private AnimalFormRequirementCallback m_RequirementCallback;
 			*/
-			public AnimalFormEntry( Type type, TextDefinition name, int itemID, int hue, int tooltip, double reqSkill, int bodyMod, bool stealthBonus, bool speedBoost )
-				: this( type, name, itemID, hue, tooltip, reqSkill, bodyMod, 0, stealthBonus, speedBoost )
+			public AnimalFormEntry( Type type, TextDefinition name, int itemID, int hue, int width, int height, int tooltip, double reqSkill, int bodyMod, bool stealthBonus, bool speedBoost, bool stealingBonus, Type talisman )
+				: this( type, name, itemID, hue, width, height, tooltip, reqSkill, bodyMod, 0, stealthBonus, speedBoost, stealingBonus, talisman )
 			{
 			}
 
-			public AnimalFormEntry( Type type, TextDefinition name, int itemID, int hue, int tooltip, double reqSkill, int bodyMod, int hueMod, bool stealthBonus, bool speedBoost )
+			public AnimalFormEntry( Type type, TextDefinition name, int itemID, int hue, int width, int height, int tooltip, double reqSkill, int bodyMod, int hueMod, bool stealthBonus, bool speedBoost, bool stealingBonus, Type talisman )
 			{
 				m_Type = type;
 				m_Name = name;
 				m_ItemID = itemID;
+				m_Width = width; 
+				m_Height = height;
 				m_Hue = hue;
 				m_Tooltip = tooltip;
 				m_ReqSkill = reqSkill;
@@ -312,30 +340,38 @@ namespace Server.Spells.Ninjitsu
 				m_HueMod = hueMod;
 				m_StealthBonus = stealthBonus;
 				m_SpeedBoost = speedBoost;
+				m_StealingBonus = stealingBonus;
+				m_Talisman = talisman;
 			}
 		}
 
 		private static AnimalFormEntry[] m_Entries = new AnimalFormEntry[]
 			{
-				new AnimalFormEntry( typeof( Kirin ),        1029632,  9632,    0, 1070811, 100.0, 0x84, false,  true ),
-				new AnimalFormEntry( typeof( Unicorn ),      1018214,  9678,    0, 1070812, 100.0, 0x7A, false,  true ),
-				new AnimalFormEntry( typeof( BakeKitsune ),  1030083, 10083,    0, 1070810,	 82.5, 0xF6, false,  true ),
-				new AnimalFormEntry( typeof( GreyWolf ),     1028482,  9681, 2309, 1070810,  82.5, 0x19, false,  true ),
-				new AnimalFormEntry( typeof( Llama ),        1028438,  8438,    0, 1070809,  70.0, 0xDC, false,  true ),
-				new AnimalFormEntry( typeof( ForestOstard ), 1018273,  8503, 2212, 1070809,  70.0, 0xDA, false,  true ),
-				new AnimalFormEntry( typeof( BullFrog ),     1028496,  8496, 2003, 1070807,  50.0, 0x51, 0x5A3, false, false ),
-				new AnimalFormEntry( typeof( GiantSerpent ), 1018114,  9663, 2009, 1070808,  50.0, 0x15, false, false ),
-				new AnimalFormEntry( typeof( Dog ),          1018280,  8476, 2309, 1070806,  40.0, 0xD9, false, false ),
-				new AnimalFormEntry( typeof( Cat ),          1018264,  8475, 2309, 1070806,  40.0, 0xC9, false, false ),
-				new AnimalFormEntry( typeof( Rat ),          1018294,  8483, 2309, 1070805,  20.0, 0xEE,  true, false ),
-				new AnimalFormEntry( typeof( Rabbit ),       1028485,  8485, 2309, 1070805,  20.0, 0xCD,  true, false )
+				#region Mondain's Legacy
+				new AnimalFormEntry( typeof( Kirin ),			1029632,	9632,    0,  6, 10, 1070811, 100.0, 0x84, false,  true, false, null ),
+				new AnimalFormEntry( typeof( Unicorn ),			1018214,	9678,    0, 20, 10, 1070812, 100.0, 0x7A, false,  true, false, null ),
+				new AnimalFormEntry( typeof( BakeKitsune ),		1030083,   10083,    0, 15, 15, 1070810,	 82.5, 0xF6, false,  true, false, null ),
+				new AnimalFormEntry( typeof( GreyWolf ),		1028482,	9681, 2309, 25, 10, 1070810,  82.5, 0x19, false,  true, false, null ),
+				new AnimalFormEntry( typeof( Llama ),			1028438,	8438,    0, 15,  8, 1070809,  70.0, 0xDC, false,  true, false, null ),
+				new AnimalFormEntry( typeof( ForestOstard ),	1018273,	8503, 2212, 12, 10, 1070809,  70.0, 0xDA, false,  true, false, null ),
+				new AnimalFormEntry( typeof( BullFrog ),		1028496,	8496, 2003, 15, 20, 1070807,  50.0, 0x51, 0x5A3, false, false, false, null ),
+				new AnimalFormEntry( typeof( GiantSerpent ),	1018114,	9663, 2009,  8,  7, 1070808,  50.0, 0x15, false, false, false, null ),
+				new AnimalFormEntry( typeof( Dog ),				1018280,	8476, 2309, 16, 17, 1070806,  40.0, 0xD9, false, false, false, null ),
+				new AnimalFormEntry( typeof( Cat ),				1018264,	8475, 2309, 18, 17, 1070806,  40.0, 0xC9, false, false, false, null ),
+				new AnimalFormEntry( typeof( Rat ),				1018294,	8483, 2309, 15, 20, 1070805,  20.0, 0xEE,  true, false, false, null ),
+				new AnimalFormEntry( typeof( Rabbit ),			1028485,	8485, 2309, 19, 20, 1070805,  20.0, 0xCD,  true, false, false, null )
+				#endregion
 			};
 
 		public static AnimalFormEntry[] Entries{ get{ return m_Entries; } }
 
 		public class AnimalFormGump : Gump
 		{
-			//TODO: Convert this for ML to the BaseImageTileButtonsgump
+			#region Mondain's Legacy
+			private const int EntriesPerPage = 10;
+			private const int EntryHeight = 64;
+			#endregion
+
 			private Mobile m_Caster;
 			private AnimalForm m_Spell;
 
@@ -344,47 +380,84 @@ namespace Server.Spells.Ninjitsu
 				m_Caster = caster;
 				m_Spell = spell;
 
+				#region Mondain's Legacy
 				AddPage( 0 );
 
-				AddBackground( 0, 0, 408, 298, 0x13BE );
-				AddBackground( 4, 28, 400, 240, 0xBB8 );
-
-				AddHtmlLocalized( 4, 4, 400, 20, 1063394, 0x0, false, false ); // <center>Animal Form Selection Menu</center>
-
-				AddButton( 25, 272, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 60, 274, 150, 20, 1011036, 0x0, false, false ); // OKAY
-
-				AddButton( 285, 272, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 320, 274, 150, 20, 1011012, 0x0, false, false ); // CANCEL
+				AddBackground( 0, 0, 520, 84 + EntriesPerPage * EntryHeight / 2, 0x13BE );
+				AddImageTiled( 10, 10, 500, 20, 0xA40 );
+				AddImageTiled( 10, 40, 500, 4 + EntriesPerPage * EntryHeight / 2, 0xA40 );
+				AddImageTiled( 10, 54 + EntriesPerPage * EntryHeight / 2, 500, 20, 0xA40 );
+				AddAlphaRegion( 10, 10, 500, 64 + EntriesPerPage * EntryHeight / 2 );
+				AddButton( 10, 54 + EntriesPerPage * EntryHeight / 2, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 45, 56 + EntriesPerPage * EntryHeight / 2, 450, 20, 1060051, 0x7FFF, false, false ); // CANCEL
+				AddHtmlLocalized( 14, 12, 500, 20, 1063394, 0x7FFF, false, false ); // <center>Animal Form Selection Menu</center>
 
 				double ninjitsu = caster.Skills.Ninjitsu.Value;
 
-				for ( int i = 0; i < entries.Length; ++i )
+				Dictionary<int, AnimalFormEntry> list = new Dictionary<int, AnimalFormEntry>();
+
+				for ( int i = 0; i < entries.Length; i++ )
 				{
-					bool enabled = ( ninjitsu >= entries[i].ReqSkill );
+					bool enabled = ( ninjitsu >= entries[ i ].ReqSkill );
 
-					int x = 100 * ( i % 4 );
-					int y = 80 * ( i / 4 );
-
-					TextDefinition.AddHtmlText( this, 10 + x, 30 + y, 100, 18, entries[i].Name, false, false );
+					if ( entries[ i ].Talisman != null && ( caster.Talisman == null || caster.Talisman.GetType() != entries[ i ].Talisman ) )
+						enabled = false;
 
 					if ( enabled )
-					{
-						AddRadio( 10 + x, 50 + y, 0xD2, 0xD3, false, 100 + i );
-						AddItem( 30 + x, 50 + y, entries[i].ItemID, entries[i].Hue );
-					}
-					else
-						AddItem( 10 + x, 50 + y, entries[i].ItemID, 0x3E3 );
-
-					AddTooltip( enabled ? entries[i].Tooltip : 1070708 );
+						list.Add( i, entries[ i ] );
 				}
+
+				AnimalFormEntry entry;
+				int pages = list.Count / EntriesPerPage + 1;
+				int relative, page;
+				int idx = 0, x = 0, y = 44;
+
+				foreach ( KeyValuePair<int, AnimalFormEntry> kvp in list )
+				{
+					entry = kvp.Value;
+					relative = idx % EntriesPerPage;
+					x = idx % 2 == 0 ? 14 : 264;
+
+					if ( relative == 0 )
+					{
+						page = idx / EntriesPerPage + 1;
+						y = 44;
+						AddPage( page );
+
+						if ( idx > 0 )
+						{
+							AddButton( 300, 54 + EntriesPerPage * EntryHeight / 2, 0xFAE, 0xFB0, 0, GumpButtonType.Page, page - 1 );
+							AddHtmlLocalized( 340, 56 + EntriesPerPage * EntryHeight / 2, 60, 20, 1011393, 0x7FFF, false, false ); // Back
+						}
+
+						if ( page < pages )
+						{
+							AddButton( 400, 54 + EntriesPerPage * EntryHeight / 2, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page + 1 );
+							AddHtmlLocalized( 440, 56 + EntriesPerPage * EntryHeight / 2, 60, 20, 1043353, 0x7FFF, false, false ); // Next
+						}
+					}
+
+					AddImageTiledButton( x, y, 0x918, 0x919, 0x64 + kvp.Key, GumpButtonType.Reply, 0, entry.ItemID, 0x0, entry.Width, entry.Height );
+
+					if ( entry.Tooltip > 0 )
+						AddTooltip( entry.Tooltip );
+
+					TextDefinition.AddHtmlText( this, x + 84, y, 250, 60, entry.Name, false, false, 0x7FFF, 0x7FFF );
+
+					if ( idx % 2 == 1 )
+						y += EntryHeight;
+
+					idx++;
+				}
+				#endregion
 			}
 
 			public override void OnResponse( NetState sender, RelayInfo info )
 			{
-				if ( info.ButtonID == 1 && info.Switches.Length > 0 )
+				#region Mondain's Legacy
+				if ( info.ButtonID >= 100 )
 				{
-					int entryID = info.Switches[0] - 100;
+					int entryID = info.ButtonID - 100;
 					
 					if ( AnimalForm.Morph( m_Caster, entryID ) == MorphResult.Fail )
 					{
@@ -393,6 +466,7 @@ namespace Server.Spells.Ninjitsu
 						m_Caster.PlaySound( 0x5C );
 					}
 				}
+				#endregion
 			}
 		}
 	}
@@ -409,12 +483,22 @@ namespace Server.Spells.Ninjitsu
 		public bool SpeedBoost{ get{ return m_SpeedBoost; } }
 		public Type Type{ get{ return m_Type; } }
 
-		public AnimalFormContext( Timer timer, SkillMod mod, bool speedBoost, Type type )
+		#region Mondain's Legacy
+		private bool m_StealingBonus;
+
+		public bool StealingBonus{ get{ return m_StealingBonus; } }
+		#endregion
+
+		public AnimalFormContext( Timer timer, SkillMod mod, bool speedBoost, Type type, bool stealingBonus )
 		{
 			m_Timer = timer;
 			m_Mod = mod;
 			m_SpeedBoost = speedBoost;
 			m_Type = type;
+
+			#region Mondain's Legacy
+			m_StealingBonus = stealingBonus;
+			#endregion
 		}
 	}
 

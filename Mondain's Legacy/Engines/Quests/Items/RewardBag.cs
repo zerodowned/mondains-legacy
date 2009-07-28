@@ -16,7 +16,7 @@ namespace Server.Items
 			while ( Items.Count < ItemAmount )
 			{				
 				if ( 0.05 > Utility.RandomDouble() ) // check
-					AddItem( new RandomTalisman() );
+					AddItem( Loot.RandomTalisman() );
 				else 
 				{
 					switch ( Utility.Random( 4 ) )

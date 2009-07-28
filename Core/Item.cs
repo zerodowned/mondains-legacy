@@ -817,15 +817,29 @@ namespace Server
         }
 
         #region Mondain's Legacy
-        public static System.Drawing.Bitmap GetBitmap(int itemID)
+		private Item m_DupeSource;
+
+		public Item DupeSource
+		{
+			get { return m_DupeSource; }
+			set { m_DupeSource = value; }
+		}
+
+        public static System.Drawing.Bitmap GetBitmap( int itemID )
         {
-            try { return Ultima.Art.GetStatic(itemID); }
-            catch (Exception e) { Console.WriteLine(e.ToString()); }
+            try 
+			{ 
+				return Ultima.Art.GetStatic( itemID ); 
+			}
+            catch ( Exception e ) 
+			{ 
+				Console.WriteLine( e.ToString() ); 
+			}
 
             return null;
         }
 
-        public static void Measure(System.Drawing.Bitmap bmp, out int xMin, out int yMin, out int xMax, out int yMax)
+        public static void Measure( System.Drawing.Bitmap bmp, out int xMin, out int yMin, out int xMax, out int yMax )
         {
             try 
             { 
@@ -1940,7 +1954,11 @@ namespace Server
 
 		public virtual void Serialize( GenericWriter writer )
 		{
-			writer.Write( 9 ); // version
+			writer.Write( 10 ); // version
+
+			#region Mondain's Legacy version 10
+			writer.Write( m_DupeSource );
+			#endregion
 
 			SaveFlag flags = SaveFlag.None;
 
@@ -2263,6 +2281,15 @@ namespace Server
 
 			switch ( version )
 			{
+				#region Mondain's Legacy
+				case 10:
+				{
+					m_DupeSource = reader.ReadItem();
+
+					goto case 9;
+				}
+				#endregion
+
 				case 9:
 				case 8:
 				case 7:

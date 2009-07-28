@@ -930,16 +930,6 @@ namespace Server.Mobiles
 				from.Damage( amount, from );
 			}
 
-			#region Mondain's Legacy
-			if ( from != null && from.Talisman is BaseTalisman )
-			{
-				BaseTalisman talisman = (BaseTalisman) from.Talisman;				
-				
-				if ( talisman.Slayer != TalismanSlayerName.None && TalismanSlayer.Check( talisman.Slayer, this ) )
-					amount *= 2;
-			}
-			#endregion
-
 			base.Damage( amount, from );
 
 			if ( SubdueBeforeTame && !Controlled )
@@ -1234,20 +1224,6 @@ namespace Server.Mobiles
 
 		public virtual void AlterMeleeDamageFrom( Mobile from, ref int damage )
 		{
-			#region Mondain's Legacy
-			if ( from != null && from.Talisman is BaseTalisman )
-			{
-				BaseTalisman talisman = (BaseTalisman) from.Talisman;
-				
-				if ( talisman.Killer != null && talisman.Killer.Type != null )
-				{
-					Type type = talisman.Killer.Type;
-					
-					if ( type == GetType() )
-						damage = (int) ( damage * ( 1 + (double) talisman.Killer.Amount / 100 ) );
-				}
-			}
-			#endregion
 		}
 
 		public virtual void AlterMeleeDamageTo( Mobile to, ref int damage )

@@ -26,7 +26,7 @@ namespace Server.Items
 			}			
 			
 			if ( 0.25 > Utility.RandomDouble() ) // check
-				AddItem( new RandomTalisman() );
+				AddItem( Loot.RandomTalisman() );
 		}
 		
 		public RewardBox( Serial serial ) : base( serial )

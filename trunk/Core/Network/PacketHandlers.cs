@@ -1008,9 +1008,9 @@ namespace Server.Network
 			else
 				success = from.Drop( loc );
 
-			if ( !success && holding != null )
+			if ( holding != null )
 			{
-				if ( holding.DupeSource != null )
+				if ( !success && holding.DupeSource != null )
 				{
 					holding.DupeSource.Amount += holding.Amount;
 					holding.Delete();
@@ -1045,9 +1045,9 @@ namespace Server.Network
 			else
 				success = from.Drop( loc );
 
-			if ( !success && holding != null )
+			if ( holding != null )
 			{
-				if ( holding.DupeSource != null )
+				if ( !success && holding.DupeSource != null )
 				{
 					holding.DupeSource.Amount += holding.Amount;
 					holding.Delete();

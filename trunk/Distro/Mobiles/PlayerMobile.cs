@@ -3031,6 +3031,22 @@ namespace Server.Mobiles
 						list.Add( 1060776, "{0}\t{1}", pl.Rank.Title, faction.Definition.PropName ); // ~1_val~, ~2_val~
 				}
 			}
+
+			#region Mondain's Legacy
+			if ( Core.ML )
+			{
+				for ( int i = AllFollowers.Count - 1; i >= 0; i-- )
+				{
+					BaseCreature c = AllFollowers[ i ] as BaseCreature;
+
+					if ( c != null && c.ControlOrder == OrderType.Guard )
+					{
+						list.Add( 501129 ); // guarded
+						break;
+					}
+				}
+			}
+			#endregion
 		}
 
 		public override void OnSingleClick( Mobile from )

@@ -157,7 +157,7 @@ namespace Server.Items
 				
 				return false;
 			}
-		
+
 			if ( Items.Count < DefaultMaxItems )
 			{
 				if ( item.Amount <= m_Capacity )
@@ -165,6 +165,8 @@ namespace Server.Items
 
 				return false;
 			}
+			else if ( checkItems )
+				return false;
 				
 			Item ammo = Ammo;	
 		

@@ -1076,7 +1076,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_HitsMax >= 0 )
-					return m_HitsMax;
+					return m_HitsMax + GetStatOffset( StatType.Str );
 
 				return Str;
 			}
@@ -1095,7 +1095,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_StamMax >= 0 )
-					return m_StamMax;
+					return m_StamMax + GetStatOffset( StatType.Dex );
 
 				return Dex;
 			}
@@ -1114,7 +1114,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_ManaMax >= 0 )
-					return m_ManaMax;
+					return m_ManaMax + GetStatOffset( StatType.Int );
 
 				return Int;
 			}
@@ -2434,6 +2434,13 @@ namespace Server.Mobiles
 
 				if ( m_AI != null )
 					m_AI.OnCurrentOrderChanged();
+
+				#region Mondain's Legacy
+				InvalidateProperties();
+
+				if ( m_ControlMaster != null )
+					m_ControlMaster.InvalidateProperties();
+				#endregion
 			}
 		}
 
@@ -3994,27 +4001,30 @@ namespace Server.Mobiles
 		public override void AddNameProperties( ObjectPropertyList list )
 		{
 			base.AddNameProperties( list );
-			
-			#region Mondain's Legacy
-			if ( Backpack is StrongBackpack && Alive && Core.ML )
-			{
-				if ( TotalWeight == 1 )
-					list.Add( 1072788, "{0}", 1 ); // Weight: ~1_WEIGHT~ stone
-                else
-                	list.Add( 1072789, "{0}", TotalWeight ); // Weight: ~1_WEIGHT~ stones
-			}
-			#endregion		
 
-			if ( Controlled && Commandable )
+			#region Mondain's Legacy
+			if ( Core.ML )
 			{
-				if ( Summoned )
-					list.Add( 1049646 ); // (summoned)
-				else if ( IsBonded )	//Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
+				if ( Backpack is StrongBackpack )
+					list.Add( TotalWeight == 1 ? 1072788 : 1072789, TotalWeight.ToString() ); // Weight: ~1_WEIGHT~ stones
+
+				if ( m_ControlOrder == OrderType.Guard )
+					list.Add( 1080078 ); // guarding
+			}
+			
+			if ( Summoned )
+				list.Add( 1049646 ); // (summoned)
+			#endregion
+
+			else if ( Controlled && Commandable )
+			{
+				if ( IsBonded )	//Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
 					list.Add( 1049608 ); // (bonded)
 				else
 					list.Add( 502006 ); // (tame)
 			}
 		}
+
 
 		public override void OnSingleClick( Mobile from )
 		{
@@ -4585,6 +4595,10 @@ namespace Server.Mobiles
 
 				Delta( MobileDelta.Noto );
 			}
+
+			#region Mondain's Legacy
+			InvalidateProperties();
+			#endregion
 
 			return true;
 		}

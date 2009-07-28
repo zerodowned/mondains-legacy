@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Mobile.cs 304 2009-01-30 23:12:13Z mark $
+ *   $Id: Mobile.cs 340 2009-07-19 04:18:39Z mark $
  *
  ***************************************************************************/
 
@@ -4344,6 +4344,10 @@ namespace Server
 			item.Amount = oldItem.Amount - amount;
 			item.Map = oldItem.Map;
 
+			#region Mondain's Legacy
+			oldItem.DupeSource = item;
+			#endregion
+
 			oldItem.Amount = amount;
 			oldItem.OnAfterDuped( item );
 
@@ -6776,7 +6780,7 @@ namespace Server
 						ClearFastwalkStack();
 
 						Send( new MobileIncoming( this, this ) );
-						Send( SupportedFeatures.Instantiate( ns.Account ) );
+						Send( SupportedFeatures.Instantiate( ns ) );
 						Send( new MobileUpdate( this ) );
 						Send( new MobileAttributes( this ) );
 					}
@@ -8827,7 +8831,7 @@ namespace Server
 				ClearFastwalkStack();
 
 				Send( new MobileIncoming( this, this ) );
-				Send( SupportedFeatures.Instantiate( ns.Account ) );
+				Send( SupportedFeatures.Instantiate( ns ) );
 				Send( new MobileUpdate( this ) );
 				Send( new MobileAttributes( this ) );
 			}

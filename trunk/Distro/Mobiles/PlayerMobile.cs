@@ -2322,21 +2322,6 @@ namespace Server.Mobiles
 				from.Damage( amount, from );
 			}
 
-			#region Mondain's Legacy
-			if ( from != null && Talisman is BaseTalisman )
-			{
-				BaseTalisman talisman = (BaseTalisman) Talisman;
-				
-				if ( talisman.Protection != null && talisman.Protection.Type != null )
-				{
-					Type type = talisman.Protection.Type;
-					
-					if ( type == from.GetType() )
-						amount *= 1 - (int) (((double) talisman.Protection.Amount) / 100);
-				}
-			}
-			#endregion
-
 			base.Damage( amount, from );
 		}
 
@@ -2720,6 +2705,9 @@ namespace Server.Mobiles
 				
 			if ( m_CollectionTitles == null )
 				m_CollectionTitles = new List<object>();
+
+			if ( m_AutoStabled == null )
+				m_AutoStabled = new List<Mobile>();
 			#endregion
 
 			// Professions weren't verified on 1.0 RC0

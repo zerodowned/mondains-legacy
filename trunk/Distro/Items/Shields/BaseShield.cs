@@ -7,15 +7,7 @@ using Server.Engines.Craft;
 namespace Server.Items
 {
 	public class BaseShield : BaseArmor
-	{
-		#region Mondain's Legacy
-		public override int PhysicalResistance{ get{ return BasePhysicalResistance + GetProtOffset() + GetResourceAttrs().ShieldPhysicalResist + PhysicalBonus + (SetEquipped ? SetPhysicalBonus : 0 ); } }
-		public override int FireResistance{ get{ return BaseFireResistance + GetProtOffset() + GetResourceAttrs().ShieldFireResist + FireBonus + (SetEquipped ? SetFireBonus : 0 ); } }
-		public override int ColdResistance{ get{ return BaseColdResistance + GetProtOffset() + GetResourceAttrs().ShieldColdResist + ColdBonus + (SetEquipped ? SetColdBonus : 0 ); } }
-		public override int PoisonResistance{ get{ return BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ShieldPoisonResist + PoisonBonus + (SetEquipped ? SetPoisonBonus : 0 ); } }
-		public override int EnergyResistance{ get{ return BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ShieldEnergyResist + EnergyBonus + (SetEquipped ? SetEnergyBonus : 0 ); } }
-		#endregion
-		
+	{		
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
 		public BaseShield( int itemID ) : base( itemID )
@@ -206,7 +198,7 @@ namespace Server.Items
 			if ( makersMark )
 				Crafter = from;
 			
-			if ( craftItem.ForceNonExceptional )
+			if ( !craftItem.ForceNonExceptional )
 			{
 				Type resourceType = typeRes;
 	
@@ -225,40 +217,6 @@ namespace Server.Items
 			
 			if ( Core.AOS && tool is BaseRunicTool )
 				((BaseRunicTool)tool).ApplyAttributesTo( this );
-				
-			switch ( Resource )
-			{
-				case CraftResource.AshWood: 
-					ArmorAttributes.LowerStatReq += 20; 
-					break;
-					
-				case CraftResource.YewWood: 
-					Attributes.RegenHits += 1; 
-					break;
-					
-				case CraftResource.Heartwood:
-					switch ( Utility.Random( 7 ) )
-					{
-						case 0: Attributes.BonusDex += 2; break;
-						case 1: Attributes.BonusStr += 2; break; 
-						case 2: Attributes.ReflectPhysical += 5; break;
-						case 3: Attributes.SpellChanneling = 1; Attributes.CastSpeed = -1; break;
-						case 4: ArmorAttributes.SelfRepair += 2; break;			
-						case 5: PhysicalBonus += 5; break;
-						case 6: ColdBonus += 3; break;
-					}
-					break;
-					
-				case CraftResource.Bloodwood: 
-					Attributes.RegenHits += 2;
-					Attributes.Luck += 40;
-					break;
-					
-				case CraftResource.Frostwood:
-					Attributes.SpellChanneling = 1; 
-					Attributes.CastSpeed = -1;
-					break;
-			}
 			
 			return quality;
 		}

@@ -102,7 +102,7 @@ namespace Server.Items
 		}
 	}
 	
-	public class MalabellesDress : Skirt
+	public class MalabellesDress : PlainDress
 	{
 		public override int LabelNumber{ get{ return 1073251; } } // Malabelle's Dress - Museum of Vesper Replica
 	
@@ -124,7 +124,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -132,6 +132,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version == 0 )
+				ItemID = 0x1F01;
 		}
 	}
 	

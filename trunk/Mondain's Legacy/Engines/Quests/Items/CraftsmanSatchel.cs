@@ -24,7 +24,7 @@ namespace Server.Items
 			{				
 				if ( 0.25 > Utility.RandomDouble() && !talisman )
 				{
-					AddItem( new RandomTalisman() );
+					AddItem( Loot.RandomTalisman() );
 					talisman = true;					
 				}
 				else if ( 0.4 > Utility.RandomDouble() && !equipment )

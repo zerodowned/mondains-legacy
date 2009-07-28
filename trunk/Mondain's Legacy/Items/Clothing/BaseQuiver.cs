@@ -152,7 +152,9 @@ namespace Server.Items
 		{
 			if ( !CheckType( item ) )
 			{
-				m.SendLocalizedMessage( 1074836 ); // The container can not hold that type of object.
+				if ( message )
+					m.SendLocalizedMessage( 1074836 ); // The container can not hold that type of object.
+				
 				return false;
 			}
 		
@@ -160,17 +162,17 @@ namespace Server.Items
 			{
 				if ( item.Amount <= m_Capacity )
 					return base.CheckHold( m, item, message, checkItems, plusItems, plusWeight );
+
+				return false;
 			}
-			else
-			{				
-				Item ammo = Ammo;
 				
-				if ( ammo == null || ammo.Deleted )
-					return false;
-				
-				if ( ammo.Amount + item.Amount <= m_Capacity )
-					return true;
-			}
+			Item ammo = Ammo;	
+		
+			if ( ammo == null || ammo.Deleted )
+				return false;
+			
+			if ( ammo.Amount + item.Amount <= m_Capacity )
+				return true;
 			
 			return false;
 		}
@@ -659,20 +661,20 @@ namespace Server.Items
 		{		
 			Type type = item.GetType();
 			Item ammo = Ammo;
-			
+
 			if ( ammo != null )
 			{
 				if ( ammo.GetType() == type )
 					return true;
-				
-				return false;
 			}
-		
-			for ( int i = 0; i < m_Ammo.Length; i ++ )
+			else
 			{
-				if ( m_Ammo[ i ].IsAssignableFrom( type ) )
-					return true;
-			} 
+				for ( int i = 0; i < m_Ammo.Length; i++ )
+				{
+					if ( type == m_Ammo[ i ] )
+						return true;
+				}
+			}
 			
 			return false;
 		}

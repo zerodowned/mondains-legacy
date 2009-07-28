@@ -1931,7 +1931,7 @@ namespace Server
 			IntWeight		= 0x01000000,
 			SavedFlags		= 0x02000000,
 			NullWeight		= 0x04000000,
-			NullWeight		= 0x08000000,			
+			DupeSource		= 0x08000000,			
 		}
 
 		private static void SetSaveFlag( ref SaveFlag flags, SaveFlag toSet, bool setIf )
@@ -1985,6 +1985,8 @@ namespace Server
 			CompactInfo info = LookupCompactInfo();
 			List<Item> items = LookupItems();
 
+			if ( m_DupeSource != null )
+				flags |= SaveFlag.DupeSource;
 			if ( m_Direction != Direction.North )
 				flags |= SaveFlag.Direction;
 			if ( info != null && info.m_Bounce != null )

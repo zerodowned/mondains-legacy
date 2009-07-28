@@ -1930,7 +1930,8 @@ namespace Server
 			HeldBy			= 0x00800000,
 			IntWeight		= 0x01000000,
 			SavedFlags		= 0x02000000,
-			NullWeight		= 0x04000000
+			NullWeight		= 0x04000000,
+			NullWeight		= 0x08000000,			
 		}
 
 		private static void SetSaveFlag( ref SaveFlag flags, SaveFlag toSet, bool setIf )
@@ -1954,11 +1955,7 @@ namespace Server
 
 		public virtual void Serialize( GenericWriter writer )
 		{
-			writer.Write( 10 ); // version
-
-			#region Mondain's Legacy version 10
-			writer.Write( m_DupeSource );
-			#endregion
+			writer.Write( 9 ); // version
 
 			SaveFlag flags = SaveFlag.None;
 
@@ -2018,6 +2015,11 @@ namespace Server
 				flags |= SaveFlag.HeldBy;
 			if ( info != null && info.m_SavedFlags != 0 )
 				flags |= SaveFlag.SavedFlags;
+				
+			#region Mondain's Legacy version 10
+			if ( m_DupeSource != null )
+				flags |= SaveFlag.DupeSource;
+			#endregion
 
 			if ( info == null || info.m_Weight == -1 )
 			{
@@ -2064,6 +2066,12 @@ namespace Server
 			writer.WriteEncodedInt( (int) minutes );
 			/* end */
 
+
+			#region Mondain's Legacy version 10
+			if ( GetSaveFlag( flags, SaveFlag.DupeSource ) )
+				writer.Write( (Item) m_DupeSource );
+			#endregion
+			
 			if ( GetSaveFlag( flags, SaveFlag.Direction ) )
 				writer.Write( (byte) m_Direction );
 
@@ -2281,14 +2289,6 @@ namespace Server
 
 			switch ( version )
 			{
-				#region Mondain's Legacy
-				case 10:
-				{
-					m_DupeSource = reader.ReadItem();
-
-					goto case 9;
-				}
-				#endregion
 
 				case 9:
 				case 8:
@@ -2308,6 +2308,11 @@ namespace Server
 						try{ LastMoved = DateTime.Now - TimeSpan.FromMinutes( minutes ); }
 						catch{ LastMoved = DateTime.Now; }
 					}
+					
+					#region Mondain's Legacy
+					if ( GetSaveFlag( flags, SaveFlag.DupeSource ) )
+						m_DupeSource = reader.ReadItem();					
+					#endregion
 
 					if ( GetSaveFlag( flags, SaveFlag.Direction ) )
 						m_Direction = (Direction)reader.ReadByte();
